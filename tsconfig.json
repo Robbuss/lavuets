@@ -1,0 +1,29 @@
+{
+    "compilerOptions": {
+      "declaration": false,
+      "lib" : ["es5","es6", "dom"],
+      "outDir": "./dist/",
+      "sourceMap": false,
+      "noImplicitAny": true,
+      "module": "esnext",
+      "target": "esnext",
+      "typeRoots": [
+        "node_modules/@types",
+        "node_modules/vuetify/types",
+        "node_modules/vue/types/index",
+        "resources/tsd",
+      ],
+      "experimentalDecorators": true,
+      "paths": {
+        "components/*" : ["./js/components/*"],
+        "js/*" : ["./resources/js/*"],
+      },
+      "baseUrl": ".",
+      "moduleResolution": "node"
+    },
+    "include": [
+        "resources/js/**/*",
+        "resources/tsd/*",
+        "node_modules/vuetify/types/*"
+    ]
+  }

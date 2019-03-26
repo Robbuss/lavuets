@@ -1,0 +1,51 @@
+{
+    "private": true,
+    "scripts": {
+        "dev": "npm run development",
+        "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=webpack.config.js --profile --mode development",
+        "development-json": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --config=webpack.config.js --json",
+        "watch": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --watch --progress --hide-modules --config=webpack.config.js --mode development",
+        "watch-poll": "npm run watch -- --watch-poll",
+        "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=webpack.config.js",
+        "prod": "npm run production",
+        "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=webpack.config.js --profile"
+    },
+    "dependencies": {
+        "register-service-worker": "^1.6.2",
+        "vue": "^2.6.6",
+        "vue-class-component": "^6.0.0",
+        "vue-property-decorator": "^7.0.0",
+        "vue-router": "^3.0.1",
+        "vuetify": "^1.5.7",
+        "vuex": "^3.1.0"
+    },
+    "devDependencies": {
+        "@babel/polyfill": "^7.4.0",
+        "@vue/cli-plugin-babel": "^3.5.0",
+        "@vue/cli-plugin-eslint": "^3.5.0",
+        "@vue/cli-plugin-pwa": "^3.5.0",
+        "@vue/cli-plugin-typescript": "^3.5.0",
+        "@vue/cli-service": "^3.5.0",
+        "@vue/eslint-config-airbnb": "^4.0.0",
+        "@vue/eslint-config-typescript": "^4.0.0",
+        "axios": "^0.18",
+        "babel-eslint": "^10.0.1",
+        "cross-env": "^5.1",
+        "css-loader": "^2.1.1",
+        "eslint": "^5.8.0",
+        "eslint-plugin-vue": "^5.0.0",
+        "node-sass": "^4.9.0",
+        "popper.js": "^1.12",
+        "resolve-url-loader": "^2.3.1",
+        "sass": "^1.15.2",
+        "sass-loader": "^7.1.0",
+        "style-loader": "^0.23.1",
+        "stylus": "^0.54.5",
+        "stylus-loader": "^3.0.2",
+        "typescript": "^3.2.1",
+        "vue-loader": "^15.7.0",
+        "vue-template-compiler": "^2.6.10",
+        "vuetify-loader": "^1.2.1",
+        "webpack-cli": "^3.3.0"
+    }
+}
