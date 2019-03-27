@@ -45,9 +45,7 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        $access_token = $this->login($request);
-
-        return ['access_token' => $access_token];
+        return ['access_token' => $this->login($request)];
     }
 
     public function logout()
