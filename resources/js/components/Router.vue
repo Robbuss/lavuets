@@ -39,14 +39,6 @@ import Store from "js/store";
 
 Vue.use(Router);
 
-const checkAuth = (to: any, from: any, next: any) => {
-  if (Store.getters.authenticated) {
-    next();
-  } else {
-    next("/login");
-  }
-};
-
 const router = new Router({
   mode: "history",
   routes: [
@@ -56,16 +48,18 @@ const router = new Router({
     },
     {
       path: "/login",
-      component: Login
+      component: Login,
+      beforeEnter: (to: any, from: any, next: any) => (Store.getters.authenticated) ? next("/u") : next()
     },
     {
       path: "/register",
-      component: Register
+      component: Register,
+      beforeEnter: (to: any, from: any, next: any) => (Store.getters.authenticated) ? next("/u") : next()
     },
     {
       path: "/u",
       component: Dashboard,
-      beforeEnter: checkAuth
+      beforeEnter: (to: any, from: any, next: any) => (!Store.getters.authenticated) ? next("/login") : next()
     },
     {
       path: "/logout",

@@ -8,6 +8,11 @@
           <v-icon>person</v-icon>
         </v-btn>
       </v-toolbar>
+      <v-layout row wrap v-if="erroredFields">
+        <v-flex xs12 v-for="(field, i) in erroredFields" :key="i" px-3>
+          <v-alert :value="true" type="error" v-for="e in field" :key="e">{{ e }}</v-alert>
+        </v-flex>
+      </v-layout>
       <v-form class="pa-3" v-model="valid" lazy-validation ref="form">
         <v-text-field
           label="Naam"
@@ -44,7 +49,6 @@
           :disabled="working"
           :loading="working"
         >Register</v-btn>
-        <v-alert :value="message" type="warning">{{ message }}</v-alert>
       </v-form>
     </v-card>
   </v-flex>
@@ -54,10 +58,11 @@
 import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
 import axios from "js/axios";
+import store from "js/store";
 
 @Component({})
 export default class Register extends Vue {
-  private message = "";
+  private erroredFields: { [k: string]: string[] } = {};
   private valid: boolean = true;
   private working: boolean = false;
   private user: any = {
@@ -73,14 +78,16 @@ export default class Register extends Vue {
   }
 
   async register() {
+    this.working = true;
     try {
       const r = await axios.post("/api/register", this.user);
-      if (r.data.access_token) 
-        localStorage.setItem("access_token", r.data.access_token);
+      if (r.data.access_token)
+        store.commit("updateToken", r.data.access_token.access_token)
         this.$router.push("/u");
     } catch (e) {
-      console.log(e);
+      this.erroredFields = e.response.data.errors;
     }
+    this.working = false;
   }
 }
 </script>
