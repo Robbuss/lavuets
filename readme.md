@@ -20,7 +20,9 @@ Uses Laravel passport to authenticate
 
 ## Getting started
 
-Clone the repository and copy the .env.example to .env file to connect to your database. After you have connected to a database run ```php artisan migrate```. 
+Clone the repository and copy the .env.example to .env file to connect to your database. Run ``` composer install ``` and ```npm install```. You should be connected to a database. Run ```php artisan migrate``` to create the tables.  
 When you're done migrating run ```php artisan passport:install``` to generate the laravel passport tokens. These should go in your .env file aswell. 
 
-To run the app go type npm run dev or npm run watch. 
+You can allways find the secret in the oauth_clients table from the Laravel Password Grant Client. It's usually id 2. Enter that in your .env.
+
+To run the app run ```npm run dev``` or ```npm run watch``` 
