@@ -14,7 +14,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
-import Store from "js/store"
+import Store from "js/store";
 
 @Component({})
 export default class NavItems extends Vue {
@@ -28,9 +28,14 @@ export default class NavItems extends Vue {
 
   private itemsLoggedIn: { [k: string]: string }[] = [
     {
-      icon: "settings",
+      icon: "person",
       link: "/u",
-      text: "User"
+      text: "Users"
+    },
+    {
+      icon: "person",
+      link: "/u/profile",
+      text: "Profile"
     },
     {
       icon: "exit_to_app",

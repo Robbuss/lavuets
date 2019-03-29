@@ -1,6 +1,6 @@
-// require("@babel/polyfill");
+// <reference path="./node_modules/vuetify/types/lib.d.ts"></reference>
+require("@babel/polyfill");
 // import { Vue } from './vue';
-/// <reference path="./node_modules/vuetify/types/lib.d.ts"></reference>
 import Vue from "vue";
 (<any>window).Vue = Vue;
 

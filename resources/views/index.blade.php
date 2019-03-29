@@ -13,7 +13,7 @@
     <div id="app">
         <router-component></router-component>
     </div>
-    <script src="js/app.js"></script>
+    <script src="/js/app.js"></script>
 </body>
 
 </html> 

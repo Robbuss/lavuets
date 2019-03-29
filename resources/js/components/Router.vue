@@ -30,6 +30,7 @@ import Vue from "vue";
 import Router from "vue-router";
 import { Component, Prop, Watch } from "vue-property-decorator";
 import Index from "./Index.vue";
+import UserIndex from "./user/Index.vue";
 import Login from "./auth/Login.vue";
 import Register from "./auth/Register.vue";
 import Dashboard from "./user/Dashboard.vue";
@@ -49,22 +50,30 @@ const router = new Router({
     {
       path: "/login",
       component: Login,
-      beforeEnter: (to: any, from: any, next: any) => (Store.getters.authenticated) ? next("/u") : next()
+      beforeEnter: (to: any, from: any, next: any) =>
+        Store.getters.authenticated ? next("/u") : next()
     },
     {
       path: "/register",
       component: Register,
-      beforeEnter: (to: any, from: any, next: any) => (Store.getters.authenticated) ? next("/u") : next()
+      beforeEnter: (to: any, from: any, next: any) =>
+        Store.getters.authenticated ? next("/u") : next()
     },
     {
       path: "/u",
-      component: Dashboard,
+      component: UserIndex,
       beforeEnter: (to: any, from: any, next: any) => (!Store.getters.authenticated) ? next("/login") : next()
+    },
+    {
+      path: "/u/profile",
+      component: Dashboard,
+      beforeEnter: (to: any, from: any, next: any) =>
+        !Store.getters.authenticated ? next("/login") : next()
     },
     {
       path: "/logout",
       component: () => {
-        Store.commit("updateToken", null)
+        Store.commit("updateToken", null);
         router.push("/");
       }
     },
@@ -78,7 +87,7 @@ const router = new Router({
 @Component({
   router: router,
   store: Store,
-  components:{
+  components: {
     navItems: NavItems
   }
 })
