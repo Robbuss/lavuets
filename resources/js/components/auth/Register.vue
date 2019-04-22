@@ -81,9 +81,10 @@ export default class Register extends Vue {
     this.working = true;
     try {
       const r = await axios.post("/api/register", this.user);
-      if (r.data.access_token)
+      if (r.data.access_token){
         store.commit("updateToken", r.data.access_token.access_token)
         this.$router.push("/u");
+      }
     } catch (e) {
       this.erroredFields = e.response.data.errors;
     }

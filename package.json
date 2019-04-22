@@ -11,6 +11,8 @@
         "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=webpack.config.js --profile"
     },
     "dependencies": {
+        "blob-util": "^2.0.2",
+        "file-saver": "^2.0.1",
         "register-service-worker": "^1.6.2",
         "vue": "^2.6.6",
         "vue-class-component": "^6.0.0",

@@ -1,10 +1,18 @@
 <template>
-  <v-flex sm12 md8 lg5>
+  <v-flex sm12>
+    <v-toolbar flat color="primary" dark>
+      <v-toolbar-title>Gebruikers</v-toolbar-title>
+      <v-spacer></v-spacer>
+    </v-toolbar>
     <v-data-table :headers="headers" :items="users" class="elevation-1" :loading="loading">
       <template v-slot:items="props">
         <td>{{ props.item.name }}</td>
         <td>{{ props.item.email }}</td>
         <td>{{ props.item.created_at }}</td>
+      </template>
+      <template v-slot:no-data>
+        <td colspan="100%" v-if="loading">Gebruikers laden...</td>
+        <td colspan="100%" v-else>Geen gebruikers gevonden</td>
       </template>
     </v-data-table>
   </v-flex>

@@ -12,7 +12,8 @@ return [
     | as required, but they're a perfect start for most applications.
     |
     */
-
+    'enable_registration' => env('ENABLE_REGISTRATION', true),
+    
     'defaults' => [
         'guard' => 'web',
         'passwords' => 'users',
@@ -68,7 +69,7 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\User::class,
+            'model' => App\Models\User::class,
         ],
 
         // 'users' => [

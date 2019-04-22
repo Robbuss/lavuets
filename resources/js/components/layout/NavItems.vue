@@ -1,11 +1,11 @@
 <template>
-  <v-list dense>
+  <v-list >
     <v-list-tile @click="$router.push(item.link)" v-for="(item, key) in items" :key="key">
       <v-list-tile-action>
-        <v-icon>{{ item.icon }}</v-icon>
+        <v-icon class="primary--text">{{ item.icon }}</v-icon>
       </v-list-tile-action>
       <v-list-tile-content>
-        <v-list-tile-title>{{ item.text }}</v-list-tile-title>
+        <v-list-tile-title class="grey--text text--darken-2">{{ item.text }}</v-list-tile-title>
       </v-list-tile-content>
     </v-list-tile>
   </v-list>
@@ -28,19 +28,34 @@ export default class NavItems extends Vue {
 
   private itemsLoggedIn: { [k: string]: string }[] = [
     {
-      icon: "person",
-      link: "/u",
-      text: "Users"
-    },
+      icon: "store",
+      link: "/units",
+      text: "Boxes"
+    },    
     {
       icon: "person",
-      link: "/u/profile",
-      text: "Profile"
-    },
+      link: "/customers",
+      text: "Klanten"
+    },      
+    {
+      icon: "description",
+      link: "/contracts",
+      text: "Contracten"
+    }, 
+    {
+      icon: "attach_money",
+      link: "/invoices",
+      text: "Facturen"
+    },     
+    {
+      icon: "people",
+      link: "/u",
+      text: "Gebruikers"
+    },     
     {
       icon: "exit_to_app",
       link: "/logout",
-      text: "Logout"
+      text: "Uitloggen"
     }
   ];
   private itemsLoggedOut: { [k: string]: string }[] = [

@@ -1,17 +1,16 @@
 <template>
   <v-app>
     <v-navigation-drawer v-model="drawer" clipped fixed app v-if="authenticated">
-      <v-list dense>
-        <nav-items :authenticated="authenticated"></nav-items>
-      </v-list>
+      <nav-items :authenticated="authenticated" class="pt-4"></nav-items>
+      <v-img :width="150" src="https://www.opslagmagazijn.nl/wp-content/uploads/2018/02/self-storage-breukelen-1-1.png"/>
     </v-navigation-drawer>
-    <v-toolbar app fixed clipped-left>
-      <v-toolbar-side-icon @click.stop="drawer = !drawer" v-if="authenticated"></v-toolbar-side-icon>
-      <v-toolbar-title>Application</v-toolbar-title>
+    <v-toolbar app fixed clipped-left class="primary" dark>
+      <v-toolbar-side-icon color="white--text secondary" @click.stop="drawer = !drawer" v-if="authenticated"></v-toolbar-side-icon>
+      <v-toolbar-title>OPSLAGMAGAZIJN</v-toolbar-title>
     </v-toolbar>
     <v-content :class="{ 'bg--image' : !authenticated}">
       <v-container fluid fill-height>
-        <v-layout justify-center align-center>
+        <v-layout justify-center :align-center="authRoutes">
           <router-view></router-view>
         </v-layout>
       </v-container>
@@ -30,8 +29,14 @@ import Vue from "vue";
 import Router from "vue-router";
 import { Component, Prop, Watch } from "vue-property-decorator";
 import Index from "./Index.vue";
-import UserIndex from "./user/Index.vue";
+import Users from "./user/Users.vue";
 import Login from "./auth/Login.vue";
+import Customers from "./customers/Customers.vue";
+import Customer from "./customers/Customer.vue";
+import Units from "./units/Units.vue";
+import Unit from "./units/Unit.vue";
+import Invoices from "./invoices/Invoices.vue";
+import Contracts from "./contracts/Contracts.vue";
 import Register from "./auth/Register.vue";
 import Dashboard from "./user/Dashboard.vue";
 import NavItems from "./layout/NavItems.vue";
@@ -60,8 +65,38 @@ const router = new Router({
         Store.getters.authenticated ? next("/u") : next()
     },
     {
+      path: "/customers",
+      component: Customers,
+      beforeEnter: (to: any, from: any, next: any) => (!Store.getters.authenticated) ? next("/login") : next()
+    },     
+    {
+      path: "/customers/:id",
+      component: Customer,
+      beforeEnter: (to: any, from: any, next: any) => (!Store.getters.authenticated) ? next("/login") : next()
+    },        
+    {
+      path: "/units",
+      component: Units,
+      beforeEnter: (to: any, from: any, next: any) => (!Store.getters.authenticated) ? next("/login") : next()
+    },
+    {
+      path: "/units/:id",
+      component: Unit,
+      beforeEnter: (to: any, from: any, next: any) => (!Store.getters.authenticated) ? next("/login") : next()
+    },          
+    {
+      path: "/contracts",
+      component: Contracts,
+      beforeEnter: (to: any, from: any, next: any) => (!Store.getters.authenticated) ? next("/login") : next()
+    },     
+    {
+      path: "/invoices",
+      component: Invoices,
+      beforeEnter: (to: any, from: any, next: any) => (!Store.getters.authenticated) ? next("/login") : next()
+    },            
+    {
       path: "/u",
-      component: UserIndex,
+      component: Users,
       beforeEnter: (to: any, from: any, next: any) => (!Store.getters.authenticated) ? next("/login") : next()
     },
     {
@@ -93,6 +128,15 @@ const router = new Router({
 })
 export default class RouterComponent extends Vue {
   private drawer: boolean = true;
+
+  mounted()
+  {
+  }
+  get authRoutes(){
+    if(this.$route.fullPath.startsWith('/login') || this.$route.fullPath.startsWith('/register'))
+      return true
+    return false;
+  }
 
   get authenticated() {
     return Store.getters.authenticated;

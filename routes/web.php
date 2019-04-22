@@ -10,7 +10,10 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+Route::get('/invoice-preview', function(){
+   $invoice = \App\Models\Invoice::first();
+   return view('invoice', compact('invoice'));
+});
 Route::fallback(function() {
    return view('index'); // blade component with vue router init 
 });
