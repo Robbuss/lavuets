@@ -122,7 +122,7 @@
         </div>
         <div class="title-bar default-padding">
             Factuur {{ $invoice->ref }} <span class="right">{{ $invoice->start_date }}</span>
-            {{ $invoice->name }}
+            {{ $invoice->customer->name }}
         </div>
         <div class="customer-bar">
             <div class="customer-bar-header default-padding">
@@ -144,12 +144,14 @@
             <div class="col3">Prijs per eenheid</div>
             <div class="col4">Totaal</div>
         </div>
-        <div class="item-bar default-padding">
+        @foreach($invoice->contract->units as $unit)
+        <div class="item-bar default-padding" >
             <div class="col1">1</div>
-            <div class="col2">{{ $invoice->contract->unit->name }}</div>
-            <div class="col3">{{ $invoice->contract->price }}</div>
-            <div class="col4">TBA</div>
+            <div class="col2">{{ $unit->name }} ({{ $unit->size }}m3)</div>
+            <div class="col3">€{{ $unit->price }}</div>
+            <div class="col4">€{{ $unit->price }}</div>
         </div>
+        @endforeach
         <div class="footer">
             Rekeningnummer Rabobank: NL35 RABO 0168 4940 51 t.n.v. Opslag magazijn
         </div>

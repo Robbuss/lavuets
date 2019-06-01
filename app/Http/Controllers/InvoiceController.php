@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Invoice;
+use App\Models\Contract;
+use Carbon\CarbonPeriod;
+use Carbon\CarbonInterval;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Support\Facades\Storage;
@@ -16,7 +20,7 @@ class InvoiceController extends Controller
      */
     public function index()
     {
-        return Invoice::with(['customer', 'contract', 'contract.unit'])->get()->map(function ($q) {
+        return Invoice::with(['customer', 'contract', 'contract.units'])->get()->map(function ($q) {
             return [
                 'id' => $q->id,
                 'ref' => $q->ref,
@@ -35,17 +39,21 @@ class InvoiceController extends Controller
                     'btw' => $q->customer->btw,
                     'kvk' => $q->customer->kvk
                 ],
-                'unit' => [
-                    'id' => $q->contract->unit->id,
-                    'name' => $q->contract->unit->name,
-                    'size' => $q->contract->unit->size,
-                ],
                 'contract' => [
                     'id' => $q->contract->id,
-                    'price' => $q->contract->price,
+                    'price' => $this->createDisplayPrice($q->contract->units),
+                    'units' => $q->contract->units
                 ]
             ];
         });
+    }
+
+    private function createDisplayPrice($unitArray = [])
+    {
+        $priceArray = $unitArray->map(function($q){
+            return $q->price;
+        })->toArray();
+        return implode(', €',$priceArray) . ' Totaal €' . array_sum($priceArray);
     }
 
     /**
@@ -93,8 +101,8 @@ class InvoiceController extends Controller
         $pdf = PDF::loadView('invoice', ['invoice' => $invoice])->setOptions(['defaultFont' => 'sans-serif']);
         // $pdf->set_option('enable_css_float',true);
         // if (!file_exists($filepath . $filename)) {
-            Storage::disk('local')->makeDirectory('invoices/' . $invoice->customer_id);
-            $pdf->save($filepath . $filename);
+        Storage::disk('local')->makeDirectory('invoices/' . $invoice->customer_id);
+        $pdf->save($filepath . $filename);
         // }
 
         $contents = file_get_contents($filepath . $filename);
@@ -104,5 +112,33 @@ class InvoiceController extends Controller
             'mime' => 'application/pdf',
             'extension' => 'pdf'
         ];
+    }
+
+    public function generateInvoices(Request $request)
+    {
+        $contract = Contract::findOrFail($request->contract_id);
+
+        // get the periods in an array
+        $periods = CarbonPeriod::create($contract->start_date, '1 month', $contract->end_date)->toArray();
+
+        // calculate from and end date per invoice
+        for ($i = 0; $i < 2; $i++) {
+            if (array_key_exists($i + 1, $periods)) {
+                $invoices[$i] = ['start_date' => $periods[$i], 'end_date' => $periods[$i + 1]];
+            }
+        }
+
+        // for each period, create an actual invoice
+        foreach ($invoices as $invoice) {
+            Invoice::create([
+                'ref' => 'TESTREF',
+                'contract_id' => $contract->id,
+                'customer_id' => $contract->customer->id,
+                'payment_status' => 'unpaid',
+                'start_date' => $invoice['start_date'],
+                'end_date' => $invoice['end_date']
+            ]);
+        }
+        return ["success" => true];
     }
 }

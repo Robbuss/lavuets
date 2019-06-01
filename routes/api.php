@@ -34,12 +34,14 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/customers/{customer}/delete', 'CustomerController@delete');
 
     Route::get('/contracts', 'ContractController@index');
+    Route::get('/contracts/{contract}', 'ContractController@read');
     Route::post('/contracts/create', 'ContractController@create');
-    Route::post('/contracts/{customer}', 'ContractController@update');
-    Route::post('/contracts/{customer}/delete', 'ContractController@delete');
+    Route::post('/contracts/{contract}', 'ContractController@update');
+    Route::post('/contracts/{contract}/delete', 'ContractController@delete');
 
     Route::get('/invoices', 'InvoiceController@index');
     Route::post('/invoices/create', 'InvoiceController@create');
+    Route::post('/invoices/generate', 'InvoiceController@generateInvoices');
     Route::get('/invoices/{invoice}/pdf', 'InvoiceController@generatePdf');
     Route::post('/invoices/{invoice}', 'InvoiceController@update');
     Route::post('/invoices/{invoice}/delete', 'InvoiceController@delete');    

@@ -17,21 +17,34 @@ class ContractController extends Controller
     public function index()
     {
         return [
-            'contracts' => Contract::with(['customer', 'unit'])->get()->map(
+            'contracts' => Contract::with(['customer', 'units'])->get()->map(
                 function ($q) {
                     return [
                         'id' => $q->id,
                         'customer_id' => $q->customer_id,
                         'customer_name' => $q->customer->name,
-                        'unit_id' => $q->unit_id,
-                        'unit_name' => $q->unit->name,
+                        'active' => $q->active,
+                        'units' => $q->units->map(function ($q) {
+                            return [
+                                'id' => $q->id,
+                                'name' => $q->name,
+                                'display_name' => $q->display_name,
+                            ];
+                        }),
                         'price' => $q->price,
                         'start_date' => $q->start_date,
                         'end_date' => $q->end_date
                     ];
-                }),
-                'units' => Unit::all (
+                }
             ),
+            'units' => Unit::all()->map(function ($q) {
+                return [
+                    'id' => $q->id,
+                    'name' => $q->name,
+                    'display_name' => $q->display_name,
+                    'price' => $q->price
+                ];
+            }),
             'customers' => Customer::all()
         ];
     }
@@ -43,9 +56,16 @@ class ContractController extends Controller
      */
     public function create(Request $request)
     {
-        $contract = Contract::create($request->all());
+        $contract = Contract::create($request->except(['units', 'price_unit']));
+        $contract->units()->sync($this->getSyncArray($request->price_unit));
 
         return ['id' => $contract->id];
+    }
+
+    public function read(Contract $contract)
+    {
+        $contract->load(['customer', 'invoices', 'units']);
+        return $contract;
     }
 
     /**
@@ -57,7 +77,9 @@ class ContractController extends Controller
      */
     public function update(Request $request, Contract $contract)
     {
-        $contract->update($request->all());
+        $contract->update($request->except(['units', 'price_unit']));
+        $contract->units()->sync($this->getSyncArray($request->price_unit));
+
         return ['success' => true];
     }
 
@@ -71,5 +93,13 @@ class ContractController extends Controller
     {
         $contract->delete();
         return ['success' => true];
+    }
+
+    public function getSyncArray($priceArray = []){
+        $contractUnitPrice = [];
+        foreach ($priceArray as $k => $pu) {
+            $contractUnitPrice[$pu['id']] = ['price' => $pu['price']];
+        };
+        return $contractUnitPrice;
     }
 }

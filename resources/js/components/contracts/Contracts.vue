@@ -15,7 +15,7 @@
             <v-stepper-header>
               <v-stepper-step :complete="step > 1" step="1">
                 <span v-if="step == 1">Kies een box</span>
-                <span v-if="step > 1">Gekozen: {{ chosenUnitName }}</span>
+                <span v-if="step > 1">Check</span>
               </v-stepper-step>
               <v-divider></v-divider>
               <v-stepper-step :complete="step > 2" step="2">
@@ -30,12 +30,14 @@
 
             <v-stepper-items>
               <v-stepper-content step="1">
-                Welke box wil je veruren?
+                Welke producten wil je verhuren?
                 <v-select
                   :items="units"
                   item-value="id"
-                  item-text="name"
-                  v-model="editedItem.unit_id"
+                  item-text="display_name"
+                  multiple
+                  chips
+                  v-model="editedItem.units"
                 ></v-select>
                 <v-btn color="primary" @click="step = 2">Verder</v-btn>
                 <v-btn flat @click="close">Annuleren</v-btn>
@@ -57,8 +59,12 @@
               <v-stepper-content step="3">
                 <v-layout wrap>
                   <v-flex xs12 sm6 md4>
-                    Wat is de overeengekomen prijs in €per maand
-                    <v-text-field v-model="editedItem.price" label="Overeengekomen prijs"></v-text-field>
+                    Wat is de overeengekomen prijs in €per maand per box
+                    <v-text-field 
+                    v-for="(price, i) in priceUnit"
+                    :key="i"
+                    v-model.number="priceUnit[i].price" 
+                    label="Overeengekomen prijs"></v-text-field>
                   </v-flex>
                 </v-layout>
                 <v-btn color="primary" @click="step = 4">Verder</v-btn>
@@ -109,15 +115,14 @@
         <template v-slot:items="props">
           <td
             class="pointer"
-            @click="$router.push('/units/' + props.item.unit_id)"
-          >{{ props.item.unit_name }}</td>
-          <td
-            class="pointer"
-            @click="$router.push('/customers/' + props.item.customer_id)"
+            @click="$router.push('/contracts/' + props.item.id)"
           >{{ props.item.customer_name }}</td>
-          <td>€{{ props.item.price }}</td>
           <td>{{ props.item.start_date }}</td>
           <td>{{ props.item.end_date }}</td>
+          <td>
+            <span v-if="props.item.active">Actief</span>
+            <span v-else>Niet actief</span>
+          </td>
           <td class="justify-center layout px-0">
             <v-icon small class="mr-2" @click="editItem(props.item)">edit</v-icon>
             <v-icon small @click="deleteItem(props.item)">delete</v-icon>
@@ -149,17 +154,18 @@ export default class Contracts extends Vue {
   private step: number = 0;
 
   private headers: any = [
-    { text: "Box", value: "unit_name" },
-    { text: "Naam", value: "customer_name" },
-    { text: "Prijs", value: "price" },
+    { text: "Klantnaam", value: "customer_name" },
     { text: "Ingangsdatum", value: "start_date" },
     { text: "Einddatum", value: "end_date" },
+    { text: "Status", value: "active" },
     { text: "Actions", value: "name", sortable: false }
   ];
+  private priceUnit: any = [];
   private editedIndex: number = -1;
   private editedItem: any = {
     id: null,
-    unit_id: "",
+    units: [],
+    active: true,
     unit_name: "",
     customer_id: "",
     customer_name: "",
@@ -169,7 +175,8 @@ export default class Contracts extends Vue {
   };
   private defaultItem: any = {
     id: null,
-    unit_id: "",
+    units: [],
+    active: true,
     unit_name: "",
     customer_id: "",
     customer_name: "",
@@ -181,13 +188,20 @@ export default class Contracts extends Vue {
     rowsPerPage: 25
   };
 
+  @Watch("editedItem.units")
+  onUnitsChanged(odlval: any, newval: any) {
+    this.priceUnit = [];
+    for (let c in this.editedItem.units) {
+      this.priceUnit.push({
+        id: this.editedItem.units[c],
+        price: null
+      });
+    }
+  }
+
   @Watch("dialog")
   onDialogChanged(oldval: any, newval: any) {
     oldval || this.close();
-  }
-
-  get chosenUnitName() {
-    return this.units.find((x: any) => x.id === this.editedItem.unit_id).name;
   }
 
   get chosenCustomerName() {
@@ -226,7 +240,7 @@ export default class Contracts extends Vue {
 
   close() {
     this.dialog = false;
-    this.step = 0;
+    this.step = 1;
     setTimeout(() => {
       this.editedItem = Object.assign({}, this.defaultItem);
       this.editedIndex = -1;
@@ -234,6 +248,7 @@ export default class Contracts extends Vue {
   }
 
   save() {
+    this.editedItem.price_unit = this.priceUnit
     if (this.editedIndex > -1) {
       axios.post("/api/contracts/" + this.editedItem.id, this.editedItem);
       Object.assign(this.contracts[this.editedIndex], this.editedItem);

@@ -11,29 +11,13 @@
           <span>Box toevoegen</span>
         </v-tooltip>
         <v-dialog v-model="dialog" max-width="80%" persistent>
-          <v-toolbar flat color="primary" dark>
-            <v-toolbar-title>{{ formTitle }}</v-toolbar-title>
-            <v-spacer></v-spacer>
-            <v-btn icon @click="dialog = !dialog">
-              <v-icon>close</v-icon>
-            </v-btn>
-          </v-toolbar>
-          <v-card class="pa-3">
-            <v-layout row wrap>
-              <v-flex sm12 class="pa-2">
-                <v-text-field label="Box / product naam" v-model="editedItem.name"/>
-              </v-flex>
-              <v-flex sm12 md6 class="pa-2">
-                <v-text-field label="Grootte in m3" v-model="editedItem.size"/>
-              </v-flex>
-              <v-flex sm12 md6 class="pa-2">
-                <v-text-field label="Prijs in euro's" v-model="editedItem.price"/>
-              </v-flex>
-              <v-flex sm12>
-                <v-btn color="primary" @click="save">Opslaan</v-btn>
-              </v-flex>
-            </v-layout>
-          </v-card>
+          <edit-create-unit
+            v-if="dialog"
+            @saved="createdItem"
+            @canceled="close"
+            :creating="createMode"
+            :unit="editedItem"
+          ></edit-create-unit>
         </v-dialog>
       </v-toolbar>
       <v-data-table
@@ -69,14 +53,21 @@
 import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
 import axios from "js/axios";
+import EditCreateUnit from "./EditCreate.vue";
 
-@Component({})
+@Component({
+  components: {
+    editCreateUnit: EditCreateUnit
+  }
+})
 export default class Units extends Vue {
   private response = "";
   private fields = ["name", "size", "price", "x", "y"];
   private units: any = [];
   private dialog: boolean = false;
   private loading: boolean = true;
+  private createMode: boolean = true;
+  private editedItem: any = null;
 
   private headers: any = [
     { text: "Naam", value: "name" },
@@ -84,19 +75,6 @@ export default class Units extends Vue {
     { text: "Prijs (p/m)", value: "price" },
     { text: "Acties", align: "right", sortable: false }
   ];
-  private editedIndex: number = -1;
-  private editedItem: any = {
-    id: null,
-    name: "",
-    size: "",
-    price: 0
-  };
-  private defaultItem: any = {
-    id: null,
-    name: "",
-    size: "",
-    price: 0
-  };
   private pagination: any = {
     rowsPerPage: 25
   };
@@ -107,6 +85,11 @@ export default class Units extends Vue {
   }
 
   async mounted() {
+    await this.getData();
+  }
+
+  async getData() {
+    this.loading = true;
     try {
       this.units = (await axios.get("/api/units")).data;
     } catch (e) {
@@ -115,44 +98,32 @@ export default class Units extends Vue {
     this.loading = false;
   }
 
-  get chosenUnitName() {
-    return this.units.find((x: any) => x.id === this.editedItem.id).name;
-  }
-
-  get formTitle() {
-    return this.editedIndex === -1 ? "Unit aanmaken" : "Unitbewerken bewerken";
-  }
-
-  editItem(item: any) {
-    this.editedIndex = this.units.indexOf(item);
-    this.editedItem = Object.assign({}, item);
-    this.dialog = true;
-  }
-
   deleteItem(item: any) {
     const index = this.units.indexOf(item);
-    confirm("Weet je zeker dat je deze unit wilt verwijderen?") &&
+    confirm("Are you sure you want to delete this item?") &&
       this.units.splice(index, 1) &&
       axios.post("/api/units/" + item.id + "/delete");
   }
 
-  close() {
-    this.dialog = false;
-    setTimeout(() => {
-      this.editedItem = Object.assign({}, this.defaultItem);
-      this.editedIndex = -1;
-    }, 300);
+  createItem() {
+    this.createMode = true;
+    this.dialog = true;
   }
 
-  save() {
-    if (this.editedIndex > -1) {
-      axios.post("/api/units/" + this.editedItem.id, this.editedItem);
-      Object.assign(this.units[this.editedIndex], this.editedItem);
-    } else {
-      axios.post("/api/units/create", this.editedItem);
-      this.units.push(this.editedItem);
-    }
-    this.close();
+  async createdItem() {
+    this.dialog = false;
+    await this.getData();
+  }
+
+  editItem(unit: any) {
+    this.createMode = false;
+    this.editedItem = unit;
+    this.dialog = true;
+  }
+
+  close() {
+    this.editedItem = null;
+    this.dialog = false;
   }
 }
 </script>

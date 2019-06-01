@@ -37,6 +37,7 @@ import Units from "./units/Units.vue";
 import Unit from "./units/Unit.vue";
 import Invoices from "./invoices/Invoices.vue";
 import Contracts from "./contracts/Contracts.vue";
+import Contract from "./contracts/Contract.vue";
 import Register from "./auth/Register.vue";
 import Dashboard from "./user/Dashboard.vue";
 import NavItems from "./layout/NavItems.vue";
@@ -89,6 +90,11 @@ const router = new Router({
       component: Contracts,
       beforeEnter: (to: any, from: any, next: any) => (!Store.getters.authenticated) ? next("/login") : next()
     },     
+    {
+      path: "/contracts/:id",
+      component: Contract,
+      beforeEnter: (to: any, from: any, next: any) => (!Store.getters.authenticated) ? next("/login") : next()
+    },       
     {
       path: "/invoices",
       component: Invoices,

@@ -2,7 +2,7 @@
   <v-container fluid pa-3 ma-0 grid-list-md v-if="!loading">
     <v-layout row wrap>
       <v-flex xs12 sm12>
-        <edit-create-customer :customer="customer" :creating="false"></edit-create-customer>
+        <edit-create-invoice :invoice="invoice" :creating="false"></edit-create-invoice>
     </v-flex>
   </v-layout>
   </v-container>
@@ -12,22 +12,22 @@
 import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
 import axios from "js/axios";
-import EditCreateCustomer from "./EditCreate.vue";
+import EditCreateInvoice from "./EditCreate.vue";
 
 @Component({
   components: {
-    editCreateCustomer: EditCreateCustomer
+    editCreateInvoice: EditCreateInvoice
   }
 })
-export default class SingleCustomer extends Vue {
+export default class SingleInvoice extends Vue {
   private response = "";
   private dialog: boolean = false;
   private loading: boolean = true;
-  private customer: any = {}
+  private invoice: any = {}
 
   async mounted() {
     try {
-      this.customer = (await axios.get("/api/customers/" + this.$route.params.id)).data;
+      this.invoice = (await axios.get("/api/invoices/" + this.$route.params.id)).data;
     } catch (e) {
       this.response = e.message;
     }

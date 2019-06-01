@@ -5,62 +5,27 @@
         <v-toolbar-title>Klanten</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-tooltip bottom>
-          <v-btn icon slot="activator" @click="dialog = true">
+          <v-btn icon slot="activator" @click="createItem">
             <v-icon>add</v-icon>
           </v-btn>
           <span>Klant toevoegen</span>
         </v-tooltip>
         <v-dialog v-model="dialog" max-width="80%">
-          <v-card>
-            <v-card-title>
-              <span class="headline">{{ formTitle }}</span>
-            </v-card-title>
-
-            <v-card-text>
-              <v-container grid-list-md>
-                <v-layout wrap>
-                  <v-flex xs12 sm6 md4>
-                    <v-text-field v-model="editedItem.name" label="Naam"></v-text-field>
-                  </v-flex>
-                  <v-flex xs12 sm6 md4>
-                    <v-text-field v-model="editedItem.email" label="E-mail"></v-text-field>
-                  </v-flex>
-                  <v-flex xs12 sm6 md4>
-                    <v-text-field v-model="editedItem.company_name" label="Bedrijfsnaam"></v-text-field>
-                  </v-flex>
-                  <v-flex xs12 sm6 md4>
-                    <v-text-field v-model="editedItem.city" label="Stad"></v-text-field>
-                  </v-flex>
-                  <v-flex xs12 sm6 md4>
-                    <v-text-field v-model="editedItem.street_addr" label="Straat"></v-text-field>
-                  </v-flex>
-                  <v-flex xs12 sm6 md4>
-                    <v-text-field v-model="editedItem.street_number" label="Nummer"></v-text-field>
-                  </v-flex>
-                  <v-flex xs12 sm6 md4>
-                    <v-text-field v-model="editedItem.postal_code" label="Postcode"></v-text-field>
-                  </v-flex>
-                  <v-flex xs12 sm6 md4>
-                    <v-text-field v-model="editedItem.kvk" label="KVK"></v-text-field>
-                  </v-flex>
-                  <v-flex xs12 sm6 md4>
-                    <v-text-field v-model="editedItem.btw" label="BTW"></v-text-field>
-                  </v-flex>
-                </v-layout>
-              </v-container>
-            </v-card-text>
-
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" flat @click="close">Cancel</v-btn>
-              <v-btn color="blue darken-1" flat @click="save">Save</v-btn>
-            </v-card-actions>
-          </v-card>
+          <edit-create-customer 
+          v-if="dialog" 
+          @saved="createdItem"
+          @canceled="close"
+          :creating="createMode" 
+          :customer="editedItem">
+          </edit-create-customer>
         </v-dialog>
       </v-toolbar>
       <v-data-table :headers="headers" :items="customers" class="elevation-1" :loading="loading">
         <template v-slot:items="props">
-          <td class="pointer" @click="$router.push('/customers/' + props.item.id)">{{ props.item.name }}</td>
+          <td
+            class="pointer"
+            @click="$router.push('/customers/' + props.item.id)"
+          >{{ props.item.name }}</td>
           <td>{{ props.item.email }}</td>
           <td>{{ props.item.company_name }}</td>
           <td>{{ props.item.city }}</td>
@@ -75,9 +40,9 @@
           </td>
         </template>
         <template v-slot:no-data>
-            <td colspan="100%" v-if="loading">Klanten laden...</td>
-            <td colspan="100%" v-else>Geen klanten</td>
-        </template>    
+          <td colspan="100%" v-if="loading">Klanten laden...</td>
+          <td colspan="100%" v-else>Geen klanten</td>
+        </template>
       </v-data-table>
     </div>
   </v-flex>
@@ -87,13 +52,20 @@
 import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
 import axios from "js/axios";
+import EditCreateCustomer from "./EditCreate.vue";
 
-@Component({})
+@Component({
+  components: {
+    editCreateCustomer: EditCreateCustomer
+  }
+})
 export default class Customers extends Vue {
   private response = "";
   private customers: any = [];
   private dialog: boolean = false;
   private loading: boolean = true;
+  private createMode: boolean = true;
+  private editedItem: any = null;
 
   private headers: any = [
     { text: "Naam", align: "left", value: "name" },
@@ -107,31 +79,6 @@ export default class Customers extends Vue {
     { text: "KvK", value: "kvk" },
     { text: "Actions", value: "name", sortable: false }
   ];
-  private editedIndex: number = -1;
-  private editedItem: any = {
-    id: null,
-    name: "",
-    company_name: "",
-    email: "",
-    city: "",
-    street_addr: "",
-    street_number: 0,
-    postal_code: "",
-    btw: "",
-    kvk: ""
-  };
-  private defaultItem: any = {
-    id: null,
-    name: "",
-    company_name: "",
-    email: "",
-    city: "",
-    street_addr: "",
-    street_number: 0,
-    postal_code: "",
-    btw: "",
-    kvk: ""
-  };
 
   @Watch("dialog")
   onDialogChanged(oldval: any, newval: any) {
@@ -139,6 +86,11 @@ export default class Customers extends Vue {
   }
 
   async mounted() {
+    await this.getData();
+  }
+
+  async getData() {
+    this.loading = true;
     try {
       this.customers = (await axios.get("/api/customers")).data;
     } catch (e) {
@@ -147,40 +99,32 @@ export default class Customers extends Vue {
     this.loading = false;
   }
 
-  get formTitle() {
-    return this.editedIndex === -1 ? "Klant aanmaken" : "Klant bewerken";
-  }
-
-  editItem(item: any) {
-    this.editedIndex = this.customers.indexOf(item);
-    this.editedItem = Object.assign({}, item);
-    this.dialog = true;
-  }
-
   deleteItem(item: any) {
     const index = this.customers.indexOf(item);
     confirm("Are you sure you want to delete this item?") &&
-      this.customers.splice(index, 1) && 
-      axios.post('/api/customers/' + item.id + '/delete');
+      this.customers.splice(index, 1) &&
+      axios.post("/api/customers/" + item.id + "/delete");
+  }
+
+  createItem() {
+    this.createMode = true;
+    this.dialog = true;
+  }
+
+  async createdItem(){
+    this.dialog = false;
+    await this.getData();
+  }
+
+  editItem(customer: any) {
+    this.createMode = false;
+    this.editedItem = customer;
+    this.dialog = true;
   }
 
   close() {
+    this.editedItem = null;
     this.dialog = false;
-    setTimeout(() => {
-      this.editedItem = Object.assign({}, this.defaultItem);
-      this.editedIndex = -1;
-    }, 300);
-  }
-
-  save() {
-    if (this.editedIndex > -1) {
-      axios.post('/api/customers/' + this.editedItem.id, this.editedItem);
-      Object.assign(this.customers[this.editedIndex], this.editedItem);
-    } else {
-      axios.post('/api/customers/create', this.editedItem);
-      this.customers.push(this.editedItem);
-    }
-    this.close();
   }
 }
 </script>

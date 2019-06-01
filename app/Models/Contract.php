@@ -8,16 +8,19 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Contract extends Model
 {
     use SoftDeletes;
-    protected $fillable = ['unit_id', 'customer_id', 'price', 'start_date', 'end_date'];
-    // protected $dates = ['start_date', 'end_date'];
+    protected $fillable = ['customer_id', 'active', 'start_date', 'end_date'];
+    protected $casts = [
+        'active' => 'boolean',
+    ];
 
     public function customer()
     {
         return $this->belongsTo(Customer::class);
     }
-    public function unit()
+
+    public function units()
     {
-        return $this->belongsTo(Unit::class);
+        return $this->belongsToMany(Unit::class)->withPivot('price')->withTimestamps();
     }
 
     public function invoices()
