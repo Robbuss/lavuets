@@ -28,7 +28,6 @@
 import Vue from "vue";
 import Router from "vue-router";
 import { Component, Prop, Watch } from "vue-property-decorator";
-import Index from "./Index.vue";
 import Users from "./user/Users.vue";
 import Login from "./auth/Login.vue";
 import Customers from "./customers/Customers.vue";
@@ -51,7 +50,7 @@ const router = new Router({
   routes: [
     {
       path: "/",
-      component: Index
+      component: Login
     },
     {
       path: "/login",

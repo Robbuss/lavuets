@@ -11,48 +11,30 @@
           <span v-if="step > 1">Gekozen: {{ chosenUnitName }}</span>
         </v-stepper-step>
         <v-divider></v-divider>
-        <v-stepper-step :complete="step > 2" step="2">
-          <span v-if="step <= 2">Kies een klant</span>
-          <span v-if="step > 2">Gekozen: {{ chosenCustomerName }}</span>
-        </v-stepper-step>
+        <v-stepper-step step="2">Prijs</v-stepper-step>
         <v-divider></v-divider>
-        <v-stepper-step step="3">Prijs</v-stepper-step>
-        <v-divider></v-divider>
-        <v-stepper-step step="4">Data & Duur</v-stepper-step>
+        <v-stepper-step step="3">Data & Duur</v-stepper-step>
       </v-stepper-header>
 
       <v-stepper-items>
         <v-stepper-content step="1">
-          Welke box wil je veruren?
+          Welke box wil je verhuren?
           <v-select :items="units" item-value="id" item-text="name" v-model="editedItem.unit_id"></v-select>
           <v-btn color="primary" @click="step = 2">Verder</v-btn>
           <v-btn flat @click="cancel">Annuleren</v-btn>
         </v-stepper-content>
 
         <v-stepper-content step="2">
-          Aan welke klant verhuur je die?
-          <v-select
-            :items="customers"
-            item-value="id"
-            item-text="name"
-            v-model="editedItem.customer_id"
-          ></v-select>
-          <v-btn color="primary" @click="step = 3">Verder</v-btn>
-
-          <v-btn flat @click="cancel">Annuleren</v-btn>
-        </v-stepper-content>
-
-        <v-stepper-content step="3">
           <v-layout wrap>
             <v-flex xs12 sm6 md4>
               Wat is de overeengekomen prijs in €per maand
               <v-text-field v-model="editedItem.price" label="Overeengekomen prijs"></v-text-field>
             </v-flex>
           </v-layout>
-          <v-btn color="primary" @click="step = 4">Verder</v-btn>
+          <v-btn color="primary" @click="step = 2">Verder</v-btn>
           <v-btn flat @click="cancel">Annuleren</v-btn>
         </v-stepper-content>
-        <v-stepper-content step="4">
+        <v-stepper-content step="3">
           <v-layout wrap>
             <v-flex xs12>
               <h6 class="headline" v-if="!showEndDate">
@@ -105,11 +87,16 @@ export default class EditInvoice extends Vue {
   @Prop()
   creating: boolean;
 
+  @Prop()
+  customer_id: number;
+
+  @Prop()
+  units: any;
+
   private showEndDate: boolean = false;
   private step: number = 0;
   private working: boolean = false;
   private customers: any = []
-  private units: any = []
   private editedItem: any = {
     id: null,
     unit_id: "",
@@ -152,6 +139,7 @@ export default class EditInvoice extends Vue {
 
   async save() {
     this.working = true;
+    this.editedItem.customer_id = this.customer_id;
     if (!this.creating) {
       await axios.post("/api/invoices/" + this.editedItem.id, this.editedItem);
     } else {

@@ -59,12 +59,13 @@
               <v-stepper-content step="3">
                 <v-layout wrap>
                   <v-flex xs12 sm6 md4>
-                    Wat is de overeengekomen prijs in €per maand per box
+                    Wat is de overeengekomen prijs in € per maand per box
                     <v-text-field 
                     v-for="(price, i) in priceUnit"
                     :key="i"
                     v-model.number="priceUnit[i].price" 
-                    label="Overeengekomen prijs"></v-text-field>
+                    :label="findName(priceUnit[i].id)"
+                    placeholder="Overeengekomen prijs"></v-text-field>
                   </v-flex>
                 </v-layout>
                 <v-btn color="primary" @click="step = 4">Verder</v-btn>
@@ -187,6 +188,13 @@ export default class Contracts extends Vue {
   private pagination: any = {
     rowsPerPage: 25
   };
+
+  findName(id: number){
+   const obj = this.units.find((x:any) => x.id === id)
+   if(obj)
+    return obj.display_name
+   return
+  }
 
   @Watch("editedItem.units")
   onUnitsChanged(odlval: any, newval: any) {

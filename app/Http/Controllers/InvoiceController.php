@@ -18,9 +18,14 @@ class InvoiceController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Invoice::with(['customer', 'contract', 'contract.units'])->get()->map(function ($q) {
+        return Invoice::with(['customer', 'contract', 'contract.units'])
+        ->where(function($q) use ($request){
+            if($request->customer_id)
+                return $q->where('customer_id', $request->customer_id);
+        })
+        ->get()->map(function ($q) {
             return [
                 'id' => $q->id,
                 'ref' => $q->ref,

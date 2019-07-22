@@ -5,6 +5,18 @@
         <v-toolbar-title>Facturen</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-tooltip bottom>
+          <v-btn icon slot="activator" router href="/invoices" target="_blank">
+            <v-icon>info</v-icon>
+          </v-btn>
+          <span>Alle facturen van alle klanten bekijken</span>
+        </v-tooltip>
+        <v-tooltip bottom>
+          <v-btn icon slot="activator" @click="$emit('generate')">
+            <v-icon>insert_drive_file</v-icon>
+          </v-btn>
+          <span>Alle facturen genereren</span>
+        </v-tooltip>           
+        <v-tooltip bottom v-if="customer_id">
           <v-btn icon slot="activator" @click="dialog = true">
             <v-icon>add</v-icon>
           </v-btn>
@@ -16,6 +28,8 @@
           @saved="createdItem"
           @canceled="close"
           :creating="createMode" 
+          :customer_id="customer_id"
+          :units="units"
           :invoice="editedItem">
           </edit-create-invoice>
         </v-dialog>
@@ -43,7 +57,7 @@
         </template>
         <template v-slot:no-data>
           <td colspan="100%" v-if="loading">Facturen laden...</td>
-          <td colspan="100%" v-else>Geen facturen gevonden</td>
+          <td colspan="100%" @click="$emit('generate')" v-else>Geen facturen gevonden</td>
         </template>
       </v-data-table>
     </div>
@@ -64,6 +78,12 @@ import EditCreateInvoice from "./EditCreate.vue";
   }
 })
 export default class Invoices extends Vue {
+  @Prop()
+  customer_id: number;
+
+  @Prop()
+  units: any;
+
   private response = "";
   private invoices: any = [];
   private dialog: boolean = false;
@@ -100,7 +120,7 @@ export default class Invoices extends Vue {
   async getData() {
     this.loading = true;
     try {
-      this.invoices = (await axios.get("/api/invoices")).data;
+      this.invoices = (await axios.post("/api/invoices", { customer_id: this.customer_id })).data;
     } catch (e) {
       this.response = e.message;
     }

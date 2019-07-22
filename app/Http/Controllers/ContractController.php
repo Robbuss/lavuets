@@ -64,7 +64,15 @@ class ContractController extends Controller
 
     public function read(Contract $contract)
     {
-        $contract->load(['customer', 'invoices', 'units']);
+        $contract->load(['customer', 'units']);
+        $contract->allUnits = Unit::all()->map(function ($q) {
+            return [
+                'id' => $q->id,
+                'name' => $q->name,
+                'display_name' => $q->display_name,
+                'price' => $q->price
+            ];
+        });
         return $contract;
     }
 

@@ -41,12 +41,7 @@ export default class NavItems extends Vue {
       icon: "description",
       link: "/contracts",
       text: "Contracten"
-    }, 
-    {
-      icon: "attach_money",
-      link: "/invoices",
-      text: "Facturen"
-    },     
+    },    
     {
       icon: "people",
       link: "/u",
