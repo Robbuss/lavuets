@@ -12,9 +12,7 @@ class AuthController extends Controller
 {
     public function login(Request $request)
     {
-        $http = new Client([
-            'base_uri' => 'http://localhost'  // <-- base_uri instead of base_url
-        ]);
+        $http = new Client();
         try {
             $response = $http->post(config('services.passport.login_endpoint'), [
                 'form_params' => [
