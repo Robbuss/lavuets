@@ -98,14 +98,25 @@ class InvoiceController extends Controller
         return ['success' => true];
     }
 
+    public function totalPrice($contract){
+        $total = 0;
+        foreach($contract->units as $unitPrice){
+            $total += $unitPrice->pivot->price;
+        }
+        return [
+            'price' => $total,
+            'btw' => $total * 0.21,
+        ];
+    }
+
     public function generatePdf(Invoice $invoice)
     {
         $filepath = storage_path('app/invoices/' . $invoice->customer_id . '/');
         $filename =  $invoice->ref . '.pdf';
         $invoice->load(['customer', 'contract']);
-        $pdf = PDF::loadView('invoice', ['invoice' => $invoice])->setOptions(['defaultFont' => 'sans-serif']);
-        // $pdf->set_option('enable_css_float',true);
-        // if (!file_exists($filepath . $filename)) {
+        $totalPrice = $this->totalPrice($invoice->contract);
+        $pdf = PDF::loadView('invoice', ['invoice' => $invoice, 'total' => $totalPrice])->setOptions(['defaultFont' => 'sans-serif']);
+
         Storage::disk('local')->makeDirectory('invoices/' . $invoice->customer_id);
         $pdf->save($filepath . $filename);
         // }

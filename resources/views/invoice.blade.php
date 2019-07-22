@@ -121,7 +121,7 @@
             </div>
         </div>
         <div class="title-bar default-padding">
-            Factuur {{ $invoice->ref }} <span class="right">{{ $invoice->start_date }}</span>
+            Factuur {{ $invoice->ref }} <span class="right">Periode {{ $invoice->start_date }} tot {{ $invoice->end_date }}</span>
             {{ $invoice->customer->name }}
         </div>
         <div class="customer-bar">
@@ -148,10 +148,23 @@
         <div class="item-bar default-padding" >
             <div class="col1">1</div>
             <div class="col2">{{ $unit->name }} ({{ $unit->size }}m3)</div>
-            <div class="col3">€{{ $unit->price }}</div>
-            <div class="col4">€{{ $unit->price }}</div>
+            <div class="col3">€{{ $unit->pivot->price }}</div>
+            <div class="col4">€{{ $unit->pivot->price }}</div>
         </div>
         @endforeach
+        <div class="item-bar default-padding" >
+            <div class="col1" style="border-bottom: 0px !important;"></div>
+            <div class="col2" style="border-bottom: 0px !important;"></div>
+            <div class="col3">BTW(21%)</div>
+            <div class="col4">€{{ $total['btw'] }}</div>
+        </div>        
+        <div class="item-bar default-padding" >
+            <div class="col1"></div>
+            <div class="col2"></div>
+            <div class="col3">Totaal</div>
+            <div class="col4">€{{ $total['price'] }}</div>
+        </div>
+        
         <div class="footer">
             Rekeningnummer Rabobank: NL35 RABO 0168 4940 51 t.n.v. Opslag magazijn
         </div>

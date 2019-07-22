@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons" rel="stylesheet">
     <link href="/css/app.css" rel="stylesheet">
-    <title>Application</title>
+    <title>Opslagmagazijn</title>
     <!-- Fonts -->
 </head>
 
