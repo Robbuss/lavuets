@@ -52,6 +52,7 @@
         }
 
         .customer-address {}
+        .customer-instruction {}
 
         .item-bar-header {
             height: 18px;
@@ -126,17 +127,23 @@
         </div>
         <div class="customer-bar">
             <div class="customer-bar-header default-padding">
-                <div class="left two-column">Factuuradres</div>
+                <div class="left two-column">
+                    Factuuradres
+                </div>
                 <div class="right two-column">
-                    Instructies</div>
+                    Instructies
+                </div>
             </div>
-            <div class="customer-address">
+            <div class="left two-column">
                 <ul>
                     <li>{{ $invoice->customer->name }}</li>
                     <li>{{ $invoice->customer->street_addr }} {{ $invoice->customer->street_number }}</li>
                     <li>{{ $invoice->customer->postal_code }} {{ $invoice->customer->city }}</li>
                 </ul>
             </div>
+            <div class="right two-column default-padding">
+                {!! $invoice->note !!}
+            </div>            
         </div>
         <div class="item-bar-header default-padding">
             <div class="col1">Aantal</div>
@@ -155,7 +162,7 @@
         <div class="item-bar default-padding" >
             <div class="col1" style="border-bottom: 0px !important;"></div>
             <div class="col2" style="border-bottom: 0px !important;"></div>
-            <div class="col3">BTW(21%)</div>
+            <div class="col3">BTW(21%) Totaal</div>
             <div class="col4">€{{ $total['btw'] }}</div>
         </div>        
         <div class="item-bar default-padding" >

@@ -30,6 +30,7 @@ class InvoiceController extends Controller
                 'id' => $q->id,
                 'ref' => $q->ref,
                 'payment_status' => $q->payment_status,
+                'note' => $q->note,
                 'start_date' => $q->start_date,
                 'end_date' => $q->end_date,
                 'customer' => [

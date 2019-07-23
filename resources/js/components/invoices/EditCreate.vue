@@ -6,35 +6,37 @@
 
     <v-stepper v-model="step">
       <v-stepper-header>
-        <v-stepper-step :complete="step > 1" step="1">
-          <span v-if="step == 1">Kies een box</span>
-          <span v-if="step > 1">Gekozen: {{ chosenUnitName }}</span>
-        </v-stepper-step>
+        <v-stepper-step :complete="step > 1" step="1">Factuur informatie</v-stepper-step>
         <v-divider></v-divider>
-        <v-stepper-step step="2">Prijs</v-stepper-step>
-        <v-divider></v-divider>
-        <v-stepper-step step="3">Data & Duur</v-stepper-step>
+        <v-stepper-step step="2">Data & Duur</v-stepper-step>
       </v-stepper-header>
 
       <v-stepper-items>
         <v-stepper-content step="1">
-          Welke box wil je verhuren?
-          <v-select :items="units" item-value="id" item-text="name" v-model="editedItem.unit_id"></v-select>
+          <v-layout wrap>
+            <v-flex xs12 sm6 md6>
+              <v-text-field v-model="editedItem.ref" label="Referentie"></v-text-field>
+            </v-flex>
+            <v-flex xs12 sm6 md6>
+              <v-select
+                :items="paymentStatuses"
+                v-model="editedItem.payment_status"
+                label="Status van betaling"
+              ></v-select>
+            </v-flex>
+          </v-layout>
+
+          <v-layout wrap>
+            <v-flex xs12>
+              <v-textarea v-model="editedItem.note" label="Notitie toevoegen"></v-textarea>
+            </v-flex>
+          </v-layout>
+
           <v-btn color="primary" @click="step = 2">Verder</v-btn>
           <v-btn flat @click="cancel">Annuleren</v-btn>
         </v-stepper-content>
 
         <v-stepper-content step="2">
-          <v-layout wrap>
-            <v-flex xs12 sm6 md4>
-              Wat is de overeengekomen prijs in €per maand
-              <v-text-field v-model="editedItem.price" label="Overeengekomen prijs"></v-text-field>
-            </v-flex>
-          </v-layout>
-          <v-btn color="primary" @click="step = 2">Verder</v-btn>
-          <v-btn flat @click="cancel">Annuleren</v-btn>
-        </v-stepper-content>
-        <v-stepper-content step="3">
           <v-layout wrap>
             <v-flex xs12>
               <h6 class="headline" v-if="!showEndDate">
@@ -93,34 +95,31 @@ export default class EditInvoice extends Vue {
   @Prop()
   units: any;
 
+  private paymentStatuses: string[] = ["paid", "unpaid"];
   private showEndDate: boolean = false;
   private step: number = 0;
   private working: boolean = false;
-  private customers: any = []
+  private customer: any;
   private editedItem: any = {
     id: null,
-    unit_id: "",
-    customer_id: "",
-    contract_id: "",
-    price: 0,
+    payment_status: "",
+    ref: "",
+    note: "",
     start_date: "",
     end_date: ""
   };
   private defaultItem: any = {
     id: null,
-    unit_id: "",
-    contract_id: "",
-    customer_id: "",
-    price: 0,
+    payment_status: "",
+    ref: "",
+    note: "",
     start_date: "",
     end_date: ""
   };
   private response = "";
 
   get formTitle() {
-    return this.creating
-      ? "Klant aanmaken"
-      : "De gegevens van " + this.invoice.name + " bewerken";
+    return "De gegevens van " + this.invoice.ref + " bewerken";
   }
 
   mounted() {

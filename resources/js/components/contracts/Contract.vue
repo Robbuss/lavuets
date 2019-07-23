@@ -42,7 +42,17 @@
                   </v-list>
                 </v-flex>
                 <v-flex xs12 sm6>
-                  De status van het contract
+                  Todo list:
+                  <ul>
+                    <li>De payment status van het contract toevoegen en aanpassen</li>
+                    <li>Een standaard opmerking / instructie voor elke gegeneerde factuur</li>
+                    <li>Referentie benaming verbeteren</li>
+                    <li>Zorgen dat Facturen voor een periode niet dubbel gegenereerd worden</li>
+                    <li>Toevoegen van zoekbalk in alle facturen, klanten en producten</li>
+                    <li>Betaling per maand of automatische incasso</li>
+                    <li>Contract beeindigen of opzeggen check (deleted at)</li>
+                    <li>Front end validation voor het maken van klanten, contracten en producten</li>
+                  </ul>
                 </v-flex>
               </v-layout>
             </v-card>
