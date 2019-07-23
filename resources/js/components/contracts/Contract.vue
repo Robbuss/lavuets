@@ -7,25 +7,22 @@
             <v-toolbar class="primary" dark>
               <v-toolbar-title>{{ contract.customer.name }}</v-toolbar-title>
               <v-spacer></v-spacer>
-              <v-tooltip bottom>
+                <v-tooltip bottom>
                 <v-btn
-                  color="red--text"
                   icon
+                  @click="dialog=!dialog"
                   slot="activator"
-                  router
-                  href="/invoices"
-                  target="_blank"
                 >
-                  <v-icon>delete_forever</v-icon>
+                  <v-icon>add</v-icon>
                 </v-btn>
                 <span>Contract beeindigen</span>
               </v-tooltip>
             </v-toolbar>
             <v-card class="pa-3">
-              <v-subheader>Contract informatie</v-subheader>
               <v-layout row wrap>
                 <v-flex xs12 md6>
                   <v-list two-line>
+                    <v-subheader>Contract informatie</v-subheader>
                     <v-list-tile>
                       <v-list-tile-content>
                         <v-list-tile-title>Van {{ contract.start_date }} tot {{ contract.end_date }}</v-list-tile-title>
@@ -42,15 +39,23 @@
                   </v-list>
                 </v-flex>
                 <v-flex xs12 sm6>
+                  <v-list two-line>
+                    <v-list-tile>
+                      <v-list-tile-content>
+                        <v-list-tile-title>{{ contract.payment_method }}</v-list-tile-title>
+                        <v-list-tile-sub-title>Betalingsmethode</v-list-tile-sub-title>
+                      </v-list-tile-content>
+                    </v-list-tile>
+                  </v-list>
+                </v-flex>
+                <v-flex xs12 sm6>
                   Todo list:
                   <ul>
-                    <li>De payment status van het contract toevoegen en aanpassen</li>
                     <li>Een standaard opmerking / instructie voor elke gegeneerde factuur</li>
                     <li>Referentie benaming verbeteren</li>
                     <li>Zorgen dat Facturen voor een periode niet dubbel gegenereerd worden</li>
                     <li>Toevoegen van zoekbalk in alle facturen, klanten en producten</li>
-                    <li>Betaling per maand of automatische incasso</li>
-                    <li>Contract beeindigen of opzeggen check (deleted at)</li>
+                    <li>Contract beeindigen of opzeggen check (deleted at veranderen in opgezegd boolean)</li>
                     <li>Front end validation voor het maken van klanten, contracten en producten</li>
                   </ul>
                 </v-flex>
@@ -68,24 +73,28 @@
         </v-layout>
       </v-flex>
     </v-layout>
+    <edit-create :contract="contract" v-if="dialog" :dialog="dialog" @input="dialog = !dialog"></edit-create>
   </v-container>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import Invoices from "../invoices/Invoices.vue";
+import EditCreate from "./EditCreate.vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
 import axios from "js/axios";
 
 @Component({
   components: {
-    invoices: Invoices
+    invoices: Invoices,
+    editCreate: EditCreate
   }
 })
 export default class SingleContract extends Vue {
   private response = "";
   private loading: boolean = true;
   private contract: any = null;
+  private dialog: boolean = false;
 
   async mounted() {
     await this.getData();

@@ -145,6 +145,8 @@ class InvoiceController extends Controller
             }
         }
 
+        if(!$invoices)
+            return ["error" => "Datum te kort om facruren te maken."];
         // for each period, create an actual invoice
         foreach ($invoices as $invoice) {
             Invoice::create([

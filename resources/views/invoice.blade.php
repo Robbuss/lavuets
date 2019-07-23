@@ -5,10 +5,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-    body{
-      color: #8b8b8b;
-      font-family: 'Open Sans', 'HelveticaNeue', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    }
+        body {
+            color: #8b8b8b;
+            font-family: 'Open Sans', 'HelveticaNeue', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+
         ul {
             list-style: none;
             padding-left: 15px;
@@ -17,9 +18,11 @@
         .two-column {
             width: 50%;
         }
-        .default-padding{
-          padding: 15px;
+
+        .default-padding {
+            padding: 15px;
         }
+
         .right {
             float: right
         }
@@ -52,6 +55,7 @@
         }
 
         .customer-address {}
+
         .customer-instruction {}
 
         .item-bar-header {
@@ -60,11 +64,13 @@
             background-color: #456480;
             width: 100%;
         }
+
         .item-bar {
             height: 18px;
             width: 100%;
             border-bottom: 1px solid #999;
         }
+
         .col1,
         .col2,
         .col3,
@@ -143,7 +149,7 @@
             </div>
             <div class="right two-column default-padding">
                 {!! $invoice->note !!}
-            </div>            
+            </div>
         </div>
         <div class="item-bar-header default-padding">
             <div class="col1">Aantal</div>
@@ -152,31 +158,39 @@
             <div class="col4">Totaal</div>
         </div>
         @foreach($invoice->contract->units as $unit)
-        <div class="item-bar default-padding" >
+        <div class="item-bar default-padding">
             <div class="col1">1</div>
             <div class="col2">{{ $unit->name }} ({{ $unit->size }}m3)</div>
             <div class="col3">€{{ $unit->pivot->price }}</div>
             <div class="col4">€{{ $unit->pivot->price }}</div>
         </div>
         @endforeach
-        <div class="item-bar default-padding" >
+        <div class="item-bar default-padding">
             <div class="col1" style="border-bottom: 0px !important;"></div>
             <div class="col2" style="border-bottom: 0px !important;"></div>
             <div class="col3">BTW(21%) Totaal</div>
             <div class="col4">€{{ $total['btw'] }}</div>
-        </div>        
-        <div class="item-bar default-padding" >
+        </div>
+        <div class="item-bar default-padding">
             <div class="col1"></div>
             <div class="col2"></div>
             <div class="col3">Totaal</div>
             <div class="col4">€{{ $total['price'] }}</div>
         </div>
-        
         <div class="footer">
-            Rekeningnummer Rabobank: NL35 RABO 0168 4940 51 t.n.v. Opslag magazijn
+            <div class="top">
+                @if($invoice->contract->payment_method === 'factuur')
+                Graag het bedrag binnen 14 dagen overmaken op onderstaande rekening.
+                @else
+        	    Het bedrag wordt automatisch van uw rekening afgeschreven
+                @endif
+            </div>
+            <div class="bottom">
+                Rekeningnummer Rabobank: NL35 RABO 0168 4940 51 t.n.v. Opslag magazijn
+            </div>
         </div>
     </div>
 
 </body>
 
-</html> 
+</html>

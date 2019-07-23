@@ -10,100 +10,7 @@
           </v-btn>
           <span>Contract toevoegen</span>
         </v-tooltip>
-        <v-dialog v-model="dialog" max-width="80%" persistent>
-          <v-stepper v-model="step">
-            <v-stepper-header>
-              <v-stepper-step :complete="step > 1" step="1">
-                <span v-if="step == 1">Kies een box</span>
-                <span v-if="step > 1">Check</span>
-              </v-stepper-step>
-              <v-divider></v-divider>
-              <v-stepper-step :complete="step > 2" step="2">
-                <span v-if="step <= 2">Kies een klant</span>
-                <span v-if="step > 2">Gekozen: {{ chosenCustomerName }}</span>
-              </v-stepper-step>
-              <v-divider></v-divider>
-              <v-stepper-step step="3">Prijs</v-stepper-step>
-              <v-divider></v-divider>
-              <v-stepper-step step="4">Data & Duur</v-stepper-step>
-            </v-stepper-header>
-
-            <v-stepper-items>
-              <v-stepper-content step="1">
-                Welke producten wil je verhuren?
-                <v-select
-                  :items="units"
-                  item-value="id"
-                  item-text="display_name"
-                  multiple
-                  chips
-                  v-model="editedItem.units"
-                ></v-select>
-                <v-btn color="primary" @click="step = 2">Verder</v-btn>
-                <v-btn flat @click="close">Annuleren</v-btn>
-              </v-stepper-content>
-
-              <v-stepper-content step="2">
-                Aan welke klant verhuur je die?
-                <v-select
-                  :items="customers"
-                  item-value="id"
-                  item-text="name"
-                  v-model="editedItem.customer_id"
-                ></v-select>
-                <v-btn color="primary" @click="step = 3">Verder</v-btn>
-
-                <v-btn flat @click="close">Annuleren</v-btn>
-              </v-stepper-content>
-
-              <v-stepper-content step="3">
-                <v-layout wrap>
-                  <v-flex xs12 sm6 md4>
-                    Wat is de overeengekomen prijs in € per maand per box
-                    <v-text-field 
-                    v-for="(price, i) in priceUnit"
-                    :key="i"
-                    v-model.number="priceUnit[i].price" 
-                    :label="findName(priceUnit[i].id)"
-                    placeholder="Overeengekomen prijs"></v-text-field>
-                  </v-flex>
-                </v-layout>
-                <v-btn color="primary" @click="step = 4">Verder</v-btn>
-                <v-btn flat @click="close">Annuleren</v-btn>
-              </v-stepper-content>
-              <v-stepper-content step="4">
-                <v-layout wrap>
-                  <v-flex xs12>
-                    <h6 class="headline" v-if="!showEndDate">
-                      Kies een
-                      <span class="font-weight-black">startdatum</span>
-                    </h6>
-                    <h6 class="headline" v-if="showEndDate">
-                      Kies een
-                      <span class="font-weight-black">einddatum</span>
-                    </h6>
-                  </v-flex>
-                  <v-flex xs12 sm6 md4 v-if="!showEndDate">
-                    <v-date-picker landscape v-model="editedItem.start_date" label="Ingangsdatum"></v-date-picker>
-                  </v-flex>
-                  <v-flex xs12 sm6 md4 v-if="showEndDate">
-                    <v-date-picker
-                      landscape
-                      v-model="editedItem.end_date"
-                      label="Is er al een einddatum bekend?"
-                    ></v-date-picker>
-                  </v-flex>
-                  <v-flex xs12>
-                    <v-checkbox label="Is er al een einddatum bekend?" v-model="showEndDate"></v-checkbox>
-                  </v-flex>
-                </v-layout>
-                <v-btn color="primary" @click="save">Opslaan</v-btn>
-
-                <v-btn flat @click="close">Annuleren</v-btn>
-              </v-stepper-content>
-            </v-stepper-items>
-          </v-stepper>
-        </v-dialog>
+        <edit-create v-if="dialog" :dialog="dialog" :contract="chosenContract" @input="close"></edit-create>
       </v-toolbar>
       <v-data-table
         :headers="headers"
@@ -141,9 +48,14 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
+import EditCreate from "./EditCreate.vue";
 import axios from "js/axios";
 
-@Component({})
+@Component({
+  components:{
+    editCreate: EditCreate
+  }
+})
 export default class Contracts extends Vue {
   private response = "";
   private contracts: any = [];
@@ -151,8 +63,9 @@ export default class Contracts extends Vue {
   private units: any = [];
   private dialog: boolean = false;
   private loading: boolean = true;
-  private showEndDate: boolean = false;
+  private showEndDate: boolean = true;
   private step: number = 0;
+  private chosenContract: any = {};
 
   private headers: any = [
     { text: "Klantnaam", value: "customer_name" },
@@ -161,63 +74,12 @@ export default class Contracts extends Vue {
     { text: "Status", value: "active" },
     { text: "Actions", value: "name", sortable: false }
   ];
-  private priceUnit: any = [];
-  private editedIndex: number = -1;
-  private editedItem: any = {
-    id: null,
-    units: [],
-    active: true,
-    unit_name: "",
-    customer_id: "",
-    customer_name: "",
-    price: 0,
-    start_date: "",
-    end_date: ""
-  };
-  private defaultItem: any = {
-    id: null,
-    units: [],
-    active: true,
-    unit_name: "",
-    customer_id: "",
-    customer_name: "",
-    price: 0,
-    start_date: "",
-    end_date: ""
-  };
   private pagination: any = {
     rowsPerPage: 25
   };
 
-  findName(id: number){
-   const obj = this.units.find((x:any) => x.id === id)
-   if(obj)
-    return obj.display_name
-   return
-  }
-
-  @Watch("editedItem.units")
-  onUnitsChanged(odlval: any, newval: any) {
-    this.priceUnit = [];
-    for (let c in this.editedItem.units) {
-      this.priceUnit.push({
-        id: this.editedItem.units[c],
-        price: null
-      });
-    }
-  }
-
-  @Watch("dialog")
-  onDialogChanged(oldval: any, newval: any) {
-    oldval || this.close();
-  }
-
-  get chosenCustomerName() {
-    return this.customers.find((x: any) => x.id === this.editedItem.customer_id)
-      .name;
-  }
-
-  async mounted() {
+  async getData() {
+    this.loading = true;
     try {
       const r = (await axios.get("/api/contracts")).data;
       this.contracts = r.contracts;
@@ -229,13 +91,12 @@ export default class Contracts extends Vue {
     this.loading = false;
   }
 
-  get formTitle() {
-    return this.editedIndex === -1 ? "Contract aanmaken" : "Contract bewerken";
+  async mounted() {
+    await this.getData();
   }
 
-  editItem(item: any) {
-    this.editedIndex = this.contracts.indexOf(item);
-    this.editedItem = Object.assign({}, item);
+  editItem(item: any){
+    this.chosenContract = item;
     this.dialog = true;
   }
 
@@ -246,25 +107,10 @@ export default class Contracts extends Vue {
       axios.post("/api/contracts/" + item.id + "/delete");
   }
 
-  close() {
-    this.dialog = false;
-    this.step = 1;
-    setTimeout(() => {
-      this.editedItem = Object.assign({}, this.defaultItem);
-      this.editedIndex = -1;
-    }, 300);
-  }
-
-  save() {
-    this.editedItem.price_unit = this.priceUnit
-    if (this.editedIndex > -1) {
-      axios.post("/api/contracts/" + this.editedItem.id, this.editedItem);
-      Object.assign(this.contracts[this.editedIndex], this.editedItem);
-    } else {
-      axios.post("/api/contracts/create", this.editedItem);
-      this.contracts.push(this.editedItem);
-    }
-    this.close();
+  async close(){
+    await this.getData();
+    this.dialog = !this.dialog
+    this.chosenContract = {};
   }
 }
 </script>

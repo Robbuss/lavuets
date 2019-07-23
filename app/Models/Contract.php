@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Contract extends Model
 {
     use SoftDeletes;
-    protected $fillable = ['customer_id', 'active', 'start_date', 'end_date'];
+    protected $fillable = ['customer_id', 'active', 'payment_method', 'default_note', 'start_date', 'end_date'];
     protected $casts = [
         'active' => 'boolean',
     ];
