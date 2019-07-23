@@ -56,7 +56,7 @@ class InvoiceController extends Controller
     private function createDisplayPrice($unitArray = [])
     {
         $priceArray = $unitArray->map(function($q){
-            return $q->price;
+            return $q->pivot->price;
         })->toArray();
         return implode(', €',$priceArray) . ' Totaal €' . array_sum($priceArray);
     }

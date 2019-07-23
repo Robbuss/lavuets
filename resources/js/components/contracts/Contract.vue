@@ -6,29 +6,55 @@
           <v-flex xs12>
             <v-toolbar class="primary" dark>
               <v-toolbar-title>{{ contract.customer.name }}</v-toolbar-title>
+              <v-spacer></v-spacer>
+              <v-tooltip bottom>
+                <v-btn
+                  color="red--text"
+                  icon
+                  slot="activator"
+                  router
+                  href="/invoices"
+                  target="_blank"
+                >
+                  <v-icon>delete_forever</v-icon>
+                </v-btn>
+                <span>Contract beeindigen</span>
+              </v-tooltip>
             </v-toolbar>
             <v-card class="pa-3">
               <v-subheader>Contract informatie</v-subheader>
-              <v-list two-line>
-                <v-list-tile>
-                  <v-list-tile-content>
-                    <v-list-tile-title>Van {{ contract.start_date }} tot {{ contract.end_date }}</v-list-tile-title>
-                    <v-list-tile-sub-title>Looptijd van het contract</v-list-tile-sub-title>
-                  </v-list-tile-content>
-                </v-list-tile>
-                <v-subheader>Producten in dit contract</v-subheader>
-                <v-list-tile v-for="(u, i) in contract.units" :key="i">
-                  <v-list-tile-content>
-                    <v-list-tile-title>{{ u.name }} voor {{ u.pivot.price }}</v-list-tile-title>
-                    <v-list-tile-sub-title>(standaard prijs: {{ u.price }})</v-list-tile-sub-title>
-                  </v-list-tile-content>
-                </v-list-tile>
-              </v-list> 
+              <v-layout row wrap>
+                <v-flex xs12 md6>
+                  <v-list two-line>
+                    <v-list-tile>
+                      <v-list-tile-content>
+                        <v-list-tile-title>Van {{ contract.start_date }} tot {{ contract.end_date }}</v-list-tile-title>
+                        <v-list-tile-sub-title>Looptijd van het contract</v-list-tile-sub-title>
+                      </v-list-tile-content>
+                    </v-list-tile>
+                    <v-subheader>Producten in dit contract</v-subheader>
+                    <v-list-tile v-for="(u, i) in contract.units" :key="i">
+                      <v-list-tile-content>
+                        <v-list-tile-title>{{ u.name }} voor €{{ u.pivot.price }} per maand</v-list-tile-title>
+                        <v-list-tile-sub-title>(standaard prijs: €{{ u.price }})</v-list-tile-sub-title>
+                      </v-list-tile-content>
+                    </v-list-tile>
+                  </v-list>
+                </v-flex>
+                <v-flex xs12 sm6>
+                  De status van het contract
+                </v-flex>
+              </v-layout>
             </v-card>
           </v-flex>
         </v-layout>
         <v-layout row wrap>
-          <invoices :units="contract.allUnits" :contract="contract" :customer_id="contract.customer_id" @generate="generate"></invoices>
+          <invoices
+            :units="contract.allUnits"
+            :contract="contract"
+            :customer_id="contract.customer_id"
+            @generate="generate"
+          ></invoices>
         </v-layout>
       </v-flex>
     </v-layout>
