@@ -10,7 +10,7 @@
       </v-toolbar>
       <v-layout row wrap v-if="erroredFields">
         <v-flex xs12 v-for="(field, i) in erroredFields" :key="i" px-3>
-          <v-alert :value="true" type="error" v-for="e in field" :key="e">{{ e }}</v-alert>
+          <v-alert :value="true" type="error" :key="i">{{ erroredFields[i] }}</v-alert>
         </v-flex>
       </v-layout>
       <v-form class="pa-3" v-model="valid" lazy-validation ref="form">
@@ -48,7 +48,7 @@
           @click="validate"
           :disabled="working"
           :loading="working"
-        >Register</v-btn>
+        >Registreren</v-btn>
       </v-form>
     </v-card>
   </v-flex>
@@ -84,6 +84,9 @@ export default class Register extends Vue {
       if (r.data.access_token){
         store.commit("updateToken", r.data.access_token.access_token)
         this.$router.push("/u");
+      }
+      if(r.data.errors){
+        this.erroredFields[0] = r.data.errors;
       }
     } catch (e) {
       this.erroredFields = e.response.data.errors;

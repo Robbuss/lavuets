@@ -139,6 +139,7 @@ class InvoiceController extends Controller
         $periods = CarbonPeriod::create($contract->start_date, '1 month', $contract->end_date)->toArray();
 
         // calculate from and end date per invoice
+        $invoices = [];
         for ($i = 0; $i < 2; $i++) {
             if (array_key_exists($i + 1, $periods)) {
                 $invoices[$i] = ['start_date' => $periods[$i], 'end_date' => $periods[$i + 1]];
@@ -153,6 +154,7 @@ class InvoiceController extends Controller
                 'ref' => 'TESTREF',
                 'contract_id' => $contract->id,
                 'customer_id' => $contract->customer->id,
+                'note' => ($request->note) ? $request->note : $contract->default_note,
                 'payment_status' => 'unpaid',
                 'start_date' => $invoice['start_date'],
                 'end_date' => $invoice['end_date']

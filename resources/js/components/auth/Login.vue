@@ -71,7 +71,7 @@ export default class Login extends Vue {
       }
       if (r.data.access_token) {
         store.commit("updateToken", r.data.access_token)
-        this.$router.push("/u");
+        this.$router.push("/");
       }
     } catch (e) {
       this.message = e;

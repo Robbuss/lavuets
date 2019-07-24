@@ -62,14 +62,14 @@
               <v-checkbox label="Is er al een einddatum bekend?" v-model="showEndDate"></v-checkbox>
             </v-flex>
           </v-layout>
-          <v-btn dark color="blue darken-1" @click="cancel">Cancel</v-btn>
           <v-btn
             :dark="!working"
-            color="blue darken-1"
+            color="primary"
             :loading="working"
             :disabled="working"
             @click="save"
-          >Save</v-btn>
+          >Opslaan</v-btn>
+          <v-btn dark depressed color="primary--text" @click="cancel">Annuleren</v-btn>
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>

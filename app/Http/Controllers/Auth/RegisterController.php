@@ -63,6 +63,9 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        if(!config('auth.enable_registration')){
+            return ["errors" => "Registratie is op dit moment gesloten"];
+        }
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],

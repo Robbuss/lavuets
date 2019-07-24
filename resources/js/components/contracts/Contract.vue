@@ -7,15 +7,11 @@
             <v-toolbar class="primary" dark>
               <v-toolbar-title>{{ contract.customer.name }}</v-toolbar-title>
               <v-spacer></v-spacer>
-                <v-tooltip bottom>
-                <v-btn
-                  icon
-                  @click="dialog=!dialog"
-                  slot="activator"
-                >
-                  <v-icon>add</v-icon>
+              <v-tooltip bottom>
+                <v-btn icon @click="dialog=!dialog" slot="activator">
+                  <v-icon>edit</v-icon>
                 </v-btn>
-                <span>Contract beeindigen</span>
+                <span>Contract aanpassen</span>
               </v-tooltip>
             </v-toolbar>
             <v-card class="pa-3">
@@ -47,17 +43,20 @@
                       </v-list-tile-content>
                     </v-list-tile>
                   </v-list>
-                </v-flex>
-                <v-flex xs12 sm6>
-                  Todo list:
-                  <ul>
-                    <li>Een standaard opmerking / instructie voor elke gegeneerde factuur</li>
-                    <li>Referentie benaming verbeteren</li>
-                    <li>Zorgen dat Facturen voor een periode niet dubbel gegenereerd worden</li>
-                    <li>Toevoegen van zoekbalk in alle facturen, klanten en producten</li>
-                    <li>Contract beeindigen of opzeggen check (deleted at veranderen in opgezegd boolean)</li>
-                    <li>Front end validation voor het maken van klanten, contracten en producten</li>
-                  </ul>
+                  <v-subheader>Standaard notitie / instructie voor alle facturen in dit contract</v-subheader>
+                  <v-flex xs12 px-3 v-if="editDefaultNote">
+                    <v-textarea v-model="contract.default_note"></v-textarea>
+                    <v-btn class="ml-0" color="primary" @click="saveDefaultNote">Opslaan</v-btn>
+                  </v-flex>
+                  <v-flex xs12 v-if="!editDefaultNote" px-3>
+                    <p>{{ contract.default_note }}</p>
+                    <v-tooltip bottom>
+                      <v-btn class="ml-0" slot="activator" color="primary--text" icon @click="editDefaultNote = !editDefaultNote">
+                        <v-icon>edit</v-icon>
+                      </v-btn>
+                      <span>Aanpassen van standaard notitie</span>
+                    </v-tooltip>
+                  </v-flex>
                 </v-flex>
               </v-layout>
             </v-card>
@@ -95,6 +94,7 @@ export default class SingleContract extends Vue {
   private loading: boolean = true;
   private contract: any = null;
   private dialog: boolean = false;
+  private editDefaultNote: boolean = false;
 
   async mounted() {
     await this.getData();
@@ -108,6 +108,11 @@ export default class SingleContract extends Vue {
     });
     await this.getData();
     this.loading = false;
+  }
+
+  async saveDefaultNote(){
+    axios.post("/api/contracts/" + this.contract.id, this.contract);
+    this.editDefaultNote = !this.editDefaultNote;
   }
 
   async getData() {
