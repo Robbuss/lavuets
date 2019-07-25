@@ -4,6 +4,14 @@
       <v-toolbar flat color="primary" dark>
         <v-toolbar-title>Contracten</v-toolbar-title>
         <v-spacer></v-spacer>
+        <v-text-field
+          class="white--text"
+          v-model="search"
+          append-icon="search"
+          label="Search"
+          single-line
+          hide-details
+        ></v-text-field>
         <v-tooltip bottom>
           <v-btn icon slot="activator" @click="dialog = true">
             <v-icon>add</v-icon>
@@ -14,6 +22,7 @@
       </v-toolbar>
       <v-data-table
         :headers="headers"
+        :search="search"
         :items="contracts"
         class="elevation-1"
         :loading="loading"
@@ -52,12 +61,13 @@ import EditCreate from "./EditCreate.vue";
 import axios from "js/axios";
 
 @Component({
-  components:{
+  components: {
     editCreate: EditCreate
   }
 })
 export default class Contracts extends Vue {
   private response = "";
+  private search = "";
   private contracts: any = [];
   private customers: any = [];
   private units: any = [];
@@ -95,7 +105,7 @@ export default class Contracts extends Vue {
     await this.getData();
   }
 
-  editItem(item: any){
+  editItem(item: any) {
     this.chosenContract = item;
     this.dialog = true;
   }
@@ -107,9 +117,9 @@ export default class Contracts extends Vue {
       axios.post("/api/contracts/" + item.id + "/delete");
   }
 
-  async close(){
+  async close() {
     await this.getData();
-    this.dialog = !this.dialog
+    this.dialog = !this.dialog;
     this.chosenContract = {};
   }
 }

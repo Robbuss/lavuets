@@ -39,14 +39,24 @@ class ContractController extends Controller
                     ];
                 }
             ),
-            'units' => Unit::all()->map(function ($q) {
-                return [
-                    'id' => $q->id,
-                    'name' => $q->name,
-                    'display_name' => $q->display_name,
-                    'price' => $q->price
-                ];
-            }),
+            'units' => [
+                'occupied' => Unit::has('contracts')->get()->map(function ($q) {
+                    return [
+                        'id' => $q->id,
+                        'name' => $q->name,
+                        'display_name' => $q->display_name,
+                        'price' => $q->price
+                    ];
+                }),
+                'free' => Unit::doesntHave('contracts')->get()->map(function ($q) {
+                    return [
+                        'id' => $q->id,
+                        'name' => $q->name,
+                        'display_name' => $q->display_name,
+                        'price' => $q->price
+                    ];
+                }),
+            ],
             'customers' => Customer::all()
         ];
     }
@@ -67,7 +77,7 @@ class ContractController extends Controller
     public function read(Contract $contract)
     {
         $contract->load(['customer', 'units']);
-        $contract->units->map(function($q){
+        $contract->units->map(function ($q) {
             return [
                 'id' => $q->id,
                 'name' => $q->name,
@@ -75,7 +85,7 @@ class ContractController extends Controller
                 'price' => $q->pivot->price
             ];
         });
-        $contract->allUnits = Unit::all()->map(function ($q) {
+        $contract->freeUnits = Unit::doesntHave('contracts')->get()->map(function ($q) {
             return [
                 'id' => $q->id,
                 'name' => $q->name,
@@ -115,7 +125,8 @@ class ContractController extends Controller
         return ['success' => true];
     }
 
-    public function getSyncArray($priceArray = []){
+    public function getSyncArray($priceArray = [])
+    {
         $contractUnitPrice = [];
         foreach ($priceArray as $pu) {
             $contractUnitPrice[$pu['id']] = ['price' => $pu['price']];

@@ -4,6 +4,14 @@
       <v-toolbar flat color="primary" dark>
         <v-toolbar-title>Boxen</v-toolbar-title>
         <v-spacer></v-spacer>
+        <v-text-field
+          class="white--text"
+          v-model="search"
+          append-icon="search"
+          label="Search"
+          single-line
+          hide-details
+        ></v-text-field>
         <v-tooltip bottom>
           <v-btn icon slot="activator" @click="dialog = true">
             <v-icon>add</v-icon>
@@ -22,6 +30,7 @@
       </v-toolbar>
       <v-data-table
         :headers="headers"
+        :search="search"
         :items="units"
         class="elevation-1"
         :loading="loading"
@@ -35,7 +44,11 @@
           >{{ props.item.name }}</td>
           <td>{{ props.item.size }}</td>
           <td>€{{ props.item.price }}</td>
-          <td class="justify-end layout">
+          <td>
+            <span v-if="props.item.free">Beschikbaar</span>
+            <span v-else>Verhuurd</span>
+          </td>
+          <td class="layout justify-end">
             <v-icon small class="mr-2" @click="editItem(props.item)">edit</v-icon>
             <v-icon small @click="deleteItem(props.item)">delete</v-icon>
           </td>
@@ -68,11 +81,13 @@ export default class Units extends Vue {
   private loading: boolean = true;
   private createMode: boolean = true;
   private editedItem: any = null;
+  private search: string = "";
 
   private headers: any = [
     { text: "Naam", value: "name" },
     { text: "Grootte (m3)", value: "size" },
     { text: "Prijs (p/m)", value: "price" },
+    { text: "Status", value: "status" },
     { text: "Acties", align: "right", sortable: false }
   ];
   private pagination: any = {

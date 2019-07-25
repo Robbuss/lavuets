@@ -51,7 +51,13 @@
                   <v-flex xs12 v-if="!editDefaultNote" px-3>
                     <p>{{ contract.default_note }}</p>
                     <v-tooltip bottom>
-                      <v-btn class="ml-0" slot="activator" color="primary--text" icon @click="editDefaultNote = !editDefaultNote">
+                      <v-btn
+                        class="ml-0"
+                        slot="activator"
+                        color="primary--text"
+                        icon
+                        @click="editDefaultNote = !editDefaultNote"
+                      >
                         <v-icon>edit</v-icon>
                       </v-btn>
                       <span>Aanpassen van standaard notitie</span>
@@ -63,11 +69,7 @@
           </v-flex>
         </v-layout>
         <v-layout row wrap>
-          <invoices
-            :units="contract.allUnits"
-            :contract="contract"
-            @generate="generate"
-          ></invoices>
+          <invoices :units="contract.freeUnits" :contract="contract" @generate="generate"></invoices>
         </v-layout>
       </v-flex>
     </v-layout>
@@ -109,7 +111,7 @@ export default class SingleContract extends Vue {
     this.loading = false;
   }
 
-  async saveDefaultNote(){
+  async saveDefaultNote() {
     axios.post("/api/contracts/" + this.contract.id, this.contract);
     this.editDefaultNote = !this.editDefaultNote;
   }

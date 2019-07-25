@@ -15,7 +15,17 @@ class UnitController extends Controller
      */
     public function index()
     {
-        return Unit::all();
+        $occupied = Unit::has('contracts')->get();
+
+        return Unit::all()->map(function ($q) use ($occupied) {
+            return [
+                "id" => $q->id,
+                "name" => $q->name,
+                "size" => $q->size,
+                "price" => $q->price,
+                "free" => $occupied->contains($q) ? false : true,
+            ];
+        });
     }
 
     public function read(Unit $unit)

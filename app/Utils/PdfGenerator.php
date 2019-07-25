@@ -17,12 +17,16 @@ class PdfGenerator
 
     public function generate()
     {
+        // make sure there is a directory for the customers' invoices
+        Storage::disk('local')->makeDirectory('invoices/' . $this->invoice->customer_id);
         $filepath = storage_path('app/invoices/' . $this->invoice->customer_id . '/');
         $filename =  $this->invoice->ref . '.pdf';
+
+        // view variables
         $this->invoice->load(['customer', 'contract']);
         $totalPrice = $this->totalPrice($this->invoice->contract);
         $pdf = PDF::loadView('invoice', ['invoice' => $this->invoice, 'total' => $totalPrice])->setOptions(['defaultFont' => 'sans-serif']);
-        Storage::disk('local')->makeDirectory('invoices/' . $this->invoice->customer_id);
+        
         $pdf->save($filepath . $filename);
 
         $contents = file_get_contents($filepath . $filename);

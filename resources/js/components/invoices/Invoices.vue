@@ -4,6 +4,14 @@
       <v-toolbar flat color="primary" dark>
         <v-toolbar-title>Facturen</v-toolbar-title>
         <v-spacer></v-spacer>
+        <v-text-field
+          class="white--text"
+          v-model="search"
+          append-icon="search"
+          label="Search"
+          single-line
+          hide-details
+        ></v-text-field>
         <v-tooltip bottom>
           <v-btn icon slot="activator" router href="/invoices" target="_blank">
             <v-icon>info</v-icon>
@@ -15,26 +23,27 @@
             <v-icon>insert_drive_file</v-icon>
           </v-btn>
           <span>Alle facturen genereren</span>
-        </v-tooltip>           
-        <v-tooltip bottom v-if="customer_id">
+        </v-tooltip>
+        <v-tooltip bottom v-if="contract && contract.customer_id">
           <v-btn icon slot="activator" @click="dialog = true">
             <v-icon>add</v-icon>
           </v-btn>
           <span>Nieuwe factuur maken</span>
         </v-tooltip>
         <v-dialog v-model="dialog" max-width="80%" persistent>
-        <edit-create-invoice 
-          v-if="dialog" 
-          @saved="createdItem"
-          @canceled="close"
-          :creating="createMode" 
-          :customer_id="customer_id"
-          :units="units"
-          :invoice="editedItem">
-          </edit-create-invoice>
+          <edit-create-invoice
+            v-if="dialog"
+            @saved="createdItem"
+            @canceled="close"
+            :creating="createMode"
+            :contract="contract"
+            :units="units"
+            :invoice="editedItem"
+          ></edit-create-invoice>
         </v-dialog>
       </v-toolbar>
       <v-data-table
+        :search="search"
         :headers="headers"
         :items="invoices"
         class="elevation-1"
@@ -79,11 +88,12 @@ import EditCreateInvoice from "./EditCreate.vue";
 })
 export default class Invoices extends Vue {
   @Prop()
-  customer_id: number;
+  contract: any;
 
   @Prop()
   units: any;
 
+  private search = "";
   private response = "";
   private invoices: any = [];
   private dialog: boolean = false;
@@ -113,14 +123,16 @@ export default class Invoices extends Vue {
     await this.getData();
   }
 
-  getUnits(unit:any){
-    return unit.map((x:any) => x.name).join(', ')
+  getUnits(unit: any) {
+    return unit.map((x: any) => x.name).join(", ");
   }
 
   async getData() {
     this.loading = true;
     try {
-      this.invoices = (await axios.post("/api/invoices", { customer_id: this.customer_id })).data;
+      this.invoices = (await axios.post("/api/invoices", {
+        customer_id: this.contract ? this.contract.customer_id : null
+      })).data;
     } catch (e) {
       this.response = e.message;
     }
