@@ -8,7 +8,6 @@
         </v-toolbar>
         <v-flex pa-3>
           <ul>
-            <li>Referentie benaming verbeteren</li>
             <li>Zorgen dat Facturen voor een periode niet dubbel gegenereerd worden</li>
             <li>Toevoegen van zoekbalk in alle facturen, klanten en producten</li>
             <li>Contract beeindigen of opzeggen check (deleted at veranderen in opgezegd boolean)</li>

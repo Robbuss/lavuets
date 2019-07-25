@@ -21,45 +21,45 @@ class InvoiceController extends Controller
     public function index(Request $request)
     {
         return Invoice::with(['customer', 'contract', 'contract.units'])
-        ->where(function($q) use ($request){
-            if($request->customer_id)
-                return $q->where('customer_id', $request->customer_id);
-        })
-        ->get()->map(function ($q) {
-            return [
-                'id' => $q->id,
-                'ref' => $q->ref,
-                'payment_status' => $q->payment_status,
-                'note' => $q->note,
-                'start_date' => $q->start_date,
-                'end_date' => $q->end_date,
-                'customer' => [
-                    'id' => $q->customer->id,
-                    'name' => $q->customer->name,
-                    'company_name' => $q->customer->company_name,
-                    'email' => $q->customer->email,
-                    'city' => $q->customer->city,
-                    'street_addr' => $q->customer->street_addr,
-                    'street_number' => $q->customer->street_number,
-                    'postal_code' => $q->customer->postal_code,
-                    'btw' => $q->customer->btw,
-                    'kvk' => $q->customer->kvk
-                ],
-                'contract' => [
-                    'id' => $q->contract->id,
-                    'price' => $this->createDisplayPrice($q->contract->units),
-                    'units' => $q->contract->units
-                ]
-            ];
-        });
+            ->where(function ($q) use ($request) {
+                if ($request->customer_id)
+                    return $q->where('customer_id', $request->customer_id);
+            })
+            ->get()->map(function ($q) {
+                return [
+                    'id' => $q->id,
+                    'ref' => $q->ref,
+                    'payment_status' => $q->payment_status,
+                    'note' => $q->note,
+                    'start_date' => $q->start_date,
+                    'end_date' => $q->end_date,
+                    'customer' => [
+                        'id' => $q->customer->id,
+                        'name' => $q->customer->name,
+                        'company_name' => $q->customer->company_name,
+                        'email' => $q->customer->email,
+                        'city' => $q->customer->city,
+                        'street_addr' => $q->customer->street_addr,
+                        'street_number' => $q->customer->street_number,
+                        'postal_code' => $q->customer->postal_code,
+                        'btw' => $q->customer->btw,
+                        'kvk' => $q->customer->kvk
+                    ],
+                    'contract' => [
+                        'id' => $q->contract->id,
+                        'price' => $this->createDisplayPrice($q->contract->units),
+                        'units' => $q->contract->units
+                    ]
+                ];
+            });
     }
 
     private function createDisplayPrice($unitArray = [])
     {
-        $priceArray = $unitArray->map(function($q){
+        $priceArray = $unitArray->map(function ($q) {
             return $q->pivot->price;
         })->toArray();
-        return implode(', €',$priceArray) . ' Totaal €' . array_sum($priceArray);
+        return implode(', €', $priceArray) . ' Totaal €' . array_sum($priceArray);
     }
 
     /**
@@ -99,9 +99,10 @@ class InvoiceController extends Controller
         return ['success' => true];
     }
 
-    public function totalPrice($contract){
+    public function totalPrice($contract)
+    {
         $total = 0;
-        foreach($contract->units as $unitPrice){
+        foreach ($contract->units as $unitPrice) {
             $total += $unitPrice->pivot->price;
         }
         return [
@@ -117,7 +118,6 @@ class InvoiceController extends Controller
         $invoice->load(['customer', 'contract']);
         $totalPrice = $this->totalPrice($invoice->contract);
         $pdf = PDF::loadView('invoice', ['invoice' => $invoice, 'total' => $totalPrice])->setOptions(['defaultFont' => 'sans-serif']);
-
         Storage::disk('local')->makeDirectory('invoices/' . $invoice->customer_id);
         $pdf->save($filepath . $filename);
         // }
@@ -146,12 +146,18 @@ class InvoiceController extends Controller
             }
         }
 
-        if(!$invoices)
+        if (!$invoices)
             return ["error" => "Datum te kort om facruren te maken."];
+
+        // dit kan later van pas komen voor facturen van de maand
+        // $date = Carbon::now();
+        // $date->addMonth();
+        // $date->day = 0;
+        // echo $date->toDateString(); // use toDateTimeString() to get date and time 
         // for each period, create an actual invoice
         foreach ($invoices as $invoice) {
-            Invoice::create([
-                'ref' => 'TESTREF',
+            $i = Invoice::create([
+                'ref' => 'Factuur-' . Carbon::parse($invoice['start_date'])->format('m-Y'),
                 'contract_id' => $contract->id,
                 'customer_id' => $contract->customer->id,
                 'note' => ($request->note) ? $request->note : $contract->default_note,
@@ -159,6 +165,8 @@ class InvoiceController extends Controller
                 'start_date' => $invoice['start_date'],
                 'end_date' => $invoice['end_date']
             ]);
+
+            $this->generatePdf($i);
         }
         return ["success" => true];
     }

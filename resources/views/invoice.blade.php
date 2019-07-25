@@ -95,11 +95,17 @@
             text-align: center;
             height: 0px;
             position: absolute;
-            bottom: 0px;
+            bottom: 15px;
             width: 100%;
-            padding-top: 15px;
-            border-top: 1px solid #456480;
             color: #456480;
+        }
+
+        .footer .top {
+            padding-bottom: 5px;
+        }
+
+        .footer .bottom {
+            border-top: 1px solid #456480;
         }
     </style>
 </head>
@@ -168,8 +174,8 @@
         <div class="item-bar default-padding">
             <div class="col1" style="border-bottom: 0px !important;"></div>
             <div class="col2" style="border-bottom: 0px !important;"></div>
-            <div class="col3">BTW(21%) Totaal</div>
-            <div class="col4">€{{ $total['btw'] }}</div>
+            <div class="col3">Vrij van BTW</div>
+            <div class="col4"></div>
         </div>
         <div class="item-bar default-padding">
             <div class="col1"></div>
@@ -182,7 +188,7 @@
                 @if($invoice->contract->payment_method === 'factuur')
                 Graag het bedrag binnen 14 dagen overmaken op onderstaande rekening.
                 @else
-        	    Het bedrag wordt automatisch van uw rekening afgeschreven
+                Het bedrag wordt automatisch van uw rekening afgeschreven
                 @endif
             </div>
             <div class="bottom">
