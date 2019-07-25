@@ -66,7 +66,6 @@
           <invoices
             :units="contract.allUnits"
             :contract="contract"
-            :customer_id="contract.customer_id"
             @generate="generate"
           ></invoices>
         </v-layout>

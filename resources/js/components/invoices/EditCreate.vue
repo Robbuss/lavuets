@@ -6,70 +6,72 @@
 
     <v-stepper v-model="step">
       <v-stepper-header>
-        <v-stepper-step :complete="step > 1" step="1">Factuur informatie</v-stepper-step>
+        <v-stepper-step :complete="step > 1" step="1" @click="navigate(1)">Factuur informatie</v-stepper-step>
         <v-divider></v-divider>
-        <v-stepper-step step="2">Data & Duur</v-stepper-step>
+        <v-stepper-step step="2" @click="navigate(2)">Data & Duur</v-stepper-step>
       </v-stepper-header>
 
       <v-stepper-items>
         <v-stepper-content step="1">
-          <v-layout wrap>
-            <v-flex xs12 sm6 md6>
-              <v-text-field v-model="editedItem.ref" label="Referentie"></v-text-field>
-            </v-flex>
-            <v-flex xs12 sm6 md6>
-              <v-select
-                :items="paymentStatuses"
-                v-model="editedItem.payment_status"
-                label="Status van betaling"
-              ></v-select>
-            </v-flex>
-          </v-layout>
+          <v-form ref="form1" v-model="valid" lazy-validation>
+            <v-layout wrap>
+              <v-flex xs12 sm6 md6>
+                <v-text-field
+                  :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
+                  required
+                  v-model="editedItem.ref"
+                  label="Referentie"
+                ></v-text-field>
+              </v-flex>
+              <v-flex xs12 sm6 md6>
+                <v-select
+                  :items="paymentStatuses"
+                  v-model="editedItem.payment_status"
+                  label="Status van betaling"
+                ></v-select>
+              </v-flex>
+            </v-layout>
 
-          <v-layout wrap>
-            <v-flex xs12>
-              <v-textarea v-model="editedItem.note" label="Notitie toevoegen"></v-textarea>
-            </v-flex>
-          </v-layout>
+            <v-layout wrap>
+              <v-flex xs12>
+                <v-textarea v-model="editedItem.note" label="Notitie toevoegen"></v-textarea>
+              </v-flex>
+            </v-layout>
 
-          <v-btn color="primary" @click="step = 2">Verder</v-btn>
-          <v-btn flat @click="cancel">Annuleren</v-btn>
+            <v-btn color="primary" @click="navigate(2)">Verder</v-btn>
+            <v-btn flat @click="cancel">Annuleren</v-btn>
+          </v-form>
         </v-stepper-content>
 
         <v-stepper-content step="2">
-          <v-layout wrap>
-            <v-flex xs12>
-              <h6 class="headline" v-if="!showEndDate">
-                Kies een
-                <span class="font-weight-black">startdatum</span>
-              </h6>
-              <h6 class="headline" v-if="showEndDate">
-                Kies een
-                <span class="font-weight-black">einddatum</span>
-              </h6>
-            </v-flex>
-            <v-flex xs12 sm6 md4 v-if="!showEndDate">
-              <v-date-picker landscape v-model="editedItem.start_date" label="Ingangsdatum"></v-date-picker>
-            </v-flex>
-            <v-flex xs12 sm6 md4 v-if="showEndDate">
-              <v-date-picker
-                landscape
-                v-model="editedItem.end_date"
-                label="Is er al een einddatum bekend?"
-              ></v-date-picker>
-            </v-flex>
-            <v-flex xs12>
-              <v-checkbox label="Is er al een einddatum bekend?" v-model="showEndDate"></v-checkbox>
-            </v-flex>
-          </v-layout>
-          <v-btn
-            :dark="!working"
-            color="primary"
-            :loading="working"
-            :disabled="working"
-            @click="save"
-          >Opslaan</v-btn>
-          <v-btn dark depressed color="primary--text" @click="cancel">Annuleren</v-btn>
+          <v-form ref="form2" v-model="valid" lazy-validation>
+            <v-layout wrap>
+              <v-flex xs12 sm6>
+                <h6 class="headline">
+                  Kies een
+                  <span class="font-weight-black">startdatum</span>
+                </h6>
+                <v-date-picker landscape v-model="editedItem.start_date" label="Startdatum factuur"></v-date-picker>
+                <p>Gekozen datum: {{ editedItem.start_date }}</p>
+              </v-flex>
+              <v-flex xs12 sm6>
+                <h6 class="headline">
+                  Kies een
+                  <span class="font-weight-black">einddatum</span>
+                </h6>
+                <v-date-picker landscape v-model="editedItem.end_date" label="Einddatum factuur"></v-date-picker>
+                <p>Gekozen datum: {{ editedItem.end_date }}</p>
+              </v-flex>
+            </v-layout>
+            <v-btn
+              :dark="!working"
+              color="primary darken-1"
+              :loading="working"
+              :disabled="working"
+              @click="save"
+            >Opslaan</v-btn>
+            <v-btn flat color="primary darken-1" @click="cancel">Annuleren</v-btn>
+          </v-form>
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
@@ -90,19 +92,20 @@ export default class EditInvoice extends Vue {
   creating: boolean;
 
   @Prop()
-  customer_id: number;
+  contract: any;
 
   @Prop()
   units: any;
 
+  private valid: boolean = true;
   private paymentStatuses: string[] = ["paid", "unpaid"];
-  private showEndDate: boolean = false;
   private step: number = 0;
   private working: boolean = false;
   private customer: any;
   private editedItem: any = {
     id: null,
-    payment_status: "",
+    contract_id: null,
+    payment_status: "unpaid",
     ref: "",
     note: "",
     start_date: "",
@@ -110,7 +113,8 @@ export default class EditInvoice extends Vue {
   };
   private defaultItem: any = {
     id: null,
-    payment_status: "",
+    contract_id: null,
+    payment_status: "unpaid",
     ref: "",
     note: "",
     start_date: "",
@@ -119,13 +123,17 @@ export default class EditInvoice extends Vue {
   private response = "";
 
   get formTitle() {
-    return "De gegevens van " + this.invoice.ref + " bewerken";
+    return this.invoice
+      ? this.invoice.ref + " bewerken"
+      : "Nieuwe factuur maken";
   }
 
   mounted() {
     if (this.invoice) {
       this.editedItem = Object.assign({}, this.invoice);
     }
+    this.editedItem.contract_id = this.contract.id;
+    this.editedItem.customer_id = this.contract.customer_id;
   }
 
   editItem(item: any) {
@@ -136,9 +144,19 @@ export default class EditInvoice extends Vue {
     this.$emit("canceled");
   }
 
+  navigate(step: number) {
+    if (this.validate()) {
+      this.step = step;
+    }
+  }
+
+  validate() {
+    return (<any>this.$refs["form" + this.step]).validate() ? true : false;
+  }
+
   async save() {
+    if (!this.validate()) return;
     this.working = true;
-    this.editedItem.customer_id = this.customer_id;
     if (!this.creating) {
       await axios.post("/api/invoices/" + this.editedItem.id, this.editedItem);
     } else {

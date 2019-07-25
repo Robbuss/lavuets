@@ -96,8 +96,8 @@
               <v-checkbox label="Er is een einddatum bekend" v-model="showEndDate"></v-checkbox>
             </v-flex>
           </v-layout>
+          
           <v-btn color="primary" @click="save">Opslaan</v-btn>
-
           <v-btn flat @click="$emit('input')">Annuleren</v-btn>
         </v-stepper-content>
       </v-stepper-items>

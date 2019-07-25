@@ -3,27 +3,49 @@
     <v-toolbar flat color="primary" dark>
       <v-toolbar-title>{{ formTitle }}</v-toolbar-title>
     </v-toolbar>
-    <v-layout row wrap>
-      <v-flex sm12 class="pa-2">
-        <v-text-field label="Box / product naam" v-model="editedItem.name"/>
-      </v-flex>
-      <v-flex sm12 md6 class="pa-2">
-        <v-text-field label="Grootte in m3" v-model="editedItem.size"/>
-      </v-flex>
-      <v-flex sm12 md6 class="pa-2">
-        <v-text-field label="Prijs in euro's" v-model="editedItem.price"/>
-      </v-flex>
-    </v-layout>
+    <v-form v-model="valid" lazy-validation ref="form">
+      <v-layout row wrap class="pa-3">
+        <v-flex sm12>
+          <v-text-field
+            label="Product naam"
+            placeholder="Komt op de factuur"
+            v-model="editedItem.name"
+            required
+            :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
+          />
+        </v-flex>
+        <v-flex sm12 md6>
+          <v-text-field
+            type="number"
+            label="Grootte in m3"
+            placeholder="Gebruik alleen getallen"
+            v-model="editedItem.size"
+            required
+            :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
+          />
+        </v-flex>
+        <v-flex sm12 md6>
+          <v-text-field
+            type="number"
+            label="Prijs in euro's"
+            placeholder="Gebruik alleen getallen"
+            v-model="editedItem.price"
+            required
+            :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
+          />
+        </v-flex>
+      </v-layout>
+    </v-form>
+
     <v-card-actions>
-      <v-spacer></v-spacer>
-      <v-btn dark color="blue darken-1" @click="cancel">Cancel</v-btn>
       <v-btn
         :dark="!working"
-        color="blue darken-1"
+        color="primary darken-1"
         :loading="working"
         :disabled="working"
         @click="save"
-      >Save</v-btn>
+      >Opslaan</v-btn>
+      <v-btn flat color="primary darken-1" @click="cancel">Annuleren</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -42,17 +64,18 @@ export default class Editunit extends Vue {
   creating: boolean;
 
   private working: boolean = false;
+  private valid: boolean = true;
   private editedItem: any = {
     id: null,
     name: "",
     size: "",
-    price: 0
+    price: null
   };
   private defaultItem: any = {
     id: null,
     name: "",
     size: "",
-    price: 0
+    price: null
   };
   private response = "";
 
@@ -77,6 +100,9 @@ export default class Editunit extends Vue {
   }
 
   async save() {
+    if (!(<any>this.$refs.form).validate()) {
+      return;
+    }
     this.working = true;
     if (!this.creating) {
       await axios.post("/api/units/" + this.editedItem.id, this.editedItem);

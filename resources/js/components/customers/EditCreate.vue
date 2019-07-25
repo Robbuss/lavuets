@@ -5,43 +5,81 @@
     </v-toolbar>
 
     <v-card-text>
-      <v-container grid-list-md>
-        <v-layout wrap>
-          <v-flex xs12 sm6 md4>
-            <v-text-field v-model="editedItem.name" label="Naam"></v-text-field>
-          </v-flex>
-          <v-flex xs12 sm6 md4>
-            <v-text-field v-model="editedItem.email" label="E-mail"></v-text-field>
-          </v-flex>
-          <v-flex xs12 sm6 md4>
-            <v-text-field v-model="editedItem.company_name" label="Bedrijfsnaam"></v-text-field>
-          </v-flex>
-          <v-flex xs12 sm6 md4>
-            <v-text-field v-model="editedItem.city" label="Stad"></v-text-field>
-          </v-flex>
-          <v-flex xs12 sm6 md4>
-            <v-text-field v-model="editedItem.street_addr" label="Straat"></v-text-field>
-          </v-flex>
-          <v-flex xs12 sm6 md4>
-            <v-text-field v-model="editedItem.street_number" label="Nummer"></v-text-field>
-          </v-flex>
-          <v-flex xs12 sm6 md4>
-            <v-text-field v-model="editedItem.postal_code" label="Postcode"></v-text-field>
-          </v-flex>
-          <v-flex xs12 sm6 md4>
-            <v-text-field v-model="editedItem.kvk" label="KVK"></v-text-field>
-          </v-flex>
-          <v-flex xs12 sm6 md4>
-            <v-text-field v-model="editedItem.btw" label="BTW"></v-text-field>
-          </v-flex>
-        </v-layout>
-      </v-container>
+      <v-form v-model="valid" lazy-validation ref="form">
+        <v-container grid-list-md ma-0 pa-0>
+          <v-layout wrap>
+            <v-flex xs12 sm6 md4>
+              <v-text-field
+                :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
+                required
+                v-model="editedItem.name"
+                label="Naam"
+              ></v-text-field>
+            </v-flex>
+            <v-flex xs12 sm6 md4>
+              <v-text-field
+                :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
+                required
+                v-model="editedItem.email"
+                label="E-mail"
+              ></v-text-field>
+            </v-flex>
+            <v-flex xs12 sm6 md4>
+              <v-text-field
+                :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
+                required
+                v-model="editedItem.city"
+                label="Stad"
+              ></v-text-field>
+            </v-flex>
+            <v-flex xs12 sm6 md4>
+              <v-text-field
+                :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
+                required
+                v-model="editedItem.street_addr"
+                label="Straat"
+              ></v-text-field>
+            </v-flex>
+            <v-flex xs12 sm6 md4>
+              <v-text-field
+                :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
+                required
+                type="number"
+                v-model="editedItem.street_number"
+                label="Huisnummer"
+              ></v-text-field>
+            </v-flex>
+            <v-flex xs12 sm6 md4>
+              <v-text-field
+                :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
+                required
+                v-model="editedItem.postal_code"
+                label="Postcode"
+              ></v-text-field>
+            </v-flex>
+            <v-flex xs12 sm6 md4>
+              <v-text-field v-model="editedItem.company_name" label="Bedrijfsnaam"></v-text-field>
+            </v-flex>
+            <v-flex xs12 sm6 md4>
+              <v-text-field v-model="editedItem.kvk" label="KVK"></v-text-field>
+            </v-flex>
+            <v-flex xs12 sm6 md4>
+              <v-text-field v-model="editedItem.btw" label="BTW"></v-text-field>
+            </v-flex>
+          </v-layout>
+        </v-container>
+      </v-form>
     </v-card-text>
 
     <v-card-actions>
-      <v-spacer></v-spacer>
-      <v-btn dark color="blue darken-1" @click="cancel">Cancel</v-btn>
-      <v-btn :dark="!working" color="blue darken-1" :loading="working" :disabled="working" @click="save">Save</v-btn>
+      <v-btn
+        :dark="!working"
+        color="primary darken-1"
+        :loading="working"
+        :disabled="working"
+        @click="save"
+      >Opslaan</v-btn>
+      <v-btn flat color="primary darken-1" @click="cancel">Annuleren</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -67,7 +105,7 @@ export default class EditCustomer extends Vue {
     email: "",
     city: "",
     street_addr: "",
-    street_number: 0,
+    street_number: null,
     postal_code: "",
     btw: "",
     kvk: ""
@@ -79,7 +117,7 @@ export default class EditCustomer extends Vue {
     email: "",
     city: "",
     street_addr: "",
-    street_number: 0,
+    street_number: null,
     postal_code: "",
     btw: "",
     kvk: ""
@@ -107,6 +145,8 @@ export default class EditCustomer extends Vue {
   }
 
   async save() {
+    if (!(this.$refs.form as any).validate())
+      return;
     this.working = true;
     if (!this.creating) {
       await axios.post("/api/customers/" + this.editedItem.id, this.editedItem);
