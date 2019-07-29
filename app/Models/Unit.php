@@ -17,7 +17,7 @@ class Unit extends Model
 
     public function contracts()
     {
-        return $this->belongsToMany(Contract::class);
+        return $this->belongsToMany(Contract::class)->withPivot('price')->withTimestamps();
     }
 
     function activeContract()

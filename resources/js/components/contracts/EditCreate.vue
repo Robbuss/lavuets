@@ -22,15 +22,13 @@
           <v-form ref="form1" v-model="valid" lazy-validation>
             Welke producten wil je verhuren?
             <v-select
-              :items="units.free"
+              :items="mergeUnits"
+              v-model="contract.units"
               item-value="id"
               item-text="display_name"
-              :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
-              required
               multiple
               chips
               @input="unitsChanged"
-              v-model="contract.units"
             ></v-select>
             <v-btn color="primary" @click="navigate(2)">Verder</v-btn>
             <v-btn flat @click="$emit('input')">Annuleren</v-btn>
@@ -55,7 +53,7 @@
         </v-stepper-content>
 
         <v-stepper-content step="3">
-          <v-form ref="form3" v-model="valid" lazy-validation>
+          <v-form ref="form3" v-model="valid" lazy-validation v-if="step == 3">
             <v-layout wrap>
               <v-flex xs12 sm6 md4>
                 Wat is de overeengekomen prijs in € per maand per box
@@ -65,7 +63,7 @@
                   v-model.number="contract.units[i].price"
                   :label="contract.units[i].display_name"
                   placeholder="Overeengekomen prijs"
-                  :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
+                  :rules="[v => (v.length !== 0) || 'Dit veld mag niet leeg zijn']"
                   required
                 ></v-text-field>
               </v-flex>
@@ -150,12 +148,12 @@ export default class EditCreateContract extends Vue {
   private showEndDate: boolean = true;
   private valid: boolean = true;
   private step: number = 0;
-  private priceUnit: any = [];
 
+  // this is trouble because of the getter.
   unitsChanged() {
     const temp = [];
     for (let c in this.contract.units) {
-      let u = this.units.find((x: any) => x.id === this.contract.units[c]);
+      let u = this.units.free.find((x: any) => x.id === this.contract.units[c]);
       if (u) temp.push(u);
     }
     this.contract.units = temp;
@@ -172,12 +170,18 @@ export default class EditCreateContract extends Vue {
     return customer && customer.name ? customer.name : null;
   }
 
+  get mergeUnits(){
+    if(this.contract.id)
+      return this.contract.units.concat(this.units.free);
+    return this.units.free
+  }
+
   async mounted() {
     try {
       // refactor this to an api call that gets the units in {free: [], occupied: []} and customers
       const r = (await axios.get("/api/contracts")).data;
       this.customers = r.customers;
-      this.units = r.units;
+      this.units = r.units
     } catch (e) {
       this.response = e.message;
     }

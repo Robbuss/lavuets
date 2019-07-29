@@ -45,7 +45,7 @@ class ContractController extends Controller
                         'id' => $q->id,
                         'name' => $q->name,
                         'display_name' => $q->display_name,
-                        'price' => $q->price
+                        'price' => $q->price,
                     ];
                 }),
                 'free' => Unit::doesntHave('contracts')->get()->map(function ($q) {
@@ -85,14 +85,7 @@ class ContractController extends Controller
                 'price' => $q->pivot->price
             ];
         });
-        $contract->freeUnits = Unit::doesntHave('contracts')->get()->map(function ($q) {
-            return [
-                'id' => $q->id,
-                'name' => $q->name,
-                'display_name' => $q->display_name,
-                'price' => $q->price
-            ];
-        });
+
         return $contract;
     }
 

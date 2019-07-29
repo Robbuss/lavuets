@@ -94,9 +94,6 @@ export default class EditInvoice extends Vue {
   @Prop()
   contract: any;
 
-  @Prop()
-  units: any;
-
   private valid: boolean = true;
   private paymentStatuses: string[] = ["paid", "unpaid"];
   private step: number = 0;

@@ -28,7 +28,7 @@
                     <v-subheader>Producten in dit contract</v-subheader>
                     <v-list-tile v-for="(u, i) in contract.units" :key="i">
                       <v-list-tile-content>
-                        <v-list-tile-title>{{ u.name }} voor €{{ u.pivot.price }} per maand</v-list-tile-title>
+                        <v-list-tile-title v-if="u.pivot">{{ u.name }} voor €{{ u.pivot.price }} per maand</v-list-tile-title>
                         <v-list-tile-sub-title>(standaard prijs: €{{ u.price }})</v-list-tile-sub-title>
                       </v-list-tile-content>
                     </v-list-tile>
@@ -69,7 +69,7 @@
           </v-flex>
         </v-layout>
         <v-layout row wrap>
-          <invoices :units="contract.freeUnits" :contract="contract" @generate="generate"></invoices>
+          <invoices :contract="contract" @generate="generate"></invoices>
         </v-layout>
       </v-flex>
     </v-layout>

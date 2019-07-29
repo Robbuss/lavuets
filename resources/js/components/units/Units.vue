@@ -38,6 +38,7 @@
         :pagination.sync="pagination"
       >
         <template v-slot:items="props">
+          <td>{{ props.item.id }}</td>
           <td
             style="cursor: pointer"
             @click="$router.push('/units/' + props.item.id)"
@@ -84,6 +85,7 @@ export default class Units extends Vue {
   private search: string = "";
 
   private headers: any = [
+    { text: "id", value: "id" },
     { text: "Naam", value: "name" },
     { text: "Grootte (m3)", value: "size" },
     { text: "Prijs (p/m)", value: "price" },
@@ -91,7 +93,7 @@ export default class Units extends Vue {
     { text: "Acties", align: "right", sortable: false }
   ];
   private pagination: any = {
-    rowsPerPage: 25
+    rowsPerPage: 75
   };
 
   @Watch("dialog")

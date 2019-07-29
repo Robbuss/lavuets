@@ -44,7 +44,6 @@
               <v-text-field
                 :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                 required
-                type="number"
                 v-model="editedItem.street_number"
                 label="Huisnummer"
               ></v-text-field>
