@@ -1,10 +1,12 @@
 <template>
-  <v-flex>
+  <v-flex v-if="!loading">
     <v-layout row wrap>
-      <v-flex sm12>Logged in homepage</v-flex>
+      <v-flex sm12>
+        <h1 class="subheading text-xs-center font-weight-bold"> Welkom terug, {{ user.name }}!</h1>
+      </v-flex>
     </v-layout>
 
-    <v-layout row wrap v-if="!loading">
+    <v-layout row wrap>
       <v-flex xs12 sm4 py-3 pr-3>
         <v-card>
           <v-toolbar class="primary white--text">
@@ -31,24 +33,23 @@
       <v-flex xs12 sm4 pa-3>
         <v-card>
           <v-toolbar class="primary white--text">
-            <v-toolbar-title>Omzet</v-toolbar-title>
+            <v-toolbar-title>Maandelijkse omzet</v-toolbar-title>
           </v-toolbar>
           <v-layout row wrap align-center>
             <v-flex pa-3 text-xs-center>
-              Maandelijkse omzet
               <p>
-                Inkomsten van verhuurde boxen: €{{ this.realizedProfit }}
+                Inkomsten van verhuurde boxen: €{{ this.realizedProfit }} ({{ Math.round((this.realizedProfit / this.totalProfit) * 100)}}%)
                 <br />
                 Mogelijke (extra) inkomsten: €{{ this.potentialExtraProfit }}
                 <br />
-                Mogelijke totale omzet: €{{ this.realizedProfit + this.potentialExtraProfit }}
+                Mogelijke totale omzet: €{{ this.totalProfit }}
               </p>
             </v-flex>
           </v-layout>
         </v-card>
       </v-flex>
 
-      <v-flex xs12 sm4 pa-3>
+      <v-flex xs12 sm4 pl-3 pt-3>
         <v-card>
           <v-toolbar color="primary white--text">
             <v-toolbar-title>Todo list:</v-toolbar-title>
@@ -56,9 +57,10 @@
           <v-flex pa-3>
             <ul>
               <li>Bedrijfsnaam toevoegen aan contract</li>
-              <li>Zorgen dat Facturen voor een periode niet dubbel gegenereerd worden</li>
+              <li>Mails maken</li>
               <li>Contract beeindigen of opzeggen check (deleted at veranderen in opgezegd boolean)</li>
-              <li>Checken of de prijzen die in de maandelijkse omzet staan kloppen (overeengekomen prijs vs standaard prijs)</li>
+              <li>Korting toevoegen aan factuur voor eerste maand.</li>
+              <li>Korting berekenen in maandelijkse statistieken</li>
             </ul>
           </v-flex>
         </v-card>
@@ -77,6 +79,7 @@ export default class Index extends Vue {
   private loading: boolean = true;
   private contracts: any = [];
   private units: any = [];
+  private user: any = {};
   private customers: any = [];
 
   get calculateOccupiedPercentage() {
@@ -97,12 +100,18 @@ export default class Index extends Vue {
     return p;
   }
 
+  get totalProfit(){
+    return this.realizedProfit + this.potentialExtraProfit
+  }
+
   async mounted() {
     const r = (await axios.get("/api/contracts")).data;
     const c = (await axios.get("/api/customers")).data;
+    const u = (await axios.get("/api/user/profile")).data;
     this.contracts = r.contracts;
     this.units = r.units;
     this.customers = c;
+    this.user = u;
     this.loading = false;
   }
 }

@@ -13,7 +13,7 @@
         @click.stop="drawer = !drawer"
         v-if="authenticated"
       ></v-toolbar-side-icon>
-      <v-toolbar-title @click="$router.push('/')">OPSLAGMAGAZIJN</v-toolbar-title>
+      <v-toolbar-title style="cursor: pointer" @click="$router.push('/')">OPSLAGMAGAZIJN</v-toolbar-title>
     </v-toolbar>
     <v-content :class="{ 'bg--image' : !authenticated}">
       <v-container fluid fill-height>

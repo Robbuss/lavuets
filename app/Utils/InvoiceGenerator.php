@@ -10,50 +10,61 @@ use Symfony\Component\HttpFoundation\Request;
 
 class InvoiceGenerator
 {
-    public $request;
+    public $contract_id;
+    public $note;
 
-    public function __construct(Request $request)
+    public function __construct($contract_id, $note = null)
     {
-        $this->request = $request;
+        $this->contract_id = $contract_id;
     }
 
     public function generate()
     {
-        $contract = Contract::findOrFail($this->request->contract_id);
+        $contract = Contract::findOrFail($this->contract_id);
 
-        // get the periods in an array
-        $periods = CarbonPeriod::create($contract->start_date, '1 month', $contract->end_date)->toArray();
+        // check if its a full month and calculate the discount
+        $endFirstMonth = Carbon::parse($contract->start_date)->modify('last day of this month');
+        $daysFirstMonth =  Carbon::parse($contract->start_date)->daysInMonth;
+        $remainingDays = Carbon::parse($contract->start_date)->diffInDays($endFirstMonth, false);
+        $discount = round(($remainingDays / $daysFirstMonth) * 100);
 
-        // calculate from and end date per invoice
-        $invoices = [];
-        for ($i = 0; $i < 2; $i++) {
-            if (array_key_exists($i + 1, $periods)) {
-                $invoices[$i] = ['start_date' => $periods[$i], 'end_date' => $periods[$i + 1]];
-            }
+        // add discount to the invoice
+        $invoices = [
+           [
+            'start_date' => Carbon::parse($contract->start_date),
+            'end_date' => $endFirstMonth,
+            'days' => $remainingDays,
+            'discount_pct' => $discount,
+           ]
+        ];
+
+        // generate the invoices
+        $i = 0;
+        while($invoices[$i]['end_date'] < Carbon::parse($contract->end_date)){
+            $start = Carbon::parse($invoices[$i]['start_date'])->addMonth()->modify('first day of this month');
+            $end = Carbon::parse($invoices[$i]['start_date'])->addMonth()->modify('last day of this month');
+            array_push($invoices, 
+            [
+                'start_date' => $start,
+                'end_date' => $end,
+                'days' => $start->daysInMonth,
+                'discount_pct' => 0,
+            ]);
+            $i++;
         }
 
-        if (!$invoices)
-            return ["error" => "Datum te kort om facruren te maken."];
-
-        // dit kan later van pas komen voor facturen van de maand
-        // $date = Carbon::now();
-        // $date->addMonth();
-        // $date->day = 0;
-        // echo $date->toDateString(); // use toDateTimeString() to get date and time 
         // for each period, create an actual invoice
         foreach ($invoices as $invoice) {
             $i = Invoice::create([
                 'ref' => 'Factuur-' . Carbon::parse($invoice['start_date'])->format('m-Y'),
                 'contract_id' => $contract->id,
                 'customer_id' => $contract->customer->id,
-                'note' => ($this->request->note) ? $this->request->note : $contract->default_note,
+                'note' => ($this->note) ? $this->note : $contract->default_note,
                 'payment_status' => 'unpaid',
                 'start_date' => $invoice['start_date'],
                 'end_date' => $invoice['end_date']
             ]);
 
-            // generate the Pdf to storage
-            new PdfGenerator($i);
         }
         return ["success" => true];
     }

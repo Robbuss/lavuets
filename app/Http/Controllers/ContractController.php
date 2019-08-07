@@ -71,6 +71,7 @@ class ContractController extends Controller
         $contract = Contract::create($request->except(['units']));
         $contract->units()->sync($this->getSyncArray($request->units));
 
+        
         return ['id' => $contract->id];
     }
 

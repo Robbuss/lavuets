@@ -102,6 +102,6 @@ class InvoiceController extends Controller
 
     public function generateInvoices(Request $request)
     {
-        return (new InvoiceGenerator($request))->generate();
+        return (new InvoiceGenerator($request->contract_id, $request->note))->generate();
     }
 }
