@@ -35,7 +35,7 @@
         </v-stepper-step>
 
       <v-stepper-content step="3">
-        <StepCustomer></StepCustomer>
+        <StepCustomer :chosenUnits="chosenUnits"></StepCustomer>
       </v-stepper-content>
     </v-stepper>
   </v-flex>
@@ -59,10 +59,11 @@ import StepCustomer from "./StepCustomer.vue";
   }
 })
 export default class Booking extends Vue {
-  private step: number = 2;
+  private step: number = 0;
   private count: number = 0;
   private units: any = [];
   private location: string = "";
+  public chosenUnits: any = [];
 
   async mounted(){
     const r = (await axios.post('/api/book-data')).data;
@@ -76,6 +77,7 @@ export default class Booking extends Vue {
   }
 
   unitDone(event: any){
+    this.chosenUnits = event;
     this.step = 3;
   }
 }
