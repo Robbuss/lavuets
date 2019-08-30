@@ -49,6 +49,7 @@ import Register from "./auth/Register.vue";
 import Dashboard from "./user/Dashboard.vue";
 import NavItems from "./layout/NavItems.vue";
 import NotFound from "./errors/404.vue";
+import Booking from "./bookings/Booking.vue";
 import Store from "js/store";
 
 Vue.use(Router);
@@ -61,6 +62,10 @@ const router = new Router({
       component: Index,
       beforeEnter: (to: any, from: any, next: any) =>
         !Store.getters.authenticated ? next("/login") : next()
+    },
+    {
+      path: "/boek",
+      component: Booking
     },
     {
       path: "/login",

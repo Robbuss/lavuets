@@ -56,7 +56,7 @@
         </template>
         <template v-slot:no-data>
           <td colspan="100%" v-if="loading">Boxen laden...</td>
-          <td colspan="100%" v-else>Geen boxen geveonden</td>
+          <td colspan="100%" v-else>Geen boxen gevonden</td>
         </template>
       </v-data-table>
     </div>

@@ -16,6 +16,8 @@ use Illuminate\Http\Request;
 Route::post('/login', 'AuthController@login');
 Route::post('/register', 'AuthController@register');
 
+Route::post('/book-data', 'BookingController@index');
+
 Route::middleware('auth:api')->group(function () {
     Route::post('/logout', 'AuthController@logout');
     Route::get('/user/index', 'UserController@index');
