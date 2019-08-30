@@ -34,6 +34,7 @@
             class="pointer"
             @click="$router.push('/contracts/' + props.item.id)"
           >{{ props.item.customer_name }}</td>
+          <td>{{ props.item.company_name }}</td>
           <td>{{ props.item.start_date }}</td>
           <td>{{ props.item.end_date }}</td>
           <td>
@@ -79,6 +80,7 @@ export default class Contracts extends Vue {
 
   private headers: any = [
     { text: "Klantnaam", value: "customer_name" },
+    { text: "Bedrijfsnaam", value: "company_name" },
     { text: "Ingangsdatum", value: "start_date" },
     { text: "Einddatum", value: "end_date" },
     { text: "Status", value: "active" },

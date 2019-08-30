@@ -56,6 +56,9 @@
                 label="Postcode"
               ></v-text-field>
             </v-flex>
+            <v-flex xs12>
+              <v-text-field v-model="editedItem.iban" label="IBAN Rekeningnummer"></v-text-field>
+            </v-flex>            
             <v-flex xs12 sm6 md4>
               <v-text-field v-model="editedItem.company_name" label="Bedrijfsnaam"></v-text-field>
             </v-flex>
@@ -107,7 +110,8 @@ export default class EditCustomer extends Vue {
     street_number: null,
     postal_code: "",
     btw: "",
-    kvk: ""
+    kvk: "",
+    iban: ""
   };
   private defaultItem: any = {
     id: null,
@@ -119,7 +123,8 @@ export default class EditCustomer extends Vue {
     street_number: null,
     postal_code: "",
     btw: "",
-    kvk: ""
+    kvk: "",
+    iban: ""
   };
   private response = "";
 

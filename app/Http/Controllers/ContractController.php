@@ -23,6 +23,7 @@ class ContractController extends Controller
                         'id' => $q->id,
                         'customer_id' => $q->customer_id,
                         'customer_name' => $q->customer->name,
+                        'company_name' => $q->customer->company_name,
                         'active' => $q->active,
                         'payment_method' => $q->payment_method,
                         'units' => $q->units->map(function ($q) {

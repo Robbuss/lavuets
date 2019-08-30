@@ -32,6 +32,21 @@ class BookingController extends Controller
      */
     public function create(Request $request)
     {
-        //
+        $customer = Customer::create($request->customer);
+        
+        $contract = Contract::create(array_merge($request->contract, ['customer_id' => $customer->id]));
+        $contract->units()->sync($this->getSyncArray($request->units));
+
+
+        return ["success" => true];
+    }
+    
+    public function getSyncArray($priceArray = [])
+    {
+        $contractUnitPrice = [];
+        foreach ($priceArray as $pu) {
+            $contractUnitPrice[$pu['id']] = ['price' => $pu['price']];
+        };
+        return $contractUnitPrice;
     }
 }

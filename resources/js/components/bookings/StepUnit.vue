@@ -2,28 +2,41 @@
   <v-card flat class="grey lighten-3 pa-1" v-if="units">
     <v-layout row wrap class="white">
       <v-flex md2>
-        <v-item-group v-model="window" class="mr-4" mandatory tag="v-flex">
-          <v-item v-for="n in units" :key="n">
-            <div slot-scope="{ active, toggle }">
-              <v-btn :input-value="active" @click="toggle">{{ n[0].size }} M3</v-btn>
-            </div>
-          </v-item>
-        </v-item-group>
+        <v-toolbar dense flat color="primary" dark>
+          <v-toolbar-title>Grootte</v-toolbar-title>
+        </v-toolbar>
+        <v-list dense style="border-right: 1px solid #EEEEEE">
+          <v-item-group v-model="window" mandatory tag="v-flex">
+            <v-item v-for="(n, k) in units" :key="k+'1'">
+              <div slot-scope="{ active, toggle }">
+                <v-list-tile :input-value="active" @click="toggle">
+                  <v-list-tile-content>
+                    <v-list-tile-title>{{ n[0].size }} m3</v-list-tile-title>
+                  </v-list-tile-content>
+                </v-list-tile>
+                <v-divider></v-divider>
+              </div>
+            </v-item>
+          </v-item-group>
+        </v-list>
       </v-flex>
 
       <v-flex md10>
+        <v-toolbar dense flat color="primary" dark>
+          <v-toolbar-title>Klik op een box om te selecteren</v-toolbar-title>
+        </v-toolbar>
         <v-window v-model="window" vertical>
-          <v-window-item v-for="n in units" :key="n">
+          <v-window-item v-for="(n, k) in units" :key="k + '2'">
             <v-layout row wrap>
               <v-flex
                 @click="pickBox(u)"
-                xs3
-                md1
+                ma-1
                 pa-3
                 v-for="u in n"
                 :key="u.id"
-                class="hover"
-                :class="{'lighten-3 grey' : chosenUnits.indexOf(u) > -1}"
+                class="text-xs-center"
+                style="border: 2px solid #EEEEEE; cursor:pointer"
+                :class="{'lighten-3 primary' : contract.units.indexOf(u) > -1}"
               >{{ u.display_name }}</v-flex>
             </v-layout>
           </v-window-item>
@@ -31,13 +44,18 @@
       </v-flex>
     </v-layout>
     <v-layout row wrap>
-      <h3 class="subtitle">Gekozen boxen</h3>
-      <v-flex xs12 v-for="chosen in chosenUnits" :key="chosen.id">Box: {{ chosen.display_name }}</v-flex>
+      <h3 class="subtitle">Gekozen box(en)</h3>
+      <v-flex xs12 v-for="chosen in contract.units" :key="chosen.id">Box: {{ chosen.display_name }}</v-flex>
       <v-flex
         xs12
-        v-if="chosenUnits.length === 0"
+        v-if="contract.units.length === 0"
       >Geen boxen gekozen. Klik een box aan om je keuze te maken</v-flex>
-      <v-btn flat color="primary" @click="$emit('done', chosenUnits)">Kiezen</v-btn>
+      <v-btn flat color="primary" @click="submit">Kiezen</v-btn>
+    </v-layout>
+    <v-layout row>
+      <v-flex xs12>
+        <v-alert :value="error">Je moet een box kiezen om door te gaan</v-alert>
+      </v-flex>
     </v-layout>
   </v-card>
 </template>
@@ -61,20 +79,36 @@ export default class StepUnit extends Vue {
   @Prop()
   units: any;
 
+  @Prop()
+  contract: any;
+
+  @Watch('contract.units')
+  onChosenUnitsChanged(){
+    this.error ? this.error = !this.error : false;
+  }
+
   private window: number = 0;
-  private chosenUnits: any = [];
+  private error: boolean = false;
 
   get length() {
     return Object.keys(this.units).length;
   }
 
   pickBox(unit: any) {
-    const index = this.chosenUnits.indexOf(unit);
+    const index = this.contract.units.indexOf(unit);
     if (index > -1) {
-      this.chosenUnits.splice(index, 1);
+      this.contract.units.splice(index, 1);
     } else {
-      this.chosenUnits.push(unit);
+      this.contract.units.push(unit);
     }
+  }
+
+  submit() {
+    if (this.contract.units.length === 0) {
+      this.error = true;
+      return;
+    }
+    this.$emit("done", this.contract.units);
   }
 }
 </script>

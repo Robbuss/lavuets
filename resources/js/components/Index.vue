@@ -56,11 +56,11 @@
           </v-toolbar>
           <v-flex pa-3>
             <ul>
-              <li>Bedrijfsnaam toevoegen aan contract</li>
               <li>Mails maken</li>
               <li>Contract beeindigen of opzeggen check (deleted at veranderen in opgezegd boolean)</li>
               <li>Korting toevoegen aan factuur voor eerste maand.</li>
               <li>Korting berekenen in maandelijkse statistieken</li>
+              
             </ul>
           </v-flex>
         </v-card>

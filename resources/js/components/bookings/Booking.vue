@@ -3,7 +3,12 @@
     <booking-header></booking-header>
 
     <v-stepper v-model="step" vertical>
-      <v-stepper-step :complete="step > 1" step="1">
+      <v-stepper-step
+        :complete="step > 1"
+        step="1"
+        @click="step > 1 ? step = 1: false"
+        style="cursor:pointer"
+      >
         Kies een locatie
         <small>Waar je een box wilt huren</small>
       </v-stepper-step>
@@ -16,7 +21,7 @@
         </v-layout>
       </v-stepper-content>
 
-      <v-stepper-step :complete="step > 2" step="2">
+      <v-stepper-step :complete="step > 2" step="2" @click="step > 2 ? step = 2 : false">
         Kies de grootte van de box die je wil huren
         <small>Prijs is per maand</small>
       </v-stepper-step>
@@ -24,7 +29,7 @@
       <v-stepper-content step="2">
         <v-layout row wrap>
           <v-flex xs12 pa-1>
-            <StepUnit :units="units" @done="unitDone($event)"></StepUnit>
+            <StepUnit :contract="contract" :units="units" @done="unitDone($event)"></StepUnit>
           </v-flex>
         </v-layout>
       </v-stepper-content>
@@ -32,10 +37,10 @@
       <v-stepper-step :complete="step > 3" step="3">
         Vul je gegevens in
         <small>Binnen 24 uur kan je de ruimte gebruiken!</small>
-        </v-stepper-step>
+      </v-stepper-step>
 
       <v-stepper-content step="3">
-        <StepCustomer :chosenUnits="chosenUnits"></StepCustomer>
+        <StepCustomer @done="completeOrder($event)" :customer="customer" :contract="contract"></StepCustomer>
       </v-stepper-content>
     </v-stepper>
   </v-flex>
@@ -64,21 +69,51 @@ export default class Booking extends Vue {
   private units: any = [];
   private location: string = "";
   public chosenUnits: any = [];
+  private working: boolean = false;
+  private customer: any = {
+    id: null,
+    name: "",
+    company_name: "",
+    email: "",
+    phone: "",
+    city: "",
+    street_addr: "",
+    street_number: null,
+    postal_code: "",
+    btw: "",
+    kvk: "",
+    iban: ""
+  };
+  private contract: any = {
+    units: [],
+    start_date: "",
+    period: ""
+  };
 
-  async mounted(){
-    const r = (await axios.post('/api/book-data')).data;
-    this.units = r.units
-    this.count = r.count
+  async mounted() {
+    // create a contract earlier and add units from StepUnits (chosenUnits) to Contracts
+    const r = (await axios.post("/api/book-data")).data;
+    this.units = r.units;
+    this.count = r.count;
   }
 
-  locationDone(event: string){
+  locationDone(event: string) {
     this.location = event;
     this.step = 2;
   }
 
-  unitDone(event: any){
-    this.chosenUnits = event;
+  unitDone(event: any) {
     this.step = 3;
+  }
+
+  async completeOrder() {
+    this.working = true;
+    await axios.post("/api/booking/create", {
+      customer: this.customer,
+      contract: this.contract,
+      units: this.contract.units
+    });
+    this.working = false;
   }
 }
 </script>

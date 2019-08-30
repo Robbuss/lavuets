@@ -1,9 +1,9 @@
 <template>
   <v-card flat class="grey lighten-3 pa-1">
-    <v-layout row fill-height justify-center align-center pa-5 class="text-xs-center white">
-      <v-layout row wrap>
-        <v-flex xs12 md8 pr-5>
-          <v-form v-model="valid" lazy-validation ref="form">
+    <v-form v-model="valid" lazy-validation ref="form">
+      <v-layout row fill-height justify-center align-center pa-5 class="text-xs-center white">
+        <v-layout row wrap>
+          <v-flex xs12 md8 pr-5>
             <v-container grid-list-md ma-0 pa-0>
               <v-layout wrap class="text-xs-left">
                 <v-flex xs12>
@@ -12,7 +12,14 @@
 
                 <v-flex xs12>
                   Ik huur ten minste voor een periode van:
-                  <v-select :items="items" box label="Kies een duur"></v-select>
+                  <v-select
+                    v-model="contract.period"
+                    :items="items"
+                    box
+                    label="Kies een duur"
+                    :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
+                    required
+                  ></v-select>
                 </v-flex>
 
                 <v-flex xs12>
@@ -33,6 +40,8 @@
                       <v-text-field
                         box
                         v-model="contract.start_date"
+                        :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
+                        required
                         label="Date"
                         hint="MM/DD/YYYY format"
                         persistent-hint
@@ -142,44 +151,63 @@
                 </v-flex>
               </v-layout>
             </v-container>
-          </v-form>
-        </v-flex>
-        <v-flex xs12 md4>
-          <v-card flat class="grey lighten-3">
-            <v-toolbar flat class="primary white--text text-xs-center">
-              <v-toolbar-title>Overzicht</v-toolbar-title>
-            </v-toolbar>
-            <v-flex xs12 pa-5 v-if="chosenUnits.length === 1">
-              <h3 class="subheading grey--text">
-                Je huurt een box in
-                <span class="primary--text">Breukelen</span>
-              </h3>
-              <h3 class="subheading grey--text">
-                Grootte van de box
-                <span class="primary--text">{{ chosenUnits[0].size }} M2</span>
-              </h3>
-              <h3 class="subheading grey--text">
-                Prijs per maand
-                <span class="primary--text">€ {{ chosenUnits[0].price }} ,-</span>
-              </h3>
-              <h3 class="subheading grey--text">
-                Begin datum
-                <span class="primary--text">{{ startDate || 'Selecteer datum' }}</span>
-              </h3>
-            </v-flex>
-          </v-card>
-          <v-layout row wrap justify-content>
-            <v-flex xs12 class="text-xs-center">
-              <v-checkbox v-model="terms" label="Ik ga akkoord met de algemene voorwaarden" />
-            </v-flex>
-            <v-flex xs12>
-              <v-btn large flat class="primary">Verzenden</v-btn>
-            </v-flex>
-          </v-layout>
-        </v-flex>
+          </v-flex>
+          <v-flex xs12 md4>
+            <v-card flat class="grey lighten-3">
+              <v-toolbar flat class="primary white--text text-xs-center">
+                <v-toolbar-title>Overzicht</v-toolbar-title>
+              </v-toolbar>
+              <v-flex xs12 pa-5 v-if="contract.units.length === 1">
+                <h3 class="subheading grey--text">
+                  Je huurt een box in
+                  <span class="primary--text">Breukelen</span>
+                </h3>
+                <h3 class="subheading grey--text">
+                  Grootte van de box
+                  <span class="primary--text">{{ contract.units[0].size }} M2</span>
+                </h3>
+                <h3 class="subheading grey--text">
+                  Prijs per maand
+                  <span class="primary--text">€ {{ contract.units[0].price }} ,-</span>
+                </h3>
+                <h3 class="subheading grey--text">
+                  Voor de duur van
+                  <span
+                    class="primary--text"
+                  >{{ contract.period || 'Kies een duur' }}</span>
+                </h3>
+                <h3 class="subheading grey--text">
+                  Begin datum
+                  <span
+                    class="primary--text"
+                  >{{ contract.start_date || 'Selecteer datum' }}</span>
+                </h3>
+              </v-flex>
+            </v-card>
+            <v-layout row wrap justify-content>
+              <v-flex xs12 class="text-xs-center">
+                <v-checkbox
+                  v-model="terms"
+                  :rules="[v => !!v || 'Je moet akkoord gaan met de algemene voorwaarden']"
+                  required
+                  label="Ik ga akkoord met de algemene voorwaarden"
+                />
+              </v-flex>
+              <v-flex xs12>
+                <v-btn
+                  :disabled="working"
+                  :loading="working"
+                  @click="validate"
+                  large
+                  flat
+                  class="primary"
+                >Verzenden</v-btn>
+              </v-flex>
+            </v-layout>
+          </v-flex>
+        </v-layout>
       </v-layout>
-    </v-layout>
-    <v-btn flat color="primary" @click="$emit('done', 'breukelen')">Kiezen</v-btn>
+    </v-form>
   </v-card>
 </template>
 
@@ -191,48 +219,21 @@ import axios from "js/axios";
 @Component({})
 export default class StepCustomer extends Vue {
   @Prop()
-  chosenUnits: any;
+  contract: any;
 
-  private valid: true;
-  private name: "";
-  private email: "";
-  private select: null;
+  @Prop()
+  customer: any;
+
+  private valid: boolean = true;
   public items = ["1 maand", "3 maanden", "6 maanden", "12 maanden"];
-  private checkbox: false;
-  private startDate: "";
   private datePicker: boolean = false;
-
-  private contract: any = {
-    start_date: ""
-  };
-
-  private customer: any = {
-    id: null,
-    name: "",
-    company_name: "",
-    email: "",
-    phone: "",
-    city: "",
-    street_addr: "",
-    street_number: null,
-    postal_code: "",
-    btw: "",
-    kvk: "",
-    iban: ""
-  };
+  private terms: boolean = false;
+  private working: boolean = false;
 
   validate() {
     if ((this.$refs.form as any).validate()) {
-      //
+      this.$emit('done')
     }
-  }
-
-  reset() {
-    (this.$refs.form as any).reset();
-  }
-
-  resetValidation() {
-    (this.$refs.form as any).resetValidation();
   }
 }
 </script>
