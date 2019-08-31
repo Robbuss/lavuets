@@ -10,6 +10,7 @@
           <v-layout wrap>
             <v-flex xs12 sm6 md4>
               <v-text-field
+                box
                 :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                 required
                 v-model="editedItem.name"
@@ -18,6 +19,7 @@
             </v-flex>
             <v-flex xs12 sm6 md4>
               <v-text-field
+                box
                 :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                 required
                 v-model="editedItem.email"
@@ -26,30 +28,44 @@
             </v-flex>
             <v-flex xs12 sm6 md4>
               <v-text-field
+                box
                 :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                 required
-                v-model="editedItem.city"
-                label="Stad"
+                v-model="editedItem.phone"
+                label="Mobiel nummer voor toegang"
+                placeholder="Telefoonnummer"
               ></v-text-field>
             </v-flex>
-            <v-flex xs12 sm6 md4>
+            <v-flex xs12 sm6 md10>
               <v-text-field
+                box
                 :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                 required
                 v-model="editedItem.street_addr"
                 label="Straat"
               ></v-text-field>
             </v-flex>
-            <v-flex xs12 sm6 md4>
+            <v-flex xs12 sm6 md2>
               <v-text-field
+                box
                 :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                 required
                 v-model="editedItem.street_number"
                 label="Huisnummer"
               ></v-text-field>
             </v-flex>
-            <v-flex xs12 sm6 md4>
+            <v-flex xs12 sm6>
               <v-text-field
+                box
+                :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
+                required
+                v-model="editedItem.city"
+                label="Stad"
+              ></v-text-field>
+            </v-flex>            
+            <v-flex xs12 sm6>
+              <v-text-field
+                box
                 :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                 required
                 v-model="editedItem.postal_code"
@@ -57,16 +73,16 @@
               ></v-text-field>
             </v-flex>
             <v-flex xs12>
-              <v-text-field v-model="editedItem.iban" label="IBAN Rekeningnummer"></v-text-field>
-            </v-flex>            
-            <v-flex xs12 sm6 md4>
-              <v-text-field v-model="editedItem.company_name" label="Bedrijfsnaam"></v-text-field>
+              <v-text-field box v-model="editedItem.iban" label="IBAN Rekeningnummer"></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md4>
-              <v-text-field v-model="editedItem.kvk" label="KVK"></v-text-field>
+              <v-text-field box v-model="editedItem.company_name" label="Bedrijfsnaam"></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md4>
-              <v-text-field v-model="editedItem.btw" label="BTW"></v-text-field>
+              <v-text-field box v-model="editedItem.kvk" label="KVK"></v-text-field>
+            </v-flex>
+            <v-flex xs12 sm6 md4>
+              <v-text-field box v-model="editedItem.btw" label="BTW"></v-text-field>
             </v-flex>
           </v-layout>
         </v-container>
@@ -106,6 +122,7 @@ export default class EditCustomer extends Vue {
     company_name: "",
     email: "",
     city: "",
+    phone: "",
     street_addr: "",
     street_number: null,
     postal_code: "",
@@ -119,6 +136,7 @@ export default class EditCustomer extends Vue {
     company_name: "",
     email: "",
     city: "",
+    phone: "",
     street_addr: "",
     street_number: null,
     postal_code: "",
@@ -149,8 +167,7 @@ export default class EditCustomer extends Vue {
   }
 
   async save() {
-    if (!(this.$refs.form as any).validate())
-      return;
+    if (!(this.$refs.form as any).validate()) return;
     this.working = true;
     if (!this.creating) {
       await axios.post("/api/customers/" + this.editedItem.id, this.editedItem);

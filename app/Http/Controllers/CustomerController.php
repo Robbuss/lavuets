@@ -35,6 +35,8 @@ class CustomerController extends Controller
             'postal_code' => $request->postal_code,
             'btw' => $request->btw,
             'kvk' => $request->kvk,
+            'iban' => $request->iban,
+            'phone' => $request->phone,
         ]);
         return ['id' => $customer->id];
     }

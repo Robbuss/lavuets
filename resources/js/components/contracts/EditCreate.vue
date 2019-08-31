@@ -106,17 +106,6 @@
                 ></v-date-picker>
                 <p>Gekozen datum: {{ contract.start_date }}</p>
               </v-flex>
-              <v-flex xs12 sm6 v-if="showEndDate">
-                <v-date-picker
-                  landscape
-                  v-model="contract.end_date"
-                  label="Is er al een einddatum bekend?"
-                ></v-date-picker>
-                <p>Gekozen datum: {{ contract.end_date }}</p>
-              </v-flex>
-              <v-flex xs12>
-                <v-checkbox label="Er is een einddatum bekend" v-model="showEndDate"></v-checkbox>
-              </v-flex>
             </v-layout>
 
             <v-btn color="primary" @click="save">Opslaan</v-btn>
@@ -145,7 +134,6 @@ export default class EditCreateContract extends Vue {
   private customers: any = [];
   private units: any = [];
   private loading: boolean = true;
-  private showEndDate: boolean = true;
   private valid: boolean = true;
   private step: number = 0;
 
@@ -170,10 +158,9 @@ export default class EditCreateContract extends Vue {
     return customer && customer.name ? customer.name : null;
   }
 
-  get mergeUnits(){
-    if(this.contract.id)
-      return this.contract.units.concat(this.units.free);
-    return this.units.free
+  get mergeUnits() {
+    if (this.contract.id) return this.contract.units.concat(this.units.free);
+    return this.units.free;
   }
 
   async mounted() {
@@ -181,7 +168,7 @@ export default class EditCreateContract extends Vue {
       // refactor this to an api call that gets the units in {free: [], occupied: []} and customers
       const r = (await axios.get("/api/contracts")).data;
       this.customers = r.customers;
-      this.units = r.units
+      this.units = r.units;
     } catch (e) {
       this.response = e.message;
     }

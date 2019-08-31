@@ -36,7 +36,6 @@
           >{{ props.item.customer_name }}</td>
           <td>{{ props.item.company_name }}</td>
           <td>{{ props.item.start_date }}</td>
-          <td>{{ props.item.end_date }}</td>
           <td>
             <span v-if="props.item.active">Actief</span>
             <span v-else>Niet actief</span>
@@ -82,7 +81,6 @@ export default class Contracts extends Vue {
     { text: "Klantnaam", value: "customer_name" },
     { text: "Bedrijfsnaam", value: "company_name" },
     { text: "Ingangsdatum", value: "start_date" },
-    { text: "Einddatum", value: "end_date" },
     { text: "Status", value: "active" },
     { text: "Actions", value: "name", sortable: false }
   ];

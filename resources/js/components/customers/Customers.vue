@@ -20,7 +20,7 @@
           </edit-create-customer>
         </v-dialog>
       </v-toolbar>
-      <v-data-table :headers="headers" :items="customers" class="elevation-1" :loading="loading">
+      <v-data-table :headers="headers" :items="customers" class="elevation-1" :loading="loading" :pagination.sync="paginationSync">
         <template v-slot:items="props">
           <td
             class="pointer"
@@ -28,6 +28,7 @@
           >{{ props.item.name }}</td>
           <td>{{ props.item.email }}</td>
           <td>{{ props.item.company_name }}</td>
+          <td>{{ props.item.phone }}</td>
           <td>{{ props.item.city }}</td>
           <td>{{ props.item.street_addr }}</td>
           <td>{{ props.item.street_number }}</td>
@@ -67,10 +68,15 @@ export default class Customers extends Vue {
   private createMode: boolean = true;
   private editedItem: any = null;
 
+  private paginationSync: any = {
+    rowsPerPage: 25,
+  }
+
   private headers: any = [
     { text: "Naam", align: "left", value: "name" },
     { text: "Email", align: "left", value: "email" },
     { text: "Bedrijf", value: "company_name" },
+    { text: "Telefoonnummer", value: "phone" },
     { text: "Stad", value: "city" },
     { text: "Straat", value: "street_addr" },
     { text: "Nr", value: "street_number" },

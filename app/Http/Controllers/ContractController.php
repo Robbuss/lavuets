@@ -36,7 +36,6 @@ class ContractController extends Controller
                         }),
                         'price' => $q->price,
                         'start_date' => $q->start_date,
-                        'end_date' => $q->end_date
                     ];
                 }
             ),

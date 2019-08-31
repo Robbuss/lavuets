@@ -21,14 +21,16 @@
                     <v-subheader>Contract informatie</v-subheader>
                     <v-list-tile>
                       <v-list-tile-content>
-                        <v-list-tile-title>Van {{ contract.start_date }} tot {{ contract.end_date }}</v-list-tile-title>
-                        <v-list-tile-sub-title>Looptijd van het contract</v-list-tile-sub-title>
+                        <v-list-tile-title>Vanaf {{ contract.start_date }}</v-list-tile-title>
+                        <v-list-tile-sub-title>Startdatum van het contract</v-list-tile-sub-title>
                       </v-list-tile-content>
                     </v-list-tile>
                     <v-subheader>Producten in dit contract</v-subheader>
                     <v-list-tile v-for="(u, i) in contract.units" :key="i">
                       <v-list-tile-content>
-                        <v-list-tile-title v-if="u.pivot">{{ u.name }} voor €{{ u.pivot.price }} per maand</v-list-tile-title>
+                        <v-list-tile-title
+                          v-if="u.pivot"
+                        >{{ u.name }} voor €{{ u.pivot.price }} per maand</v-list-tile-title>
                         <v-list-tile-sub-title>(standaard prijs: €{{ u.price }})</v-list-tile-sub-title>
                       </v-list-tile-content>
                     </v-list-tile>
@@ -69,11 +71,38 @@
           </v-flex>
         </v-layout>
         <v-layout row wrap>
+          <v-flex xs12>
+            <p class="font-weight-bold pa-0 ma-0">De status van dit contract</p>
+            <v-switch :disabled="!contract.active" class="pa-0" v-model="contract.active" :label="contract.active ? 'Dit contract is actief' : 'Dit contract is niet actief'" color="green"></v-switch>
+          </v-flex>
+        </v-layout>
+        <v-layout row wrap>
           <invoices :contract="contract" @generate="generate"></invoices>
         </v-layout>
       </v-flex>
     </v-layout>
     <edit-create :contract="contract" v-if="dialog" :dialog="dialog" @input="dialog = !dialog"></edit-create>
+    <v-dialog v-model="showWarning" width="80%" persistent>
+      <v-card>
+        <v-toolbar class="primary" dark>
+          <v-toolbar-title>Contract deactiveren?</v-toolbar-title>
+        </v-toolbar>
+          <v-layout row wrap>
+            <v-flex xs12 pa-3>
+              <h3 class="headline primary--text">Deactiveren contract</h3>
+              <p>
+                Weet je zeker dat je het contract wil deactiveren? Je kunt het contract daarna niet meer activeren!
+                Je heft met deze actie namelijk de toestemming van de klant op. Je zult een nieuw contract moeten maken wanneer dit een fout is.
+              </p>
+              <p>
+                Voor gedeactiveerde contract wordt niet meer gecontroleerd of er nog facturen open staan en of deze verzonden dienen te worden
+              </p>
+              <v-btn color="red" dark @click="deactivate">Zeker weten</v-btn>
+              <v-btn color="grey lighten-3" @click="showWarning = !showWarning; contract.active = true">Nee, laat maar</v-btn>
+            </v-flex>
+          </v-layout>              
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -96,6 +125,13 @@ export default class SingleContract extends Vue {
   private contract: any = null;
   private dialog: boolean = false;
   private editDefaultNote: boolean = false;
+  private showWarning: boolean = false;
+
+  @Watch('contract.active')
+  onActiveChanged(newval: boolean, oldval: boolean){
+    if(oldval)
+      this.showWarning = true;
+  }
 
   async mounted() {
     await this.getData();
@@ -112,8 +148,12 @@ export default class SingleContract extends Vue {
   }
 
   async saveDefaultNote() {
-    axios.post("/api/contracts/" + this.contract.id, this.contract);
+    this.saveContract();
     this.editDefaultNote = !this.editDefaultNote;
+  }
+
+  async saveContract(){
+    axios.post("/api/contracts/" + this.contract.id, this.contract);
   }
 
   async getData() {
@@ -124,6 +164,11 @@ export default class SingleContract extends Vue {
     } catch (e) {
       this.response = e.message;
     }
+  }
+
+  async deactivate(){
+    this.saveContract();
+    this.showWarning = false;
   }
 }
 </script>

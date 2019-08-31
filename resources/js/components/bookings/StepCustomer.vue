@@ -39,12 +39,13 @@
                     <template v-slot:activator="{ on }">
                       <v-text-field
                         box
-                        v-model="contract.start_date"
-                        :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
+                        v-model="formattedDate"
+                        :rules="[
+                        v => !!v || 'Dit veld mag niet leeg zijn',
+                        v => isInFuture || 'Datum moet in de toekomst liggen!'
+                        ]"
                         required
-                        label="Date"
-                        hint="MM/DD/YYYY format"
-                        persistent-hint
+                        label="Startdatum huur"
                         @blur="$emit('formatDate')"
                         v-on="on"
                       ></v-text-field>
@@ -81,11 +82,19 @@
                 <v-flex xs12 sm6>
                   <v-text-field
                     box
-                    :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
+                    :rules="[v => (!!v || wantsDongle) || 'Dit veld mag niet leeg zijn']"
                     required
                     v-model="customer.phone"
-                    label="Telefoonnummer"
+                    label="Mobiel nummer voor toegang"
+                    placeholder="Telefoonnummer"
                   ></v-text-field>
+                </v-flex>
+                <v-flex xs12>
+                  <v-checkbox
+                    v-model="wantsDongle"
+                    required
+                    label="Ik heb geen mobiel nummer en kom een dongle halen"
+                  />
                 </v-flex>
                 <v-flex xs12 sm10>
                   <v-text-field
@@ -137,18 +146,42 @@
                 </v-flex>
 
                 <v-flex xs12>
-                  <h4 class="grey--text headline text-xs-left">Bedrijfsgegevens</h4>
+                  <v-checkbox v-model="isCompany" required label="Ik bestel namens een bedrijf" />
                 </v-flex>
 
-                <v-flex xs12 sm6 md4>
-                  <v-text-field box v-model="customer.company_name" label="Bedrijfsnaam"></v-text-field>
-                </v-flex>
-                <v-flex xs12 sm6 md4>
-                  <v-text-field box v-model="customer.kvk" label="KVK"></v-text-field>
-                </v-flex>
-                <v-flex xs12 sm6 md4>
-                  <v-text-field box v-model="customer.btw" label="BTW"></v-text-field>
-                </v-flex>
+                <v-layout row wrap v-if="isCompany">
+                  <v-flex xs12>
+                    <h4 class="grey--text headline text-xs-left">Bedrijfsgegevens</h4>
+                  </v-flex>
+
+                  <v-flex xs12 sm6 md4>
+                    <v-text-field
+                      :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
+                      required
+                      box
+                      v-model="customer.company_name"
+                      label="Bedrijfsnaam"
+                    ></v-text-field>
+                  </v-flex>
+                  <v-flex xs12 sm6 md4>
+                    <v-text-field
+                      :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
+                      required
+                      box
+                      v-model="customer.kvk"
+                      label="KVK"
+                    ></v-text-field>
+                  </v-flex>
+                  <v-flex xs12 sm6 md4>
+                    <v-text-field
+                      :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
+                      required
+                      box
+                      v-model="customer.btw"
+                      label="BTW"
+                    ></v-text-field>
+                  </v-flex>
+                </v-layout>
               </v-layout>
             </v-container>
           </v-flex>
@@ -157,18 +190,18 @@
               <v-toolbar flat class="primary white--text text-xs-center">
                 <v-toolbar-title>Overzicht</v-toolbar-title>
               </v-toolbar>
-              <v-flex xs12 pa-5 v-if="contract.units.length === 1">
+              <v-flex xs12 pa-5>
                 <h3 class="subheading grey--text">
                   Je huurt een box in
                   <span class="primary--text">Breukelen</span>
                 </h3>
                 <h3 class="subheading grey--text">
-                  Grootte van de box
-                  <span class="primary--text">{{ contract.units[0].size }} M2</span>
+                  Opslagruimte
+                  <span class="primary--text">{{ calculateSize }} M2</span>
                 </h3>
                 <h3 class="subheading grey--text">
                   Prijs per maand
-                  <span class="primary--text">€ {{ contract.units[0].price }} ,-</span>
+                  <span class="primary--text">€ {{ calculatePrice }} ,-</span>
                 </h3>
                 <h3 class="subheading grey--text">
                   Voor de duur van
@@ -215,6 +248,8 @@
 import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
 import axios from "js/axios";
+import * as moment from "moment";
+import "moment/locale/nl";
 
 @Component({})
 export default class StepCustomer extends Vue {
@@ -228,11 +263,39 @@ export default class StepCustomer extends Vue {
   public items = ["1 maand", "3 maanden", "6 maanden", "12 maanden"];
   private datePicker: boolean = false;
   private terms: boolean = false;
+  private isCompany: boolean = false;
+  private wantsDongle: boolean = false;
   private working: boolean = false;
+
+  mounted() {
+    moment().locale("nl");
+    if (!this.contract.start_date)
+      this.contract.start_date = moment().toISOString();
+  }
+
+  get isInFuture(){
+    return moment().format("LL") <= this.formattedDate;
+  }
+
+  get formattedDate() {
+    return moment(this.contract.start_date).format("LL");
+  }
+
+  get calculatePrice() {
+    let price = 0;
+    this.contract.units.map((x: any) => (price += x.price));
+    return price;
+  }
+
+  get calculateSize() {
+    let size = 0;
+    this.contract.units.map((x: any) => (size += x.size));
+    return size;
+  }
 
   validate() {
     if ((this.$refs.form as any).validate()) {
-      this.$emit('done')
+      this.$emit("done");
     }
   }
 }
