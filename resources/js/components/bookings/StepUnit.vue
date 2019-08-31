@@ -9,6 +9,7 @@
           <v-item-group v-model="window" mandatory tag="v-flex">
             <v-item v-for="(n, k) in units" :key="k+'1'">
               <div slot-scope="{ active, toggle }">
+                <v-divider></v-divider>
                 <v-list-tile
                   :input-value="active"
                   @click="toggle"
@@ -18,7 +19,6 @@
                     <v-list-tile-title>{{ n[0].size }} m3</v-list-tile-title>
                   </v-list-tile-content>
                 </v-list-tile>
-                <v-divider></v-divider>
               </div>
             </v-item>
           </v-item-group>
@@ -47,14 +47,44 @@
         </v-window>
       </v-flex>
     </v-layout>
+    <v-divider></v-divider>
     <v-layout row wrap>
-      <h3 class="subtitle">Gekozen box(en)</h3>
-      <v-flex xs12 v-for="chosen in contract.units" :key="chosen.id">Box: {{ chosen.display_name }}</v-flex>
-      <v-flex
-        xs12
-        v-if="contract.units.length === 0"
-      >Geen boxen gekozen. Klik een box aan om je keuze te maken</v-flex>
-      <v-btn flat color="primary" @click="submit">Kiezen</v-btn>
+      <v-flex xs12>
+        <v-list>
+          <v-subheader>Gekozen box(en)</v-subheader>
+          <template v-for="chosen in contract.units">
+            <v-divider :key="chosen.id + 'd'"></v-divider>
+            <v-list-tile :key="chosen.id" avatar>
+              <v-list-tile-avatar>
+                <v-avatar>
+                  <v-img src="/closed_box.png" />
+                </v-avatar>
+              </v-list-tile-avatar>
+
+              <v-list-tile-content>
+                <v-list-tile-title>{{ chosen.name }}</v-list-tile-title>
+                <v-list-tile-sub-title>{{ chosen.size }}m3 voor €{{ chosen.price }} per maand</v-list-tile-sub-title>
+              </v-list-tile-content>
+            </v-list-tile>
+          </template>
+
+          <v-list-tile v-if="contract.units.length === 0" avatar>
+            <v-list-tile-avatar>
+              <v-avatar>
+                <v-img src="/open_box.png" />
+              </v-avatar>
+            </v-list-tile-avatar>
+
+            <v-list-tile-content>
+              <v-list-tile-title>Geen boxen gekozen.</v-list-tile-title>
+              <v-list-tile-sub-title>Klik een box aan om je keuze te maken</v-list-tile-sub-title>
+            </v-list-tile-content>
+          </v-list-tile>
+        </v-list>
+      </v-flex>
+      <v-flex xs12>
+        <v-btn flat color="primary" @click="submit">Door naar gegevens invullen</v-btn>
+      </v-flex>
     </v-layout>
     <v-layout row>
       <v-flex xs12>
@@ -94,9 +124,9 @@ export default class StepUnit extends Vue {
   private window: number = 0;
   private error: boolean = false;
 
-  unitChecked(units: any){
-    for(let i = 0; i < units.length; i++){
-      if(this.contract.units.indexOf(units[i]) > -1){
+  unitChecked(units: any) {
+    for (let i = 0; i < units.length; i++) {
+      if (this.contract.units.indexOf(units[i]) > -1) {
         return true;
       }
     }
