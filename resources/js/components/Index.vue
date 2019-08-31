@@ -56,11 +56,17 @@
           </v-toolbar>
           <v-flex pa-3>
             <ul>
-              <li>Mails maken</li>
-              <li>Contract beeindigen of opzeggen check (deleted at veranderen in opgezegd boolean)</li>
-              <li>Korting toevoegen aan factuur voor eerste maand.</li>
-              <li>Korting berekenen in maandelijkse statistieken</li>
-              
+              <li>Inhoud van de mails maken (contract toevoegen etc)</li>
+              <li>Mogelijkheid om een contract beeindigen of opzeggen, active moet dan op 0</li>
+              <li>Opzegdatum (end_date) weghalen van contract weghalen, dit is tot op opzegging</li>
+              <li>Periodes toevoegen aan contract: per week, per kwartaal, per halfjaar, per jaar</li>
+              <li>Facturen genereren op basis van bovenstaande perioden</li>
+              <li>De dagelijkse check of er facturen verzonden moeten worden laten werken met bovenstaande perioden</li>
+              <li>Verschillende prijzen toevoegen aan Units: prijs per week, prijs per kwartaal, prijs per halfjaar, prijs per jaar</li>
+              <li>Bedrijfsgegevens optioneel maken en verbergen wanneer bedrijf niet aangevinkt is</li>
+              <li>Mobiel nummer aan klanten toevoegen voor toegang</li>
+              <li>Optie toevoegen aan checkout-form: Ik heb geen mobielnummer en ik kom een dongle halen</li>
+              <li>21% BTW toevoegen aan de factuur wanneer het contract bij een klant hoor die een bedrijf heeft</li>
             </ul>
           </v-flex>
         </v-card>
