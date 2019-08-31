@@ -213,7 +213,7 @@
                   Begin datum
                   <span
                     class="primary--text"
-                  >{{ contract.start_date || 'Selecteer datum' }}</span>
+                  >{{ formattedDate || 'Selecteer datum' }}</span>
                 </h3>
               </v-flex>
             </v-card>
@@ -259,6 +259,12 @@ export default class StepCustomer extends Vue {
   @Prop()
   customer: any;
 
+  @Watch('contract.start_date')
+  onStartDateChanged(newval: any, oldval:any){
+    if(oldval)
+      (this.$refs.form as any).resetValidation()
+  }
+
   private valid: boolean = true;
   public items = ["1 maand", "3 maanden", "6 maanden", "12 maanden"];
   private datePicker: boolean = false;
@@ -270,7 +276,7 @@ export default class StepCustomer extends Vue {
   mounted() {
     moment().locale("nl");
     if (!this.contract.start_date)
-      this.contract.start_date = moment().toISOString();
+      this.contract.start_date = moment().format("YYYY-MM-DD");
   }
 
   get isInFuture(){

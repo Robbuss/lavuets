@@ -12,17 +12,15 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 class BookingComplete extends Mailable
 {
     use Queueable, SerializesModels;
-    public $customer;
-    public $contract;
+    public $payment;
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(Customer $customer, Contract $contract)
+    public function __construct(Payment $payment)
     {
-        $this->customer = $customer;
-        $this->contract = $contract->with('units');
+        $this->payment = $payment->with(['customer', 'contract']);
     }
 
     /**
@@ -33,8 +31,9 @@ class BookingComplete extends Mailable
     public function build()
     {
         return $this->view('emails.bookingcomplete')->with([
-            'customer' => $this->customer,
-            'contract' => $this->contract
+            'customer' => $this->payment->customer,
+            'contract' => $this->payment->contract,
+            'units' => $this->payment->contract->units,
         ]);
     }
 }

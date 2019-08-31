@@ -97,6 +97,9 @@
               <p>
                 Voor gedeactiveerde contract wordt niet meer gecontroleerd of er nog facturen open staan en of deze verzonden dienen te worden
               </p>
+              <p>
+                De boxen die bij dit contract horen kunnen weer verhuurd worden.
+              </p>
               <v-btn color="red" dark @click="deactivate">Zeker weten</v-btn>
               <v-btn color="grey lighten-3" @click="showWarning = !showWarning; contract.active = true">Nee, laat maar</v-btn>
             </v-flex>

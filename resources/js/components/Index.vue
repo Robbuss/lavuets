@@ -58,13 +58,16 @@
             <ul>
               <li>Inhoud van de mails maken (contract toevoegen etc)</li>
               <li>Periodes toevoegen aan contract: per week, per kwartaal, per halfjaar, per jaar</li>
-              <li>Mollie betaling: gegevens, prijs etc toevoegen aan betaling naar de API</li>
-              <li>Mollie mislukte betalingen afhandelen</li>
               <li>Facturen genereren op basis van bovenstaande perioden</li>
               <li>De dagelijkse check of er facturen verzonden moeten worden laten werken met bovenstaande perioden</li>
               <li>Verschillende prijzen toevoegen aan Units: prijs per week, prijs per kwartaal, prijs per halfjaar, prijs per jaar</li>
+              <li>Mollie betaling: gegevens, prijs etc toevoegen aan betaling naar de API</li>
+              <li>Mollie mislukte betalingen afhandelen</li>
               <li>21% BTW toevoegen aan de factuur wanneer het contract bij een klant hoort die een bedrijf heeft</li>
               <li>Toevoegen van een logging tabel om in te kunnen zien wat er wanneer gebeurd is (Spatie/ActivityLog)</li>
+              <li>Als een contract uitgeschakeld wordt, geef de units dan weer vrij om te verhuren.</li>
+              <li>Misschien moet er een aparte renew property gemaakt worden</li>
+              <li>Maak een payments tabel</li>
             </ul>
           </v-flex>
         </v-card>
