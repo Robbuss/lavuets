@@ -2,7 +2,7 @@
   <v-flex v-if="!loading">
     <v-layout row wrap>
       <v-flex sm12>
-        <h1 class="subheading text-xs-center font-weight-bold"> Welkom terug, {{ user.name }}!</h1>
+        <h1 class="subheading text-xs-center font-weight-bold">Welkom terug, {{ user.name }}!</h1>
       </v-flex>
     </v-layout>
 
@@ -60,13 +60,16 @@
               <li>Mogelijkheid om een contract beeindigen of opzeggen, active moet dan op 0</li>
               <li>Opzegdatum (end_date) weghalen van contract weghalen, dit is tot op opzegging</li>
               <li>Periodes toevoegen aan contract: per week, per kwartaal, per halfjaar, per jaar</li>
+              <li>Mollie betaling: gegevens, prijs etc toevoegen aan betaling naar de API</li>
+              <li>Mollie mislukte betalingen afhandelen</li>
               <li>Facturen genereren op basis van bovenstaande perioden</li>
               <li>De dagelijkse check of er facturen verzonden moeten worden laten werken met bovenstaande perioden</li>
               <li>Verschillende prijzen toevoegen aan Units: prijs per week, prijs per kwartaal, prijs per halfjaar, prijs per jaar</li>
-              <li>Bedrijfsgegevens optioneel maken en verbergen wanneer bedrijf niet aangevinkt is</li>
+              <li>Bedrijfsgegevens optioneel maken en verbergen wanneer bedrijf niet aangevinkt is in checkout form</li>
               <li>Mobiel nummer aan klanten toevoegen voor toegang</li>
               <li>Optie toevoegen aan checkout-form: Ik heb geen mobielnummer en ik kom een dongle halen</li>
               <li>21% BTW toevoegen aan de factuur wanneer het contract bij een klant hoor die een bedrijf heeft</li>
+              <li>Toevoegen van een logging tabel om in te kunnen zien wat er wanneer gebeurt is (Spatie/ActivityLog)</li>
             </ul>
           </v-flex>
         </v-card>
@@ -106,8 +109,8 @@ export default class Index extends Vue {
     return p;
   }
 
-  get totalProfit(){
-    return this.realizedProfit + this.potentialExtraProfit
+  get totalProfit() {
+    return this.realizedProfit + this.potentialExtraProfit;
   }
 
   async mounted() {
