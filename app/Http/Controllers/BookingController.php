@@ -7,6 +7,7 @@ use App\Models\Contract;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 use App\Mail\BookingComplete;
+use Mollie\Laravel\Facades\Mollie;
 use Illuminate\Support\Facades\Mail;
 
 class BookingController extends Controller
@@ -39,8 +40,25 @@ class BookingController extends Controller
         $contract = Contract::create(array_merge($request->contract, ['customer_id' => $customer->id]));
         $contract->units()->sync($this->getSyncArray($request->units));
 
-        Mail::to($customer->email)->bcc(config('mail.from.address'))->queue(new BookingComplete($customer, $contract));
+        $payment = Mollie::api()->payments()->create([
+            'amount' => [
+                'currency' => 'EUR',
+                'value' => '10.00', // You must send the correct number of decimals, thus we enforce the use of strings
+            ],
+            'description' => 'My first API payment',
+            // 'webhookUrl' => route('webhooks.mollie'),
+            'redirectUrl' => config('app.booking_complete_url'),
+        ]);
 
+        $payment = Mollie::api()->payments()->get($payment->id);
+
+        // redirect customer to Mollie checkout page
+        return ['success' => true, 'payment_url' => $payment->getCheckoutUrl()];
+
+        // move this to a separate route and call if via the mollie api
+        if ($payment->isPaid()){
+            Mail::to($customer->email)->bcc(config('mail.from.address'))->queue(new BookingComplete($customer, $contract));
+        }
         return ["success" => true, 'redirect_url' => config('app.booking_complete_url')];
     }
 
@@ -51,5 +69,10 @@ class BookingController extends Controller
             $contractUnitPrice[$pu['id']] = ['price' => $pu['price']];
         };
         return $contractUnitPrice;
+    }
+
+    public function preparePayment()
+    {
+//
     }
 }

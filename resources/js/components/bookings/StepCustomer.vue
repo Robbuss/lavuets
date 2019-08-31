@@ -201,7 +201,7 @@
                   large
                   flat
                   class="primary"
-                >Verzenden</v-btn>
+                >Naar betalen</v-btn>
               </v-flex>
             </v-layout>
           </v-flex>

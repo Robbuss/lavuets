@@ -14,6 +14,7 @@ Route::get('/invoice-preview', function(){
    $invoice = \App\Models\Invoice::first();
    return view('invoice', compact('invoice'));
 });
+Route::name('webhooks.mollie')->post('webhooks/mollie', 'MollieWebhookController@handle');
 Route::fallback(function() {
    return view('index'); // blade component with vue router init 
 });

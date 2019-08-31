@@ -108,7 +108,7 @@ export default class Booking extends Vue {
         contract: this.contract,
         units: this.contract.units
       });
-      window.location.href = r.data.redirect_url;
+      window.location.href = r.data.payment_url;
     } catch (e) {
       console.log("something went wrong");
     }
