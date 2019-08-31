@@ -69,7 +69,9 @@
               <li>Mobiel nummer aan klanten toevoegen voor toegang</li>
               <li>Optie toevoegen aan checkout-form: Ik heb geen mobielnummer en ik kom een dongle halen</li>
               <li>21% BTW toevoegen aan de factuur wanneer het contract bij een klant hoor die een bedrijf heeft</li>
-              <li>Toevoegen van een logging tabel om in te kunnen zien wat er wanneer gebeurt is (Spatie/ActivityLog)</li>
+              <li>Toevoegen van een logging tabel om in te kunnen zien wat er wanneer gebeurd is (Spatie/ActivityLog)</li>
+              <li>Ondersteuning voor meerdere boxes toevoegen aan checkout scherm</li>
+              <li>Zorgen dat er geen datum in het verleden geselecteerd kan worden in checkout scherm</li>
             </ul>
           </v-flex>
         </v-card>
