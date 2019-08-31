@@ -65,6 +65,13 @@
                 <v-list-tile-title>{{ chosen.name }}</v-list-tile-title>
                 <v-list-tile-sub-title>{{ chosen.size }}m3 voor €{{ chosen.price }} per maand</v-list-tile-sub-title>
               </v-list-tile-content>
+
+              <v-list-tile-action @click="pickBox(chosen)">
+                <v-btn icon color="grey--text">
+                  <v-icon>delete</v-icon>
+                </v-btn>
+              </v-list-tile-action>
+
             </v-list-tile>
           </template>
 
