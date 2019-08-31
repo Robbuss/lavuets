@@ -1,6 +1,9 @@
 let webpack = require("webpack");
 const { VueLoaderPlugin } = require("vue-loader");
 const VuetifyLoaderPlugin = require("vuetify-loader/lib/plugin")
+// const fs = require('fs')
+// const dotenv = require('dotenv').config();
+
 let path = require("path");
 const utils = {
     resolve: function (dir) {

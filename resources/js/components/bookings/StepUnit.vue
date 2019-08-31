@@ -9,7 +9,11 @@
           <v-item-group v-model="window" mandatory tag="v-flex">
             <v-item v-for="(n, k) in units" :key="k+'1'">
               <div slot-scope="{ active, toggle }">
-                <v-list-tile :input-value="active" @click="toggle">
+                <v-list-tile
+                  :input-value="active"
+                  @click="toggle"
+                  :class="{'primary white--text' : unitChecked(n)}"
+                >
                   <v-list-tile-content>
                     <v-list-tile-title>{{ n[0].size }} m3</v-list-tile-title>
                   </v-list-tile-content>
@@ -82,16 +86,20 @@ export default class StepUnit extends Vue {
   @Prop()
   contract: any;
 
-  @Watch('contract.units')
-  onChosenUnitsChanged(){
-    this.error ? this.error = !this.error : false;
+  @Watch("contract.units")
+  onChosenUnitsChanged() {
+    this.error ? (this.error = !this.error) : false;
   }
 
   private window: number = 0;
   private error: boolean = false;
 
-  get length() {
-    return Object.keys(this.units).length;
+  unitChecked(units: any){
+    for(let i = 0; i < units.length; i++){
+      if(this.contract.units.indexOf(units[i]) > -1){
+        return true;
+      }
+    }
   }
 
   pickBox(unit: any) {

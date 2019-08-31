@@ -14,11 +14,7 @@
       </v-stepper-step>
 
       <v-stepper-content step="1">
-        <v-layout row wrap>
-          <v-flex xs6 sm4 pa-1>
-            <StepLocation :count="count" @done="locationDone($event)"></StepLocation>
-          </v-flex>
-        </v-layout>
+        <StepLocation :count="count" @done="locationDone($event)"></StepLocation>
       </v-stepper-content>
 
       <v-stepper-step :complete="step > 2" step="2" @click="step > 2 ? step = 2 : false">
@@ -68,7 +64,6 @@ export default class Booking extends Vue {
   private count: number = 0;
   private units: any = [];
   private location: string = "";
-  public chosenUnits: any = [];
   private working: boolean = false;
   private customer: any = {
     id: null,
@@ -91,7 +86,6 @@ export default class Booking extends Vue {
   };
 
   async mounted() {
-    // create a contract earlier and add units from StepUnits (chosenUnits) to Contracts
     const r = (await axios.post("/api/book-data")).data;
     this.units = r.units;
     this.count = r.count;
@@ -108,11 +102,16 @@ export default class Booking extends Vue {
 
   async completeOrder() {
     this.working = true;
-    await axios.post("/api/booking/create", {
-      customer: this.customer,
-      contract: this.contract,
-      units: this.contract.units
-    });
+    try {
+      const r = await axios.post("/api/booking/create", {
+        customer: this.customer,
+        contract: this.contract,
+        units: this.contract.units
+      });
+      window.location.href = r.data.redirect_url;
+    } catch (e) {
+      console.log("something went wrong");
+    }
     this.working = false;
   }
 }

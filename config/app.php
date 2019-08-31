@@ -15,6 +15,8 @@ return [
 
     'name' => env('APP_NAME', 'Laravel'),
 
+    'booking_complete_url' => env('BOOKING_COMPLETE_URL', '/booking-finished'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment

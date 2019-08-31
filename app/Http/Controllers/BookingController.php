@@ -6,6 +6,8 @@ use App\Models\Unit;
 use App\Models\Contract;
 use App\Models\Customer;
 use Illuminate\Http\Request;
+use App\Mail\BookingComplete;
+use Illuminate\Support\Facades\Mail;
 
 class BookingController extends Controller
 {
@@ -33,14 +35,15 @@ class BookingController extends Controller
     public function create(Request $request)
     {
         $customer = Customer::create($request->customer);
-        
+
         $contract = Contract::create(array_merge($request->contract, ['customer_id' => $customer->id]));
         $contract->units()->sync($this->getSyncArray($request->units));
 
+        Mail::to($customer->email)->bcc(config('mail.from.address'))->queue(new BookingComplete($customer, $contract));
 
-        return ["success" => true];
+        return ["success" => true, 'redirect_url' => config('app.booking_complete_url')];
     }
-    
+
     public function getSyncArray($priceArray = [])
     {
         $contractUnitPrice = [];

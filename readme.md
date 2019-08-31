@@ -18,6 +18,10 @@ Starting point to create a webapp with:
 
 Uses Laravel passport to authenticate
 
+
+Task scheduling
+* * * * * cd /path-to-your-project && php artisan schedule:run >> /dev/null 2>&1
+
 ## Getting started
 
 Clone the repository and copy the .env.example to .env file to connect to your database. Run ``` composer install ``` and ```npm install```. You should be connected to a database. Run ```php artisan migrate``` to create the tables.  
