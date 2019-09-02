@@ -97,11 +97,12 @@ class InvoiceController extends Controller
 
     public function generatePdf(Invoice $invoice)
     {
-        return (new PdfGenerator($invoice))->generate();
+        // this does not return a pdf atm. We should find the file and retrieve it in a separete function.
+        return (new PdfGenerator($invoice));
     }
 
     public function generateInvoices(Request $request)
     {
-        return (new InvoiceGenerator($request->contract_id, $request->note))->generate();
+        return (new InvoiceGenerator($request->contract_id, $request->note));
     }
 }

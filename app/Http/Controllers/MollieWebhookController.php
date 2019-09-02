@@ -20,7 +20,7 @@ class MollieWebhookController extends Controller
             // send a mail to the customer
             Mail::to($payment->customer->email)->bcc(config('mail.from.address'))->queue(new BookingComplete($payment));
 
-            return ["success" => true, 'redirect_url' => config('app.booking_complete_url')];
+            return ["success" => true];
         }
     }
 }

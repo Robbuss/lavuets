@@ -56,7 +56,8 @@
           </v-toolbar>
           <v-flex pa-3>
             <ul>
-              <li>Inhoud van de mails maken (contract toevoegen etc)</li>
+              <li>Contract padding fixen op PDF</li>
+              <li>Contract en Invoice generation fixen</li>
               <li>Periodes toevoegen aan contract: per week, per kwartaal, per halfjaar, per jaar</li>
               <li>Facturen genereren op basis van bovenstaande perioden</li>
               <li>De dagelijkse check of er facturen verzonden moeten worden laten werken met bovenstaande perioden</li>
@@ -67,7 +68,6 @@
               <li>Toevoegen van een logging tabel om in te kunnen zien wat er wanneer gebeurd is (Spatie/ActivityLog)</li>
               <li>Als een contract uitgeschakeld wordt, geef de units dan weer vrij om te verhuren.</li>
               <li>Misschien moet er een aparte renew property gemaakt worden</li>
-              <li>Maak een payments tabel</li>
             </ul>
           </v-flex>
         </v-card>

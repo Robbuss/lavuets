@@ -1,5 +1,8 @@
 <?php
 
+use App\Utils\PdfGenerator;
+use Carbon\Carbon;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,6 +16,10 @@
 Route::get('/invoice-preview', function(){
    $invoice = \App\Models\Invoice::first();
    return view('invoice', compact('invoice'));
+});
+Route::get('/contract-preview', function(){
+   $contract = App\Models\Invoice::first();
+   return (new PdfGenerator($contract))->returnPdf();
 });
 Route::post('/webhooks/mollie', 'MollieWebhookController@handle');
 

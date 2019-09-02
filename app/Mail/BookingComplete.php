@@ -30,10 +30,6 @@ class BookingComplete extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.bookingcomplete')->with([
-            'customer' => $this->payment->customer,
-            'contract' => $this->payment->contract,
-            'units' => $this->payment->contract->units,
-        ]);
+        return $this->view('emails.bookingcomplete'); // bijlagen toevoegen
     }
 }

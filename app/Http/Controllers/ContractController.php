@@ -71,7 +71,7 @@ class ContractController extends Controller
         $contract = Contract::create($request->except(['units']));
         $contract->units()->sync($this->getSyncArray($request->units));
 
-        
+
         return ['id' => $contract->id];
     }
 
@@ -126,5 +126,18 @@ class ContractController extends Controller
             $contractUnitPrice[$pu['id']] = ['price' => $pu['price']];
         };
         return $contractUnitPrice;
+    }
+
+    public function getPdf(Contract $contract)
+    {
+        $content = file_get_contents(storage_path('app/' . $contract->customer_id . '/') . 'huurcontract-opslagmagazijn.pdf');
+        if (!$content)
+            return ["success" => false];
+
+        return [
+            'content' => base64_encode($content),
+            'mime' => 'application/pdf',
+            'extension' => 'pdf'
+        ];
     }
 }
