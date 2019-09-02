@@ -24,7 +24,8 @@ class ContractController extends Controller
                         'customer_id' => $q->customer_id,
                         'customer_name' => $q->customer->name,
                         'company_name' => $q->customer->company_name,
-                        'active' => $q->active,
+                        'deactivated_at' => $q->deactivated_at,
+                        'auto_renew' => $q->auto_renew,
                         'payment_method' => $q->payment_method,
                         'units' => $q->units->map(function ($q) {
                             return [
@@ -130,9 +131,11 @@ class ContractController extends Controller
 
     public function getPdf(Contract $contract)
     {
-        $content = file_get_contents(storage_path('app/' . $contract->customer_id . '/') . 'huurcontract-opslagmagazijn.pdf');
-        if (!$content)
-            return ["success" => false];
+        $file = storage_path('app/' . $contract->customer_id . '/') . 'huurcontract-opslagmagazijn.pdf';
+        if (!file_exists($file))
+            return ["success" => false, "message" => "Er is geen huurcontract gevonden..."];
+    
+            $content = file_get_contents($file);
 
         return [
             'content' => base64_encode($content),

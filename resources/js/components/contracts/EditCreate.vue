@@ -91,12 +91,6 @@
                 </h6>
               </v-flex>
               <v-flex xs12 sm6>
-                <h6 class="headline" v-if="showEndDate">
-                  Kies een
-                  <span class="font-weight-black">einddatum</span>
-                </h6>
-              </v-flex>
-              <v-flex xs12 sm6>
                 <v-date-picker
                   :rules="[v => !!v || 'Je moet een startdatum kiezen']"
                   required

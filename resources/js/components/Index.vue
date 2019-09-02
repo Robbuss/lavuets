@@ -67,7 +67,6 @@
               <li>21% BTW toevoegen aan de factuur wanneer het contract bij een klant hoort die een bedrijf heeft</li>
               <li>Toevoegen van een logging tabel om in te kunnen zien wat er wanneer gebeurd is (Spatie/ActivityLog)</li>
               <li>Als een contract uitgeschakeld wordt, geef de units dan weer vrij om te verhuren.</li>
-              <li>Misschien moet er een aparte renew property gemaakt worden</li>
             </ul>
           </v-flex>
         </v-card>

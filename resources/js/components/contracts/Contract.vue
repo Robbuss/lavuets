@@ -8,6 +8,12 @@
               <v-toolbar-title>{{ contract.customer.name }}</v-toolbar-title>
               <v-spacer></v-spacer>
               <v-tooltip bottom>
+                <v-btn icon slot="activator" @click="download">
+                  <v-icon>insert_drive_file</v-icon>
+                </v-btn>
+                <span>Contract downloaden</span>
+              </v-tooltip>
+              <v-tooltip bottom>
                 <v-btn icon @click="dialog=!dialog" slot="activator">
                   <v-icon>edit</v-icon>
                 </v-btn>
@@ -71,9 +77,32 @@
           </v-flex>
         </v-layout>
         <v-layout row wrap>
-          <v-flex xs12>
+          <v-flex xs6>
             <p class="font-weight-bold pa-0 ma-0">De status van dit contract</p>
-            <v-switch :disabled="!contract.active" class="pa-0" v-model="contract.active" :label="contract.active ? 'Dit contract is actief' : 'Dit contract is niet actief'" color="green"></v-switch>
+            <v-switch
+              :disabled="!isActive"
+              class="pa-0"
+              v-model="isActive"
+              :label="!contract.deactivated_at ? 'Dit contract is actief' : 'Gedeactiveerd op ' + contract.deactivated_at"
+              color="green"
+            ></v-switch>
+          </v-flex>
+          <v-flex xs6>
+            <p class="font-weight-bold pa-0 ma-0">Automatisch herfacturen</p>
+            <v-switch
+              class="pa-0"
+              v-model="contract.auto_renew"
+              :label="contract.auto_renew ? 'Er wordt elke periode automatisch gefactureerd': 'Automatisch hernieuwen staat uit'"
+              color="green"
+            ></v-switch>
+          </v-flex>
+        </v-layout>
+        <v-layout row wrap>
+          <v-flex xs12>
+            <v-alert
+              type="info"
+              :value="!isActive && contract.auto_renew"
+            >Er wordt nog 1x een factuur verstuurd over X dagen. Deze Herfacturatie optie wordt automagisch uitgeschakeld.</v-alert>
           </v-flex>
         </v-layout>
         <v-layout row wrap>
@@ -87,25 +116,28 @@
         <v-toolbar class="primary" dark>
           <v-toolbar-title>Contract deactiveren?</v-toolbar-title>
         </v-toolbar>
-          <v-layout row wrap>
-            <v-flex xs12 pa-3>
-              <h3 class="headline primary--text">Deactiveren contract</h3>
-              <p>
-                Weet je zeker dat je het contract wil deactiveren? Je kunt het contract daarna niet meer activeren!
-                Je heft met deze actie namelijk de toestemming van de klant op. Je zult een nieuw contract moeten maken wanneer dit een fout is.
-              </p>
-              <p>
-                Voor gedeactiveerde contract wordt niet meer gecontroleerd of er nog facturen open staan en of deze verzonden dienen te worden
-              </p>
-              <p>
-                De boxen die bij dit contract horen kunnen weer verhuurd worden.
-              </p>
-              <v-btn color="red" dark @click="deactivate">Zeker weten</v-btn>
-              <v-btn color="grey lighten-3" @click="showWarning = !showWarning; contract.active = true">Nee, laat maar</v-btn>
-            </v-flex>
-          </v-layout>              
+        <v-layout row wrap>
+          <v-flex xs12 pa-3>
+            <h3 class="headline primary--text">Deactiveren contract</h3>
+            <p>
+              Weet je zeker dat je het contract wil deactiveren? Je kunt het contract daarna niet meer activeren!
+              Je heft met deze actie namelijk de toestemming van de klant op. Je zult een nieuw contract moeten maken wanneer dit een fout is.
+            </p>
+            <p>Voor gedeactiveerde contract wordt niet meer gecontroleerd of er nog facturen open staan en of deze verzonden dienen te worden</p>
+            <p>De boxen die bij dit contract horen kunnen weer verhuurd worden.</p>
+            <v-btn color="red" dark @click="deactivate">Zeker weten</v-btn>
+            <v-btn
+              color="grey lighten-3"
+              @click="showWarning = !showWarning; contract.deactivated_at = null"
+            >Nee, laat maar</v-btn>
+          </v-flex>
+        </v-layout>
       </v-card>
     </v-dialog>
+    <v-snackbar v-model="snackbar.show">
+      {{ snackbar.message }}
+      <v-btn color="pink" text @click="snackbar = false">Close</v-btn>
+    </v-snackbar>
   </v-container>
 </template>
 
@@ -115,6 +147,9 @@ import Invoices from "../invoices/Invoices.vue";
 import EditCreate from "./EditCreate.vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
 import axios from "js/axios";
+import { base64StringToBlob } from "blob-util";
+const saveAs: any = require("file-saver");
+import * as moment from "moment";
 
 @Component({
   components: {
@@ -129,13 +164,36 @@ export default class SingleContract extends Vue {
   private dialog: boolean = false;
   private editDefaultNote: boolean = false;
   private showWarning: boolean = false;
+  private snackbar: any = {
+    show: false,
+    message: ""
+  };
 
-  @Watch('contract.active')
-  onActiveChanged(newval: boolean, oldval: boolean){
-    if(oldval)
-      this.showWarning = true;
+  get isActive() {
+    if (!this.contract) return;
+    return this.contract.deactivated_at ? false : true; //v-switch wont work with a date and null so convert to boolean
   }
 
+  set isActive(value: any) {
+    if (!value) this.contract.deactivated_at = moment().format("YYYY-MM-DD");
+  }
+  @Watch("contract.deactivated_at")
+  onActiveChanged(newval: boolean, oldval: boolean) {
+    if (oldval === null) this.showWarning = true;
+  }
+
+  @Watch("contract.auto_renew")
+  onRenewChanged(newval: boolean, oldval: boolean) {
+    if (oldval !== undefined) this.saveContract();
+  }
+
+  @Watch("snackbar.show")
+  onSnackbarChanged(newval: boolean, oldval: boolean) {
+    if (oldval !== undefined) {
+      let t = setTimeout(()=> this.snackbar.show = false, 4000);
+      clearTimeout(t)
+    }
+  }
   async mounted() {
     await this.getData();
     this.loading = false;
@@ -155,7 +213,7 @@ export default class SingleContract extends Vue {
     this.editDefaultNote = !this.editDefaultNote;
   }
 
-  async saveContract(){
+  async saveContract() {
     axios.post("/api/contracts/" + this.contract.id, this.contract);
   }
 
@@ -169,7 +227,24 @@ export default class SingleContract extends Vue {
     }
   }
 
-  async deactivate(){
+  async download() {
+    const pdf = ((await axios.post(
+      "/api/contracts/" + this.$route.params.id + "/pdf"
+    )) as any).data;
+    if (!pdf.success) {
+      this.showSnackbar(pdf.message);
+      return
+    }
+    var blob = base64StringToBlob(pdf.content, pdf.mime);
+    saveAs(blob, "huurcontract." + pdf.extension);
+  }
+
+  showSnackbar(message: string) {
+    this.snackbar.show = true;
+    this.snackbar.message = message;
+  }
+
+  async deactivate() {
     this.saveContract();
     this.showWarning = false;
   }

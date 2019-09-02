@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Contract extends Model
 {
     use SoftDeletes;
-    protected $fillable = ['customer_id', 'active', 'payment_method', 'default_note', 'start_date'];
+    protected $fillable = ['customer_id', 'deactivated_at', 'auto_renew', 'payment_method', 'default_note', 'start_date'];
     protected $casts = [
-        'active' => 'boolean',
+        'auto_renew' => 'boolean',
     ];
 
     public function customer()
@@ -26,5 +26,9 @@ class Contract extends Model
     public function invoices()
     {
         return $this->hasMany(Invoice::class);
+    }
+
+    public function scopeInvoicableContracts(){
+        // make sure this returns the invoicableContracts; by check active and renew
     }
 }

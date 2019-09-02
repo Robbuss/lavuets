@@ -36,10 +36,8 @@
           >{{ props.item.customer_name }}</td>
           <td>{{ props.item.company_name }}</td>
           <td>{{ props.item.start_date }}</td>
-          <td>
-            <span v-if="props.item.active">Actief</span>
-            <span v-else>Niet actief</span>
-          </td>
+          <td>{{ props.item.deactivated_at ? props.item.deactivated_at : "Actief" }}</td>
+          <td>{{ props.item.auto_renew ? "Aan" : "Uit" }}</td>
           <td class="justify-center layout px-0">
             <v-icon small class="mr-2" @click="editItem(props.item)">edit</v-icon>
             <v-icon small @click="deleteItem(props.item)">delete</v-icon>
@@ -82,6 +80,7 @@ export default class Contracts extends Vue {
     { text: "Bedrijfsnaam", value: "company_name" },
     { text: "Ingangsdatum", value: "start_date" },
     { text: "Status", value: "active" },
+    { text: "Hernieuwen", value: "auto_renew" },
     { text: "Actions", value: "name", sortable: false }
   ];
   private pagination: any = {

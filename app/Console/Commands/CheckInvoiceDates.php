@@ -41,8 +41,8 @@ class CheckInvoiceDates extends Command
      */
     public function handle()
     {
-        // get all the active contracts
-        $contracts = Contract::where('active', 1)->with('invoices')->get();
+        // get all the contract where auto renew is on contracts
+        $contracts = Contract::invoicableContracts()->with('invoices')->get();
 
         // for each contract, check if a new invoice should be send. 
         $invoicesDue = [];
