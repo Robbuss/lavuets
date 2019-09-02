@@ -10,8 +10,8 @@ use Illuminate\Support\Facades\Storage;
 class PdfGenerator
 {
     public $model;
-    private $filepath;
-    private $filename;
+    public $filepath;
+    public $filename;
 
     public function __construct($model)
     {
@@ -54,6 +54,8 @@ class PdfGenerator
             ->setOptions(['defaultFont' => 'sans-serif']);
 
         $pdf->save($this->filepath . $this->filename);
+
+        $this->file = file_get_contents($this->filepath . $this->filename);
     }
 
     // Should make a different class or function for retrieving pdfs, instead of recreating them 

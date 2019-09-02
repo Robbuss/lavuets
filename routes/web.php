@@ -22,6 +22,7 @@ Route::get('/contract-preview', function(){
    return (new PdfGenerator($contract))->returnPdf();
 });
 Route::post('/webhooks/mollie', 'MollieWebhookController@handle');
+// Route::get('/webhooks/mollie', 'MollieWebhookController@handle');
 
 Route::fallback(function() {
    return view('index'); // blade component with vue router init 
