@@ -1,6 +1,6 @@
 <template>
   <v-flex>
-    <booking-header></booking-header>
+    <booking-header :step="step"></booking-header>
 
     <v-stepper v-model="step" vertical>
       <v-stepper-step
