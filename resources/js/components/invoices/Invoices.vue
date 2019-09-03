@@ -18,12 +18,6 @@
           </v-btn>
           <span>Alle facturen van alle klanten bekijken</span>
         </v-tooltip>
-        <v-tooltip bottom>
-          <v-btn icon slot="activator" @click="$emit('generate')">
-            <v-icon>insert_drive_file</v-icon>
-          </v-btn>
-          <span>Alle facturen genereren</span>
-        </v-tooltip>
         <v-tooltip bottom v-if="contract && contract.customer_id">
           <v-btn icon slot="activator" @click="dialog = true">
             <v-icon>add</v-icon>

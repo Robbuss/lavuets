@@ -58,7 +58,12 @@
         }
 
         .address-bar {
-            height: 250px;
+            height:255px;
+            width: 100%;
+        }
+
+        .content-bar {
+            min-height: 15px;
             width: 100%;
         }
 
@@ -147,18 +152,14 @@
                     <li>&nbsp;</li>
                     <li>Hierna te noemen “Verhuurder”,</li>
                     <li>Vertegenwoordigd door de heer: N. van Leusden </li>
-                </ul>                
+                </ul>
             </div>
             <div class="two-column left">
                 <img class="right" src="./logo.png" width="125"></img>
             </div>
-
-            <div class="two-column left">
-
-            </div>
         </div>
-        <div style="width: 100%; float: left;">
-            <p>Verhuurder en Huurder gezamenlijk te noemen, “Partijen”. Huurder en Verhuurder zijn op {{ $contract->created_at->isoFormat('LL') }} het volgende overeen gekomen: </p>
+        <div class="content-bar">
+            <p>Huurder en Verhuurder zijn op {{ $contract->created_at->isoFormat('LL') }} het volgende overeen gekomen: </p>
             <h3 class="subtitle">Artikel 1 Gehuurde, bestemming en gebruik:</h3>
             <p>
                 Deze huurovereenkomst heeft betrekking op de huur van een opslagruimte per {{ \Carbon\Carbon::parse($contract->start_date)->isoFormat('LL') }} op de Keulschevaart 15 B te Breukelen, bekend als<br>
@@ -183,12 +184,12 @@
                 Huurder verklaart de Algemene Voorwaarden te hebben ontvangen en deze te zullen naleven.
             </p>
             <ul>
-                    <li>Huurder {{ $customer->name }}</li>
-                    <li>Adres: {{ $customer->postal_code }} {{ $customer->city }}</li>
-                    <li>Telefoonnummer: {{ $customer->phone }}</li>
-                    <li>Bankrekeningnummer: {{ $customer->iban }}</li>
-                    <li>Heeft digitaal ondertekend op {{ $contract->created_at->isoFormat('LL') }} via www.opslagmazijn.nl</li>
-                </ul>
+                <li>Huurder {{ $customer->name }}</li>
+                <li>Adres: {{ $customer->postal_code }} {{ $customer->city }}</li>
+                <li>Telefoonnummer: {{ $customer->phone }}</li>
+                <li>Bankrekeningnummer: {{ $customer->iban }}</li>
+                <li>Heeft digitaal ondertekend op {{ $contract->created_at->isoFormat('LL') }} via www.opslagmazijn.nl</li>
+            </ul>
             <p>
             </p>
         </div>

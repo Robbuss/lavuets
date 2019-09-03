@@ -134,7 +134,7 @@
             </div>
         </div>
         <div class="title-bar default-padding">
-            Factuur {{ $invoice->ref }} <span class="right">Periode {{ $invoice->start_date }} tot {{ $invoice->end_date }}</span>
+            {{ $invoice->ref }} <span class="right">Periode {{ \Carbon\Carbon::parse($invoice->start_date)->isoFormat('LL') }} tot {{  \Carbon\Carbon::parse($invoice->end_date)->isoFormat('LL') }}</span>
             {{ $invoice->customer->name }}
         </div>
         <div class="customer-bar">
@@ -184,13 +184,7 @@
             <div class="col4">€{{ $total['price'] }}</div>
         </div>
         <div class="footer">
-            <div class="top">
-                @if($invoice->contract->payment_method === 'factuur')
-                Graag het bedrag binnen 14 dagen overmaken op onderstaande rekening.
-                @else
-                Het bedrag wordt automatisch van uw rekening afgeschreven
-                @endif
-            </div>
+
             <div class="bottom">
                 Rekeningnummer Rabobank: NL35 RABO 0168 4940 51 t.n.v. Opslag magazijn
             </div>

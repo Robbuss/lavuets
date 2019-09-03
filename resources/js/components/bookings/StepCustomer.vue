@@ -10,7 +10,7 @@
                   <h4 class="grey--text headline text-xs-left">Details</h4>
                 </v-flex>
 
-                <v-flex xs12>
+                <v-flex xs12 v-if="false">
                   Ik huur ten minste voor een periode van:
                   <v-select
                     v-model="contract.period"
@@ -18,6 +18,8 @@
                     box
                     label="Kies een duur"
                     :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
+                    :persistent-hint="contract.period ? true : false"
+                    :hint="'Het totaalbedrag voor deze periode zal elke ' + contract.period + ' in rekening worden gebracht.'"
                     required
                   ></v-select>
                 </v-flex>
@@ -203,7 +205,7 @@
                   Prijs per maand
                   <span class="primary--text">€ {{ calculatePrice }} ,-</span>
                 </h3>
-                <h3 class="subheading grey--text">
+                <h3 class="subheading grey--text" v-if="false">
                   Voor de duur van
                   <span
                     class="primary--text"

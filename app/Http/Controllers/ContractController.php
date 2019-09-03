@@ -25,7 +25,8 @@ class ContractController extends Controller
                         'customer_name' => $q->customer->name,
                         'company_name' => $q->customer->company_name,
                         'deactivated_at' => $q->deactivated_at,
-                        'auto_renew' => $q->auto_renew,
+                        'period' => $q->period,
+                        'method' => $q->method,
                         'payment_method' => $q->payment_method,
                         'units' => $q->units->map(function ($q) {
                             return [
@@ -115,6 +116,7 @@ class ContractController extends Controller
     public function delete(Contract $contract)
     {
         $contract->invoices()->delete();
+        $contract->units()->detach();
         $contract->delete();
 
         return ['success' => true];
@@ -135,7 +137,7 @@ class ContractController extends Controller
         if (!file_exists($file))
             return ["success" => false, "message" => "Er is geen huurcontract gevonden..."];
     
-            $content = file_get_contents($file);
+        $content = file_get_contents($file);
 
         return [
             'content' => base64_encode($content),

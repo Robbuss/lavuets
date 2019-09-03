@@ -95,14 +95,18 @@ class InvoiceController extends Controller
         return ['success' => true];
     }
 
-    public function generatePdf(Invoice $invoice)
+    public function getPdf(Invoice $invoice)
     {
-        // this does not return a pdf atm. We should find the file and retrieve it in a separete function.
-        return (new PdfGenerator($invoice));
-    }
+        $file = storage_path('app/' . $invoice->customer_id . '/') .$invoice->ref . '.pdf';
+        if (!file_exists($file))
+            return ["success" => false, "message" => "Er is geen Factuur gevonden gevonden..."];
+    
+        $content = file_get_contents($file);
 
-    public function generateInvoices(Request $request)
-    {
-        return (new InvoiceGenerator($request->contract_id, $request->note));
+        return [
+            'content' => base64_encode($content),
+            'mime' => 'application/pdf',
+            'extension' => 'pdf'
+        ];
     }
 }

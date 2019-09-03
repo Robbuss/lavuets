@@ -87,26 +87,17 @@
               color="green"
             ></v-switch>
           </v-flex>
-          <v-flex xs6>
-            <p class="font-weight-bold pa-0 ma-0">Automatisch herfacturen</p>
-            <v-switch
-              class="pa-0"
-              v-model="contract.auto_renew"
-              :label="contract.auto_renew ? 'Er wordt elke periode automatisch gefactureerd': 'Automatisch hernieuwen staat uit'"
-              color="green"
-            ></v-switch>
-          </v-flex>
         </v-layout>
         <v-layout row wrap>
           <v-flex xs12>
             <v-alert
               type="info"
-              :value="!isActive && contract.auto_renew"
+              :value="!isActive"
             >Er wordt nog 1x een factuur verstuurd over X dagen. Deze Herfacturatie optie wordt automagisch uitgeschakeld.</v-alert>
           </v-flex>
         </v-layout>
         <v-layout row wrap>
-          <invoices :contract="contract" @generate="generate"></invoices>
+          <invoices :contract="contract"></invoices>
         </v-layout>
       </v-flex>
     </v-layout>
@@ -182,11 +173,6 @@ export default class SingleContract extends Vue {
     if (oldval === null) this.showWarning = true;
   }
 
-  @Watch("contract.auto_renew")
-  onRenewChanged(newval: boolean, oldval: boolean) {
-    if (oldval !== undefined) this.saveContract();
-  }
-
   @Watch("snackbar.show")
   onSnackbarChanged(newval: boolean, oldval: boolean) {
     if (oldval !== undefined) {
@@ -195,15 +181,6 @@ export default class SingleContract extends Vue {
     }
   }
   async mounted() {
-    await this.getData();
-    this.loading = false;
-  }
-
-  async generate() {
-    this.loading = true;
-    await axios.post("/api/invoices/generate", {
-      contract_id: this.contract.id
-    });
     await this.getData();
     this.loading = false;
   }
@@ -231,7 +208,7 @@ export default class SingleContract extends Vue {
     const pdf = ((await axios.post(
       "/api/contracts/" + this.$route.params.id + "/pdf"
     )) as any).data;
-    if (!pdf.success) {
+    if (pdf.success === false) {
       this.showSnackbar(pdf.message);
       return
     }

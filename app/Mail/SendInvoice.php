@@ -8,7 +8,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class SentInvoice extends Mailable
+class SendInvoice extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -30,8 +30,12 @@ class SentInvoice extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.sentinvoice')->with([
+
+        return $this->view('emails.sendinvoice')->with([
             'invoice' => $this->invoice,
-        ]);
+        ])->attach(
+            storage_path('app/' . $this->invoice->customer_id . '/') . $this->invoice->ref . '.pdf',
+            ['mime' => 'application/pdf'],
+        )->subject('Je nieuwe factuur');
     }
 }

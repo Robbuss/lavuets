@@ -82,7 +82,6 @@ export default class Booking extends Vue {
   private contract: any = {
     units: [],
     start_date: "",
-    period: ""
   };
 
   async mounted() {

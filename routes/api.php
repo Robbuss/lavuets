@@ -45,8 +45,7 @@ Route::middleware('auth:api')->group(function () {
 
     Route::post('/invoices', 'InvoiceController@index');
     Route::post('/invoices/create', 'InvoiceController@create');
-    Route::post('/invoices/generate', 'InvoiceController@generateInvoices');
-    Route::get('/invoices/{invoice}/pdf', 'InvoiceController@generatePdf');
+    Route::get('/invoices/{invoice}/pdf', 'InvoiceController@getPdf');
     Route::post('/invoices/{invoice}', 'InvoiceController@update');
     Route::post('/invoices/{invoice}/delete', 'InvoiceController@delete');    
 });

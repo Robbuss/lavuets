@@ -94,11 +94,11 @@
                 </p>
 
                 <p>
-                    In de bijlage vind je jouw huurcontract, je eerste factuur en onze algemene voorwaarden.
+                    In de bijlage vind je jouw nieuwe factuur.
                 </p>
         
                 <p>
-                    Lees de algemene voorwaarden goed door. Wanneer je vragen hebt, neem dan contact met mij op.                     
+                    Wanneer je automatische incasso hebt ingesteld, wordt het te bedrag automatisch van je rekening afgeschreven.                    
                 </p>
                 <!--[if (gte mso 9)|(IE)]>
                 </td></tr></table>

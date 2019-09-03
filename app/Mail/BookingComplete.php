@@ -14,16 +14,18 @@ class BookingComplete extends Mailable
 {
     use Queueable, SerializesModels;
     public $payment;
-    public $pdf;
+    public $contractPdf;
+    public $invoicePdf;
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($payment, $contractPdf)
+    public function __construct($payment, $contractPdf, $invoicePdf)
     {
         $this->payment = $payment;
-        $this->pdf = $contractPdf;
+        $this->contractPdf = $contractPdf;
+        $this->invoicePdf = $invoicePdf;
     }
 
     /**
@@ -34,10 +36,13 @@ class BookingComplete extends Mailable
     public function build()
     {
         return $this->view('emails.bookingcomplete')->with(['payment' => $this->payment])
-            ->attach($this->pdf, [
-                'as' => 'huurcontract.pdf',
+            ->attach($this->contractPdf, [
+                'as' => 'huurcontract-opslagmagazijn.pdf',
                 'mime' => 'application/pdf',
-            ]);
+            ])
+            ->attach($this->invoicePdf, [
+                'mime' => 'application/pdf',
+            ])->subject('Welkom bij opslagmagazijn');
             // ->attach('algemene/voorwaarden/path', [
             //     'as' => 'name.pdf',
             //     'mime' => 'application/pdf',
