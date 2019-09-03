@@ -56,9 +56,9 @@
           </v-toolbar>
           <v-flex pa-3>
             <ul>
-              <li>Mollie betaling: gegevens, prijs etc toevoegen aan betaling naar de API</li>
+              <li>Mollie recuring; customer, mandaat en recurring aanmaken</li>
               <li>Mollie mislukte betalingen afhandelen</li>
-              <li>Automatische incasso toevoegen aan mollie.</li>
+              <li>Mail server fix</li>
               <li>21% BTW toevoegen aan de factuur wanneer het contract bij een klant hoort die een bedrijf heeft</li>
             </ul>
           </v-flex>
