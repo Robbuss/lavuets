@@ -28,6 +28,8 @@ class MollieWebhookController extends Controller
             $generator = new InvoiceGenerator($payment->contract);
 
             // send a mail to the customer
+            try{
+
             Mail::to($payment->customer->email)
                 ->bcc(config('mail.from.address'))
                 ->queue(new BookingComplete(
@@ -35,6 +37,9 @@ class MollieWebhookController extends Controller
                     storage_path('app/' . $payment->contract->customer_id . '/') . 'huurcontract-opslagmagazijn.pdf',
                     storage_path('app/' . $payment->contract->customer_id . '/') . $generator->lastInvoice->ref . '.pdf',
                 ));
+            }catch(\Exception $e){
+                activity()->log('Something went wrong send mail');
+            }
 
             $generator->lastInvoice->update([
                 'sent' => true,
