@@ -51,6 +51,5 @@ class InvoicesDue extends Command
                 new InvoiceGenerator($contract, $lastInvoice);
             }
         }
-
     }
 }

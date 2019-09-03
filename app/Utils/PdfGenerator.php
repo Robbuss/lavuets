@@ -37,6 +37,7 @@ class PdfGenerator
             ->setOptions(['defaultFont' => 'sans-serif']);
 
         $pdf->save($this->filepath . $this->filename);
+        activity()->log('Invoice PDF gemaakt');
     }
 
     public function generateContract()
@@ -56,6 +57,7 @@ class PdfGenerator
         $pdf->save($this->filepath . $this->filename);
 
         $this->file = file_get_contents($this->filepath . $this->filename);
+        activity()->log('Contract PDF gemaakt');
     }
 
     // Should make a different class or function for retrieving pdfs, instead of recreating them 

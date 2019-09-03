@@ -2,9 +2,6 @@
 
 namespace App\Mail;
 
-use App\Models\Payment;
-use App\Models\Contract;
-use App\Models\Customer;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -35,6 +32,7 @@ class BookingComplete extends Mailable
      */
     public function build()
     {
+        activity()->log('Boeking voltooid verzonden naar ' . $this->payment->customer->email);
         return $this->view('emails.bookingcomplete')->with(['payment' => $this->payment])
             ->attach($this->contractPdf, [
                 'as' => 'huurcontract-opslagmagazijn.pdf',

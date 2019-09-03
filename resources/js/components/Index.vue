@@ -60,7 +60,6 @@
               <li>Mollie mislukte betalingen afhandelen</li>
               <li>Automatische incasso toevoegen aan mollie.</li>
               <li>21% BTW toevoegen aan de factuur wanneer het contract bij een klant hoort die een bedrijf heeft</li>
-              <li>Toevoegen van een logging tabel om in te kunnen zien wat er wanneer gebeurd is (Spatie/ActivityLog)</li>
             </ul>
           </v-flex>
         </v-card>

@@ -46,7 +46,12 @@ export default class NavItems extends Vue {
       icon: "people",
       link: "/u",
       text: "Gebruikers"
-    },     
+    },
+    {
+      icon: "description",
+      link: "/logs",
+      text: "Logs"
+    },           
     {
       icon: "exit_to_app",
       link: "/logout",
