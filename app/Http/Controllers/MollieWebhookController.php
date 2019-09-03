@@ -14,9 +14,7 @@ class MollieWebhookController extends Controller
 {
     public function handle(Request $request)
     {
-        // $payment = Payment::where('id', 8)->first();
-        activity()->log('Mollie webhook hit with '. $request);
-        activity()->log('Mollie webhook post id '. $request->id);
+        activity()->log('Mollie webhook post id ' . $request->id);
         $payment = Payment::where('payment_id', $request->id)->with(['customer', 'contract'])->firstOrFail();
         $molliePayment =  Mollie::api()->payments()->get($payment->payment_id);
         if ($molliePayment->isPaid()) {
@@ -28,16 +26,15 @@ class MollieWebhookController extends Controller
             $generator = new InvoiceGenerator($payment->contract);
 
             // send a mail to the customer
-            try{
-
-            Mail::to($payment->customer->email)
-                ->bcc(config('mail.from.address'))
-                ->queue(new BookingComplete(
-                    $payment->load(['customer', 'contract']),
-                    storage_path('app/' . $payment->contract->customer_id . '/') . 'huurcontract-opslagmagazijn.pdf',
-                    storage_path('app/' . $payment->contract->customer_id . '/') . $generator->lastInvoice->ref . '.pdf',
-                ));
-            }catch(\Exception $e){
+            try {
+                Mail::to($payment->customer->email)
+                    ->bcc(config('mail.from.address'))
+                    ->queue(new BookingComplete(
+                        $payment->load(['customer', 'contract']),
+                        storage_path('app/' . $payment->contract->customer_id . '/') . 'huurcontract-opslagmagazijn.pdf',
+                        storage_path('app/' . $payment->contract->customer_id . '/') . $generator->lastInvoice->ref . '.pdf',
+                    ));
+            } catch (\Exception $e) {
                 activity()->log('Something went wrong send mail');
             }
 

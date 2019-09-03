@@ -31,7 +31,7 @@ class InvoiceGenerator
             'contract_id' => $this->contract->id,
             'customer_id' => $this->contract->customer->id,
             'note' => ($this->note) ? $this->note : $this->contract->default_note,
-            'payment_status' => 'unpaid',
+            'payment_id' => null,
             'start_date' => $date,
             'end_date' => Carbon::parse($date)->{$this->contract->method}($this->contract->period)
         ]);

@@ -47,14 +47,15 @@ class BookingController extends Controller
         $contract->units()->sync($this->getSyncArray($request->units));
 
         // calculate value
+        $price = number_format($contract->units->sum('pivot.price'),2);
         // add description
         // fix webhook
         $payment = Mollie::api()->payments()->create([
             'amount' => [
                 'currency' => 'EUR',
-                'value' => '10.00', // You must send the correct number of decimals, thus we enforce the use of strings
+                'value' => (string) $price, // You must send the correct number of decimals, thus we enforce the use of strings
             ],
-            'description' => 'My first API payment',
+            'description' => 'Verhuur van opslagruimte',
             'webhookUrl' => config('app.mollie_webhook'),
             'redirectUrl' => config('app.booking_complete_url'),
         ]);
@@ -79,10 +80,5 @@ class BookingController extends Controller
             $contractUnitPrice[$pu['id']] = ['price' => $pu['price']];
         };
         return $contractUnitPrice;
-    }
-
-    public function preparePayment()
-    {
-//
     }
 }
