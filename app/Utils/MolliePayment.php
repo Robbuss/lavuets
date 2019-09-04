@@ -74,6 +74,8 @@ class MolliePayment
             'contract_id' => $this->contract->id,
             'customer_id' => $this->customer->id,
             'payment_id' => $payment->id,
+            'status' => 'pending',
+            'amount' => $this->price
         ]);
 
         // returns the mollie payment object, including a checkout url
