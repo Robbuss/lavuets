@@ -32,7 +32,6 @@ class SendInvoices extends Command
     public function __construct()
     {
         parent::__construct();
-        activity()->log('Running Crontab. Send all the overdue invoices');
     }
 
     /**
@@ -43,6 +42,7 @@ class SendInvoices extends Command
     public function handle()
     {
         $invoicesDue = Invoice::where('sent', 0)->get();
+        activity()->log('Running Crontab. Sending ' . count($invoicesDue). ' invoices');
         if (count($invoicesDue) > 0) {
             // send invoices to mail 
             foreach ($invoicesDue as $invoice) {

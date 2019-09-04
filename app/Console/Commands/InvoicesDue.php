@@ -31,7 +31,6 @@ class InvoicesDue extends Command
     public function __construct()
     {
         parent::__construct();
-        activity()->log('Running Crontab. Check what invoices are overdue');
     }
 
     /**
@@ -41,6 +40,7 @@ class InvoicesDue extends Command
      */
     public function handle()
     {
+        activity()->log('Running Crontab. Check what invoices are overdue');
         // first get all active contracts
         $contracts = Contract::whereNull('deactivated_at')->with('invoices')->get();
         foreach ($contracts as $contract) {
