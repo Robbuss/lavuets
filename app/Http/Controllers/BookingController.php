@@ -3,13 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Unit;
-use App\Models\Payment;
 use App\Models\Contract;
 use App\Models\Customer;
+use App\Utils\MolliePayment;
 use Illuminate\Http\Request;
-use App\Mail\BookingComplete;
-use Mollie\Laravel\Facades\Mollie;
-use Illuminate\Support\Facades\Mail;
 
 class BookingController extends Controller
 {
@@ -20,12 +17,11 @@ class BookingController extends Controller
      */
     public function index()
     {
-        //
-        // $free = Unit::has('contracts')->get();
         $free = Unit::doesntHave('contracts')->get();
         $grouped = $free->mapToGroups(function ($item, $key) {
             return [$item['size'] => $item];
         });
+
         return ['units' => $grouped, 'count' => $free->count()];
     }
 
@@ -46,28 +42,8 @@ class BookingController extends Controller
         ]));
         $contract->units()->sync($this->getSyncArray($request->units));
 
-        // calculate value
-        $price = number_format($contract->units->sum('pivot.price'),2);
-        // add description
-        // fix webhook
-        $payment = Mollie::api()->payments()->create([
-            'amount' => [
-                'currency' => 'EUR',
-                'value' => (string) $price, // You must send the correct number of decimals, thus we enforce the use of strings
-            ],
-            'description' => 'Verhuur van opslagruimte',
-            'webhookUrl' => config('app.mollie_webhook'),
-            'redirectUrl' => config('app.booking_complete_url'),
-        ]);
-
-        // save the payment to the database
-        Payment::create([
-            'contract_id' => $contract->id,
-            'customer_id' => $customer->id,
-            'payment_id' => $payment->id,
-        ]);
-        
-        $payment = Mollie::api()->payments()->get($payment->id);
+        // create a mollie customer, create a mollie payment and store the payment in our database. 
+        $payment = (new MolliePayment($customer, $contract, 'first'))->payment();
 
         // redirect customer to Mollie checkout page
         return ['success' => true, 'payment_url' => $payment->getCheckoutUrl()];
@@ -79,6 +55,7 @@ class BookingController extends Controller
         foreach ($priceArray as $pu) {
             $contractUnitPrice[$pu['id']] = ['price' => $pu['price']];
         };
+
         return $contractUnitPrice;
     }
 }

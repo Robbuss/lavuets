@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Invoice;
 use App\Mail\SendInvoice;
+use App\Utils\MolliePayment;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
 
@@ -44,12 +45,24 @@ class SendInvoices extends Command
         if (count($invoicesDue) > 0) {
             // send invoices to mail 
             foreach ($invoicesDue as $invoice) {
-                Mail::to($invoice->customer->email)
-                ->bcc(config('mail.from.address'))
-                ->queue(new SendInvoice($invoice));
+                // send invoice to the customer
+                try{
+
+                    Mail::to($invoice->customer->email)
+                    ->bcc(config('mail.from.address'))
+                    ->queue(new SendInvoice($invoice));
+                    activity()->log('Factuur verstuurd naar '. $invoice->customer->email);
+                }catch(\Exception $e){
+                    activity()->log('Fout tijdens verzenden factuur naar '. $invoice->customer->email);
+                }
+
+                // update the database so the invoice cannot be send again
                 $invoice->update([
                     'sent' => true
                 ]);
+
+                // charge the customers card/account via a mollie payment. 
+                (new MolliePayment($invoice->customer, $invoice->contract, 'recurring'))->payment();
             }
         }
     }

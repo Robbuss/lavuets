@@ -34,6 +34,7 @@ class MollieWebhookController extends Controller
                         storage_path('app/' . $payment->contract->customer_id . '/') . 'huurcontract-opslagmagazijn.pdf',
                         storage_path('app/' . $payment->contract->customer_id . '/') . $generator->lastInvoice->ref . '.pdf',
                     ));
+                activity()->log('Welkomsmail en eerste factuur verstuurd naar' . $payment->customer->email);
             } catch (\Exception $e) {
                 activity()->log('Something went wrong send mail');
             }

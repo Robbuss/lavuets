@@ -30,7 +30,7 @@ class SendInvoice extends Mailable
      */
     public function build()
     {
-        activity()->log('Factuur verzonden naar' . $this->invoice->customer->email);
+        activity()->log('Factuur verzonden naar ' . $this->invoice->customer->email);
         return $this->view('emails.sendinvoice')->with([
             'invoice' => $this->invoice,
         ])->attach(

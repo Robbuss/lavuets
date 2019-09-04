@@ -183,6 +183,11 @@
                       label="BTW"
                     ></v-text-field>
                   </v-flex>
+                  <v-layout row wrap>
+                    <v-flex xs12>
+                      <p>Voor bedrijven wordt 21% BTW in rekening gebracht. De BTW bedraagt: €{{ calculateVatAmount }}. Het totaal bedrag komt daarmee op: €{{ totalIncludingVat }}.</p>
+                    </v-flex>
+                  </v-layout>
                 </v-layout>
               </v-layout>
             </v-container>
@@ -203,7 +208,11 @@
                 </h3>
                 <h3 class="subheading grey--text">
                   Prijs per maand
-                  <span class="primary--text">€ {{ calculatePrice }} ,-</span>
+                  <span
+                    class="primary--text"
+                    v-if="!isCompany"
+                  >€ {{ calculatePrice }} ,-</span>
+                  <span class="primary--text" v-if="isCompany">€ {{ totalIncludingVat }} ,-</span>
                 </h3>
                 <h3 class="subheading grey--text" v-if="false">
                   Voor de duur van
@@ -213,9 +222,7 @@
                 </h3>
                 <h3 class="subheading grey--text">
                   Begin datum
-                  <span
-                    class="primary--text"
-                  >{{ formattedDate || 'Selecteer datum' }}</span>
+                  <span class="primary--text">{{ formattedDate || 'Selecteer datum' }}</span>
                 </h3>
               </v-flex>
             </v-card>
@@ -261,10 +268,9 @@ export default class StepCustomer extends Vue {
   @Prop()
   customer: any;
 
-  @Watch('contract.start_date')
-  onStartDateChanged(newval: any, oldval:any){
-    if(oldval)
-      (this.$refs.form as any).resetValidation()
+  @Watch("contract.start_date")
+  onStartDateChanged(newval: any, oldval: any) {
+    if (oldval) (this.$refs.form as any).resetValidation();
   }
 
   private valid: boolean = true;
@@ -281,7 +287,7 @@ export default class StepCustomer extends Vue {
       this.contract.start_date = moment().format("YYYY-MM-DD");
   }
 
-  get isInFuture(){
+  get isInFuture() {
     return moment().format("LL") <= this.formattedDate;
   }
 
@@ -293,6 +299,14 @@ export default class StepCustomer extends Vue {
     let price = 0;
     this.contract.units.map((x: any) => (price += x.price));
     return price;
+  }
+
+  get calculateVatAmount() {
+    return (this.calculatePrice * 0.21).toFixed(2);
+  }
+
+  get totalIncludingVat() {
+    return (this.calculatePrice * 1.21).toFixed(2);
   }
 
   get calculateSize() {

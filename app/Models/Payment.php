@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Payment extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, LogsActivity;
     protected $fillable = ['customer_id', 'contract_id', 'payment_id'];
 
     public function customer()

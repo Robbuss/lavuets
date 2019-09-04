@@ -56,9 +56,10 @@
           </v-toolbar>
           <v-flex pa-3>
             <ul>
-              <li>Mollie recuring; customer, mandaat en recurring aanmaken</li>
               <li>Mollie mislukte betalingen afhandelen</li>
               <li>Mail server fix</li>
+              <li>Babel toevoegen voor browser support</li>
+              <li>Booking form testen op mobile</li>
               <li>21% BTW toevoegen aan de factuur wanneer het contract bij een klant hoort die een bedrijf heeft</li>
             </ul>
           </v-flex>

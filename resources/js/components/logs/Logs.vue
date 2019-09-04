@@ -5,7 +5,13 @@
         <v-toolbar-title>Logs</v-toolbar-title>
         <v-spacer></v-spacer>
       </v-toolbar>
-      <v-data-table :headers="headers" :items="logs" class="elevation-1" :loading="loading" :pagination.sync="paginationSync">
+      <v-data-table
+        :headers="headers"
+        :items="logs"
+        class="elevation-1"
+        :loading="loading"
+        :pagination.sync="paginationSync"
+      >
         <template v-slot:items="props">
           <td>{{ props.item.id }}</td>
           <td>{{ props.item.log_name }}</td>
@@ -15,6 +21,7 @@
           <td>{{ props.item.causer_id }}</td>
           <td>{{ props.item.causer_type }}</td>
           <td>{{ props.item.properties }}</td>
+          <td>{{ props.item.created_at }}</td>
         </template>
         <template v-slot:no-data>
           <td colspan="100%" v-if="loading">Logs laden...</td>
@@ -37,8 +44,10 @@ export default class Logs extends Vue {
   private loading: boolean = true;
 
   private paginationSync: any = {
-    rowsPerPage: 25,
-  }
+    descending: true,
+    rowsPerPage: 250, // -1 for All",
+    sortBy: "id"
+  };
 
   private headers: any = [
     { text: "Id", align: "left", value: "id" },
@@ -49,6 +58,7 @@ export default class Logs extends Vue {
     { text: "causer_id", value: "causer_id" },
     { text: "causer_type", value: "causer_type" },
     { text: "properties", value: "properties" },
+    { text: "created_at", value: "created_at" },
   ];
 
   async mounted() {

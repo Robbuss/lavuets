@@ -16,4 +16,9 @@ class Customer extends Model
     {
         return "Klant {$eventName}";
     }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
 }
