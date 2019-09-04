@@ -31,6 +31,7 @@ class InvoicesDue extends Command
     public function __construct()
     {
         parent::__construct();
+        activity()->log('Running Crontab. Check what invoices are overdue');
     }
 
     /**

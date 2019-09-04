@@ -46,10 +46,17 @@
         :pagination.sync="pagination"
       >
         <template v-slot:items="props">
+          <td>
+            <v-chip
+              flat
+              :class="{
+            'white--text green' : props.item.payment.payment_id}"
+            >{{ props.item.payment.payment_id }}</v-chip>
+          </td>
           <td>{{ props.item.customer.name }}</td>
           <td>{{ getUnits(props.item.contract.units) }}</td>
           <td>€{{ props.item.contract.price }}</td>
-          <td>{{ props.item.payment_status }}</td>
+          <td>{{ props.item.sent }}</td>
           <td>{{ props.item.start_date }}</td>
           <td>{{ props.item.end_date }}</td>
           <td class="justify-center layout px-0">
@@ -99,10 +106,11 @@ export default class Invoices extends Vue {
     rowsPerPage: 25
   };
   private headers: any = [
+    { text: "Status", value: "payment.payment_id" },
     { text: "Naam", value: "invoice.name" },
     { text: "Producten", value: "contract.units" },
     { text: "Prijs", value: "contract.price" },
-    { text: "Status", value: "payment_status" },
+    { text: "Verzonden", value: "sent" },
     { text: "Van", value: "start_date" },
     { text: "Tot", value: "end_date" },
     { text: "Actions", sortable: false }

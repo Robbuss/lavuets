@@ -28,4 +28,9 @@ class Invoice extends Model
     {
         return $this->belongsTo(Customer::class);
     }
+
+    public function payment()
+    {
+        return $this->BelongsTo(Payment::class);
+    }
 }

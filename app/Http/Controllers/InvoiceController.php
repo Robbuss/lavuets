@@ -16,7 +16,7 @@ class InvoiceController extends Controller
      */
     public function index(Request $request)
     {
-        return Invoice::with(['customer', 'contract', 'contract.units'])
+        return Invoice::with(['customer', 'contract', 'contract.units', 'payment'])
             ->where(function ($q) use ($request) {
                 if ($request->customer_id)
                     return $q->where('customer_id', $request->customer_id);
@@ -25,10 +25,11 @@ class InvoiceController extends Controller
                 return [
                     'id' => $q->id,
                     'ref' => $q->ref,
-                    'payment_status' => $q->payment_status,
+                    'payment' => $q->payment ? $q->payment: ['payment_id' => false, 'status' => 'Geen id'],
                     'note' => $q->note,
                     'start_date' => $q->start_date,
                     'end_date' => $q->end_date,
+                    'sent' => $q->sent,
                     'customer' => [
                         'id' => $q->customer->id,
                         'name' => $q->customer->name,

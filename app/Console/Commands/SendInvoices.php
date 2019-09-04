@@ -32,6 +32,7 @@ class SendInvoices extends Command
     public function __construct()
     {
         parent::__construct();
+        activity()->log('Running Crontab. Send all the overdue invoices');
     }
 
     /**

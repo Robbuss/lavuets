@@ -40,12 +40,15 @@ class MolliePayment
                 "email"  => $this->customer->email,
             ]);
 
-            $this->customer->update(['mollie_customer_id' => $mollieCustomer->id]);
+            $this->customer->update(['mollie_id' => $mollieCustomer->id]);
         }
 
         // if its a recurring payment, there must a valid mandate in mollie.
         if ($this->type === 'recurring') {
-            $mandates = Mollie::api()->mandates()->listFor($this->customer->mollie_id);
+            if(!$this->customer->mollie_id) // there is no mollie_id so we cant check for mandates and should abort
+                return;
+            $mollieCustomer = Mollie::api()->customers()->get($this->customer->mollie_id);
+            $mandates = Mollie::api()->mandates()->listFor($mollieCustomer);
             if (!$mandates) {
                 activity()->log('Geen geldige mandaat gevonden in Mollie voor ' . $this->customer->name);
                 return;
@@ -58,7 +61,7 @@ class MolliePayment
                 'currency' => 'EUR',
                 'value' => (string) $this->price, // You must send the correct number of decimals, thus we enforce the use of strings
             ],
-            'customerId'    => $mollieCustomer->id,
+            'customerId'    => $mollieCustomer->id, // the mollie customer is either created or requested via the api
             'sequenceType' => $this->type, //'first' or 'recurring',
             'description' => 'Verhuur van opslagruimte',
             'webhookUrl' => config('app.mollie_webhook'),
