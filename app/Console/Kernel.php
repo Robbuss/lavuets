@@ -30,6 +30,8 @@ class Kernel extends ConsoleKernel
             ->dailyAt('15:00');
         $schedule->command('contract:expired')
             ->dailyAt('11:59');
+        $schedule->command('payments:status')
+            ->everyFiveMinutes();
     }
 
     /**

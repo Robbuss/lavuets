@@ -15,10 +15,12 @@ class MollieWebhookController extends Controller
     public function handle(Request $request)
     {
         activity()->log('Mollie webhook post id ' . $request->id);
+        
         $payment = Payment::where('payment_id', $request->id)->with(['customer', 'contract'])->firstOrFail();
         $molliePayment =  Mollie::api()->payments()->get($payment->payment_id);
-        if ($molliePayment->isPaid()) {
+        $payment->update(['status' => $molliePayment->status]);
 
+        if ($molliePayment->isPaid()) {
             // generate a pdf contract
             new PdfGenerator($payment->contract);
 

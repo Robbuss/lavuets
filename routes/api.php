@@ -50,4 +50,5 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/invoices/{invoice}/delete', 'InvoiceController@delete');    
 
     Route::get('/logs', 'LogController@index');    
+    Route::get('/payments', 'PaymentController@index');    
 });

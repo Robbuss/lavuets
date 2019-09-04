@@ -14,6 +14,12 @@ class Contract extends Model
         'auto_renew' => 'boolean',
     ];
     protected static $logName = 'systeem';
+
+    public function getStartDateLocalizedAttribute()
+    {
+        return ($this->start_date) ? $this->start_date->isoFormat('LL') : null;
+    }
+    
     public function getDescriptionForEvent(string $eventName): string
     {
         return "Contract {$eventName}";
@@ -34,7 +40,8 @@ class Contract extends Model
         return $this->hasMany(Invoice::class);
     }
 
-    public function scopeInvoicableContracts(){
+    public function scopeInvoicableContracts()
+    {
         // make sure this returns the invoicableContracts; by check active and renew
     }
 }

@@ -13,6 +13,18 @@ class Invoice extends Model
     protected $casts = [
         'sent' => 'boolean'
     ];
+    protected $dates = [
+        'end_date',
+        'start_date'
+    ];
+    public function getStartDateLocalizedAttribute()
+    {
+        return ($this->start_date) ? $this->start_date->isoFormat('LL'): null;
+    }
+    public function getEndDateLocalizedAttribute()
+    {
+        return ($this->end_date) ? $this->end_date->isoFormat('LL'): null;
+    }    
     protected static $logName = 'systeem';
     public function getDescriptionForEvent(string $eventName): string
     {

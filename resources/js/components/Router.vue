@@ -41,6 +41,7 @@ import Login from "./auth/Login.vue";
 import Customers from "./customers/Customers.vue";
 import Customer from "./customers/Customer.vue";
 import Logs from "./logs/Logs.vue";
+import Payments from "./payments/Payments.vue";
 import Units from "./units/Units.vue";
 import Unit from "./units/Unit.vue";
 import Invoices from "./invoices/Invoices.vue";
@@ -128,6 +129,12 @@ const router = new Router({
       beforeEnter: (to: any, from: any, next: any) =>
         !Store.getters.authenticated ? next("/login") : next()
     },
+    {
+      path: "/payments",
+      component: Payments,
+      beforeEnter: (to: any, from: any, next: any) =>
+        !Store.getters.authenticated ? next("/login") : next()
+    },    
     {
       path: "/logs",
       component: Logs,

@@ -36,7 +36,12 @@
           >{{ props.item.customer_name }}</td>
           <td>{{ props.item.company_name }}</td>
           <td>{{ props.item.start_date }}</td>
-          <td>{{ props.item.deactivated_at ? props.item.deactivated_at : "Actief" }}</td>
+          <td v-if="!props.item.deactivated_at">
+            <v-chip class="ml-0" flat dark color="green">Actief</v-chip>
+          </td>
+          <td v-if="props.item.deactivated_at">
+            <v-chip class="ml-0" flat>{{ props.item.deactivated_at }}</v-chip>
+          </td>
           <td class="justify-center layout px-0">
             <v-icon small class="mr-2" @click="editItem(props.item)">edit</v-icon>
             <v-icon small @click="deleteItem(props.item)">delete</v-icon>

@@ -89,14 +89,6 @@
           </v-flex>
         </v-layout>
         <v-layout row wrap>
-          <v-flex xs12>
-            <v-alert
-              type="info"
-              :value="!isActive"
-            >Er wordt nog 1x een factuur verstuurd over X dagen. Deze Herfacturatie optie wordt automagisch uitgeschakeld.</v-alert>
-          </v-flex>
-        </v-layout>
-        <v-layout row wrap>
           <invoices :contract="contract"></invoices>
         </v-layout>
       </v-flex>

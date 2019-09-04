@@ -46,8 +46,8 @@
           <td>{{ props.item.size }}</td>
           <td>€{{ props.item.price }}</td>
           <td>
-            <span v-if="props.item.free">Beschikbaar</span>
-            <span v-else>Verhuurd</span>
+            <v-chip class="ml-0" flat dark color="green" v-if="props.item.free">Beschikbaar</v-chip>
+            <v-chip class="ml-0" flat v-else>Verhuurd</v-chip>
           </td>
           <td class="layout justify-end">
             <v-icon small class="mr-2" @click="editItem(props.item)">edit</v-icon>
