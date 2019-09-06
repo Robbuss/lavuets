@@ -75,7 +75,7 @@ class MolliePayment
             'customer_id' => $this->customer->id,
             'payment_id' => $payment->id,
             'status' => 'pending',
-            'amount' => $this->price
+            'amount' => (string) $this->price
         ]);
 
         // returns the mollie payment object, including a checkout url

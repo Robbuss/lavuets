@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 
@@ -14,6 +15,7 @@ class CustomerController extends Controller
      */
     public function index()
     {
+        // $customer = Customer::whereHas('contracts')->with('contracts')->get();
         return Customer::all();
     }
 
@@ -67,7 +69,14 @@ class CustomerController extends Controller
      */
     public function delete(Customer $customer)
     {
+        $customer->invoices()->delete();
+        foreach ($customer->contracts as $contract) {
+            $contract->units()->detach();
+            $contract->delete();
+        }
+        $customer->payments()->delete();
         $customer->delete();
-        return ['sucess' => true];
+
+        return ['success' => true];
     }
 }
