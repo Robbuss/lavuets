@@ -101,8 +101,12 @@ class ContractController extends Controller
      */
     public function update(Request $request, Contract $contract)
     {
-        $contract->update($request->except(['units']));
-        $contract->units()->sync($this->getSyncArray($request->units));
+        $contract->update($request->except(['units', 'freeUnits']));
+        if($request->free_units){
+            $contract->units()->detach();
+        }else{
+            $contract->units()->sync($this->getSyncArray($request->units));
+        }
 
         return ['success' => true];
     }

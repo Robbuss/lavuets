@@ -106,9 +106,14 @@
               Weet je zeker dat je het contract wil deactiveren? Je kunt het contract daarna niet meer activeren!
               Je heft met deze actie namelijk de toestemming van de klant op. Je zult een nieuw contract moeten maken wanneer dit een fout is.
             </p>
-            <p>Voor gedeactiveerde contract wordt niet meer gecontroleerd of er nog facturen open staan en of deze verzonden dienen te worden</p>
-            <p>De boxen die bij dit contract horen kunnen weer verhuurd worden.</p>
-            <v-btn color="red" dark @click="deactivate">Zeker weten</v-btn>
+            <p>Voor gedeactiveerde contract worden geen facturen meer gemaakt of verzonden.</p>
+            <p>Kies of de verhuurde boxen gelijk vrij komen of dat ze bezet blijven tot de opzegdatum van het contract (volgende termijn)</p>
+            <v-btn color="orange" dark @click="deactivate">Tot einddatum bezet houden</v-btn>
+            <v-btn
+              color="red"
+              dark
+              @click="freeUnits = !freeUnits; deactivate()"
+            >Boxen gelijk vrij geven voor verhuur</v-btn>
             <v-btn
               color="grey lighten-3"
               @click="showWarning = !showWarning; contract.deactivated_at = null"
@@ -144,6 +149,7 @@ export default class SingleContract extends Vue {
   private response = "";
   private loading: boolean = true;
   private contract: any = null;
+  private freeUnits: boolean = false;
   private dialog: boolean = false;
   private editDefaultNote: boolean = false;
   private showWarning: boolean = false;
@@ -168,8 +174,8 @@ export default class SingleContract extends Vue {
   @Watch("snackbar.show")
   onSnackbarChanged(newval: boolean, oldval: boolean) {
     if (oldval !== undefined) {
-      let t = setTimeout(()=> this.snackbar.show = false, 4000);
-      clearTimeout(t)
+      let t = setTimeout(() => (this.snackbar.show = false), 4000);
+      clearTimeout(t);
     }
   }
   async mounted() {
@@ -183,6 +189,7 @@ export default class SingleContract extends Vue {
   }
 
   async saveContract() {
+    this.contract.free_units = this.freeUnits;
     axios.post("/api/contracts/" + this.contract.id, this.contract);
   }
 
@@ -202,7 +209,7 @@ export default class SingleContract extends Vue {
     )) as any).data;
     if (pdf.success === false) {
       this.showSnackbar(pdf.message);
-      return
+      return;
     }
     var blob = base64StringToBlob(pdf.content, pdf.mime);
     saveAs(blob, "huurcontract." + pdf.extension);
