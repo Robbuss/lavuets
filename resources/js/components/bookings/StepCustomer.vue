@@ -1,9 +1,11 @@
 <template>
   <v-card flat class="grey lighten-3 pa-1">
     <v-form v-model="valid" lazy-validation ref="form">
-      <v-layout row fill-height justify-center align-center pa-5 class="text-xs-center white">
+      <v-layout row fill-height justify-center align-center 
+      :class="{'pa-5' :$vuetify.breakpoint.mdAndUp, 'pa-1': $vuetify.breakpoint.smAndDown}"
+       class="text-xs-center white">
         <v-layout row wrap>
-          <v-flex xs12 md8 pr-5>
+          <v-flex xs12 md8 :class="{'pr-5' :$vuetify.breakpoint.mdAndUp}">
             <v-container grid-list-md ma-0 pa-0>
               <v-layout wrap class="text-xs-left">
                 <v-flex xs12>
@@ -197,7 +199,7 @@
               <v-toolbar flat class="primary white--text text-xs-center">
                 <v-toolbar-title>Overzicht</v-toolbar-title>
               </v-toolbar>
-              <v-flex xs12 pa-5>
+              <v-flex xs12 :class="{'pa-5' :$vuetify.breakpoint.mdAndUp, 'pa-2' : $vuetify.breakpoint.smAndDown}">
                 <h3 class="subheading grey--text">
                   Je huurt een box in
                   <span class="primary--text">Breukelen</span>

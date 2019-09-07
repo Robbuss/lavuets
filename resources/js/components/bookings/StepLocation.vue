@@ -1,6 +1,6 @@
 <template>
   <v-layout row wrap>
-    <v-flex xs12 sm6 md3 pr-3>
+    <v-flex xs12 sm6 md3 :class="{'pr-3' :$vuetify.breakpoint.mdAndUp}">
       <v-card flat class="grey lighten-3 pa-1">
         <v-layout row fill-height justify-center align-center pa-5 class="text-xs-center white">
           <v-flex>
