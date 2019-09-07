@@ -79,6 +79,7 @@ class PdfGenerator
         return [
             'price' => $total,
             'btw' => $total * 0.21,
+            'price_vat' => $total * 1.21
         ];
     }
 }

@@ -174,14 +174,22 @@
         <div class="item-bar default-padding">
             <div class="col1" style="border-bottom: 0px !important;"></div>
             <div class="col2" style="border-bottom: 0px !important;"></div>
-            <div class="col3">Vrij van BTW</div>
+            @if($invoice->customer->kvk)
+                <div class="col3">21% BTW</div>
+            @else
+                <div class="col3">Vrij van BTW</div>
+            @endif
             <div class="col4"></div>
         </div>
         <div class="item-bar default-padding">
             <div class="col1"></div>
             <div class="col2"></div>
             <div class="col3">Totaal</div>
+            @if($invoice->customer->kvk)
+            <div class="col4">€{{ $total['price_vat'] }}</div>
+            @else
             <div class="col4">€{{ $total['price'] }}</div>
+            @endif
         </div>
         <div class="footer">
 

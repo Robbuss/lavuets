@@ -60,8 +60,6 @@
               <li>Mail server fix</li>
               <li>Babel toevoegen voor browser support</li>
               <li>Booking form testen op mobile</li>
-              <li>Box deactivatie: keuze geven om boxen te laten lopen tot ze verhuurd zijn of gelijk verwijderen</li>
-              <li>21% BTW toevoegen aan de factuur wanneer het contract bij een klant hoort die een bedrijf heeft</li>
             </ul>
           </v-flex>
         </v-card>
