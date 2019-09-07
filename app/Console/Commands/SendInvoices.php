@@ -48,7 +48,6 @@ class SendInvoices extends Command
             foreach ($invoicesDue as $invoice) {
                 // send invoice to the customer
                 try{
-
                     Mail::to($invoice->customer->email)
                     ->bcc(config('mail.from.address'))
                     ->queue(new SendInvoice($invoice));

@@ -32,6 +32,7 @@
 </style>
 
 <script lang="ts">
+// import "@babel/polyfill";
 import Vue from "vue";
 import Router from "vue-router";
 import { Component, Prop, Watch } from "vue-property-decorator";

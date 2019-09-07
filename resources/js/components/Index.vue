@@ -57,9 +57,9 @@
           <v-flex pa-3>
             <ul>
               <li>Mollie mislukte betalingen afhandelen</li>
-              <li>Mail server fix</li>
-              <li>Babel toevoegen voor browser support</li>
               <li>Booking form testen op mobile</li>
+              <li>Parkeerplaatsen eraf</li>
+              <li>Box inactief</li>
             </ul>
           </v-flex>
         </v-card>

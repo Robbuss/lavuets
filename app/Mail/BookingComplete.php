@@ -32,7 +32,7 @@ class BookingComplete extends Mailable
      */
     public function build()
     {
-        activity()->log('Boeking voltooid verzonden naar ' . $this->payment->customer->email);
+        activity()->log('Boeking voltooid verzenden naar ' . $this->payment->customer->email);
         return $this->view('emails.bookingcomplete')->with(['payment' => $this->payment])
             ->attach($this->contractPdf, [
                 'as' => 'huurcontract-opslagmagazijn.pdf',
