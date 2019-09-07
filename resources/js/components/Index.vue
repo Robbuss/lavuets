@@ -57,8 +57,6 @@
           <v-flex pa-3>
             <ul>
               <li>Mollie mislukte betalingen afhandelen</li>
-              <li>Check customer valid email form</li>
-              <li>Box met grootte 0m3 kan niet aangepast worden</li>
             </ul>
           </v-flex>
         </v-card>

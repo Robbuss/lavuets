@@ -21,7 +21,7 @@
             placeholder="Gebruik alleen getallen"
             v-model="editedItem.size"
             required
-            :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
+            :rules="[v => (v.length !== 0) || 'Dit veld mag niet leeg zijn']"
           />
         </v-flex>
         <v-flex sm12 md6>

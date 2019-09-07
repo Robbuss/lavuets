@@ -77,7 +77,9 @@
                 <v-flex xs12 sm6>
                   <v-text-field
                     box
-                    :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
+                    :rules="[
+                    v => !!v || 'Dit veld mag niet leeg zijn',
+                    v => /.+@.+/.test(v) || 'Geef een geldig e-mailadres op']"
                     required
                     v-model="customer.email"
                     label="E-mail"
