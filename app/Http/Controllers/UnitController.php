@@ -22,6 +22,7 @@ class UnitController extends Controller
                 "id" => $q->id,
                 "name" => $q->name,
                 "size" => $q->size,
+                "active" => $q->active,
                 "price" => $q->price,
                 "free" => $occupied->contains($q) ? false : true,
             ];

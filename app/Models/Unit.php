@@ -8,10 +8,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Unit extends Model
 {
     use SoftDeletes;
-    protected $fillable = ['name', 'price', 'size', 'x', 'y'];
+    protected $fillable = ['name', 'price', 'size', 'active', 'x', 'y'];
     protected $appends = ['display_name'];
-    
-    public function getDisplayNameAttribute(){
+    protected $casts = [
+        'active' => 'boolean'
+    ];
+    public function getDisplayNameAttribute()
+    {
         return $this->name . ' - €' . $this->price . ' - ' . $this->size . 'm3';
     }
 

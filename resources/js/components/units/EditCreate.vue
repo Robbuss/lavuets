@@ -34,6 +34,9 @@
             :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
           />
         </v-flex>
+        <v-flex sm12>
+          <v-select :items="[true, false]" v-model="editedItem.active" label="Box is verhuurbaar"/>
+        </v-flex>
       </v-layout>
     </v-form>
 
@@ -69,12 +72,14 @@ export default class Editunit extends Vue {
     id: null,
     name: "",
     size: "",
+    active: null,
     price: null
   };
   private defaultItem: any = {
     id: null,
     name: "",
     size: "",
+    active: null,
     price: null
   };
   private response = "";

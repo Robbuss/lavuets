@@ -17,7 +17,7 @@ class BookingController extends Controller
      */
     public function index()
     {
-        $free = Unit::doesntHave('contracts')->get();
+        $free = Unit::doesntHave('contracts')->where('size', '>', 0)->where('active', 1)->get();
         $grouped = $free->mapToGroups(function ($item, $key) {
             return [$item['size'] => $item];
         });
