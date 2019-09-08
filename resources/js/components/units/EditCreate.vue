@@ -35,7 +35,11 @@
           />
         </v-flex>
         <v-flex sm12>
-          <v-select :items="[true, false]" v-model="editedItem.active" label="Box is verhuurbaar"/>
+          <v-select
+            :items="activeBox"
+            v-model="editedItem.active"
+            label="Box is verhuurbaar"
+          />
         </v-flex>
       </v-layout>
     </v-form>
@@ -68,6 +72,13 @@ export default class Editunit extends Vue {
 
   private working: boolean = false;
   private valid: boolean = true;
+  private activeBox: any = [{
+    text: 'Ja',
+    value: true,
+  },{
+    text: 'Nee',
+    value: false,
+  }];
   private editedItem: any = {
     id: null,
     name: "",

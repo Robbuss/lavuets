@@ -57,6 +57,8 @@
           <v-flex pa-3>
             <ul>
               <li>Mollie mislukte betalingen afhandelen</li>
+              <li>Huisregels in mail attachment</li>
+              <li>Algemene voorwaarden link op wordpress en linken in mail & checkout process</li>
             </ul>
           </v-flex>
         </v-card>

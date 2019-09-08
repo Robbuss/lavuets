@@ -46,10 +46,16 @@
           <td>{{ props.item.size }}</td>
           <td>€{{ props.item.price }}</td>
           <td>
-            <v-chip class="ml-0" flat dark color="green" v-if="props.item.free">Beschikbaar</v-chip>
+            <v-chip
+              class="ml-0"
+              flat
+              dark
+              :class="{'green' : props.item.active, 'orange' : !props.item.active }"
+              v-if="props.item.free"
+            >Beschikbaar</v-chip>
             <v-chip class="ml-0" flat v-else>Verhuurd</v-chip>
           </td>
-          <td>{{ props.item.active }}</td>
+          <td>{{ props.item.active ? 'Ja' : 'Nee' }}</td>
           <td class="layout justify-end">
             <v-icon small class="mr-2" @click="editItem(props.item)">edit</v-icon>
             <v-icon small @click="deleteItem(props.item)">delete</v-icon>
