@@ -82,6 +82,7 @@
 import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
 import axios from "js/axios";
+import * as moment from "moment";
 
 @Component({})
 export default class EditInvoice extends Vue {
@@ -105,8 +106,8 @@ export default class EditInvoice extends Vue {
     payment_status: "unpaid",
     ref: "",
     note: "",
-    start_date: "",
-    end_date: ""
+    start_date: moment().subtract(1, 'months').format("YYYY-MM-DD"),
+    end_date:  moment().format("YYYY-MM-DD")
   };
   private defaultItem: any = {
     id: null,
@@ -114,8 +115,8 @@ export default class EditInvoice extends Vue {
     payment_status: "unpaid",
     ref: "",
     note: "",
-    start_date: "",
-    end_date: ""
+    start_date: moment().subtract(1, 'months').format("YYYY-MM-DD"),
+    end_date:  moment().format("YYYY-MM-DD")
   };
   private response = "";
 

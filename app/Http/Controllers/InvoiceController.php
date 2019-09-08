@@ -3,9 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Invoice;
-use App\Utils\PdfGenerator;
 use Illuminate\Http\Request;
-use App\Utils\InvoiceGenerator;
+use App\Utils\PdfGenerator;
 
 class InvoiceController extends Controller
 {
@@ -25,7 +24,7 @@ class InvoiceController extends Controller
                 return [
                     'id' => $q->id,
                     'ref' => $q->ref,
-                    'payment' => $q->payment ? $q->payment: ['payment_id' => false, 'status' => 'Geen id'],
+                    'payment' => $q->payment ? $q->payment : ['payment_id' => false, 'status' => 'Geen id'],
                     'note' => $q->note,
                     'start_date' => $q->start_date_localized,
                     'end_date' => $q->end_date_localized,
@@ -67,6 +66,7 @@ class InvoiceController extends Controller
     public function create(Request $request)
     {
         $invoice = Invoice::create($request->all());
+        new PdfGenerator($invoice);
         return ['id' => $invoice->id];
     }
 
@@ -92,16 +92,20 @@ class InvoiceController extends Controller
      */
     public function delete(Invoice $invoice)
     {
+        $file = storage_path('app/' . $invoice->customer_id . '/') . $invoice->ref . '.pdf';
+        if (file_exists($file))
+            rename($file, storage_path('app/' . $invoice->customer_id . '/') . $invoice->ref . '-' . substr(md5(microtime()), -5) . '-deleted.pdf');
         $invoice->delete();
+
         return ['success' => true];
     }
 
     public function getPdf(Invoice $invoice)
     {
-        $file = storage_path('app/' . $invoice->customer_id . '/') .$invoice->ref . '.pdf';
+        $file = storage_path('app/' . $invoice->customer_id . '/') . $invoice->ref . '.pdf';
         if (!file_exists($file))
             return ["success" => false, "message" => "Er is geen Factuur gevonden gevonden..."];
-    
+
         $content = file_get_contents($file);
 
         return [

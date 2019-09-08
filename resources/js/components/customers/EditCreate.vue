@@ -115,6 +115,7 @@ export default class EditCustomer extends Vue {
   @Prop()
   creating: boolean;
 
+  private valid: boolean = null;
   private working: boolean = false;
   private editedItem: any = {
     id: null,
