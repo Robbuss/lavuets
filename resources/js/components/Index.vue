@@ -58,6 +58,8 @@
             <ul>
               <li>Mollie mislukte betalingen afhandelen</li>
               <li>Huisregels in mail attachment</li>
+              <li>Contract page units stylen</li>
+              <li>Maken van invoices sent op aan of uitzetten</li>
               <li>Algemene voorwaarden link op wordpress en linken in mail & checkout process</li>
             </ul>
           </v-flex>
