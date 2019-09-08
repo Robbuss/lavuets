@@ -76,6 +76,10 @@
                   v-model="contract.payment_method"
                 ></v-select>
               </v-flex>
+              <v-flex xs12>
+                Standaard notitie / instructie voor alle facturen
+                <v-textarea v-model="contract.default_note"></v-textarea>
+              </v-flex>
             </v-layout>
             <v-btn color="primary" @click="navigate(4)">Verder</v-btn>
             <v-btn flat @click="$emit('input')">Annuleren</v-btn>

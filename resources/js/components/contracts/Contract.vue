@@ -5,7 +5,10 @@
         <v-layout row wrap mb-3>
           <v-flex xs12>
             <v-toolbar class="primary" dark>
-              <v-toolbar-title>{{ contract.customer.name }}</v-toolbar-title>
+              <v-toolbar-title
+                style="cursor:pointer;"
+                @click="$router.push('/customers/' + contract.customer.id)"
+              >{{ contract.customer.name }}</v-toolbar-title>
               <v-spacer></v-spacer>
               <v-tooltip bottom>
                 <v-btn icon slot="activator" @click="download">
@@ -20,57 +23,86 @@
                 <span>Contract aanpassen</span>
               </v-tooltip>
             </v-toolbar>
-            <v-card class="pa-3">
+            <v-card>
               <v-layout row wrap>
                 <v-flex xs12 md6>
-                  <v-list two-line>
+                  <v-list dense>
                     <v-subheader>Contract informatie</v-subheader>
-                    <v-list-tile>
-                      <v-list-tile-content>
-                        <v-list-tile-title>Vanaf {{ contract.start_date }}</v-list-tile-title>
-                        <v-list-tile-sub-title>Startdatum van het contract</v-list-tile-sub-title>
-                      </v-list-tile-content>
-                    </v-list-tile>
+                    <v-tooltip bottom>
+                      <v-list-tile slot="activator" @click>
+                        <v-list-tile-action>
+                          <v-icon color="primary">date_range</v-icon>
+                        </v-list-tile-action>
+                        <v-list-tile-content>
+                          <v-list-tile-title>Vanaf {{ contract.start_date }}</v-list-tile-title>
+                        </v-list-tile-content>
+                      </v-list-tile>
+                      <span>Startdatum van het contract</span>
+                    </v-tooltip>
+                    <v-divider></v-divider>
+                    <v-tooltip bottom>
+                      <v-list-tile slot="activator" @click>
+                        <v-list-tile-action>
+                          <v-icon color="primary">edit</v-icon>
+                        </v-list-tile-action>
+                        <v-list-tile-content>
+                          <v-list-tile-title
+                            v-if="contract.default_note"
+                          >{{ contract.default_note }}</v-list-tile-title>
+                          <v-list-tile-title v-else>Geen standaard notitie</v-list-tile-title>
+                        </v-list-tile-content>
+                      </v-list-tile>
+                      <span>Standaard notitie op elke factuur</span>
+                    </v-tooltip>
+                  </v-list>
+                  <v-list two-line>
                     <v-subheader>Producten in dit contract</v-subheader>
-                    <v-list-tile v-for="(u, i) in contract.units" :key="i">
+                    <template v-for="(u, i) in contract.units">
+                      <v-divider :key="i + 'd'" v-if="i >0 && contract.units.length > 1"></v-divider>
+                      <v-list-tile :key="i">
+                        <v-list-tile-avatar>
+                          <v-avatar>
+                            <v-img src="/open_box.png" />
+                          </v-avatar>
+                        </v-list-tile-avatar>
+                        <v-list-tile-content>
+                          <v-list-tile-title
+                            v-if="u.pivot"
+                          >{{ u.name }} voor €{{ u.pivot.price }} per maand</v-list-tile-title>
+                          <v-list-tile-sub-title>(standaard prijs: €{{ u.price }})</v-list-tile-sub-title>
+                        </v-list-tile-content>
+                      </v-list-tile>
+                    </template>
+                    <v-list-tile v-if="contract.units.length === 0">
+                      <v-list-tile-avatar>
+                        <v-avatar>
+                          <v-img src="/closed_box.png" />
+                        </v-avatar>
+                      </v-list-tile-avatar>
                       <v-list-tile-content>
-                        <v-list-tile-title
-                          v-if="u.pivot"
-                        >{{ u.name }} voor €{{ u.pivot.price }} per maand</v-list-tile-title>
-                        <v-list-tile-sub-title>(standaard prijs: €{{ u.price }})</v-list-tile-sub-title>
+                        <v-list-tile-title>Geen Units in dit contract..</v-list-tile-title>
                       </v-list-tile-content>
                     </v-list-tile>
                   </v-list>
                 </v-flex>
-                <v-flex xs12 sm6>
-                  <v-list two-line>
-                    <v-list-tile>
-                      <v-list-tile-content>
-                        <v-list-tile-title>{{ contract.payment_method }}</v-list-tile-title>
-                        <v-list-tile-sub-title>Betalingsmethode</v-list-tile-sub-title>
-                      </v-list-tile-content>
-                    </v-list-tile>
+                <v-flex xs12 sm6 style="border-left: 1px solid #0000001f">
+                  <v-list dense>
+                    <v-subheader>Klant informatie</v-subheader>
+                    <template v-for="(f, i) in customerFields">
+                      <v-tooltip bottom :key="i+'t'">
+                        <v-list-tile :key="i" slot="activator" @click>
+                          <v-list-tile-action>
+                            <v-icon color="primary">{{ f.icon }}</v-icon>
+                          </v-list-tile-action>
+                          <v-list-tile-content>
+                            <v-list-tile-title>{{ f.field }}</v-list-tile-title>
+                          </v-list-tile-content>
+                        </v-list-tile>
+                        <span>{{ f.tooltip }}</span>
+                      </v-tooltip>
+                      <v-divider :key="i + 'd'" v-if="i !== customerFields.length - 1"></v-divider>
+                    </template>
                   </v-list>
-                  <v-subheader>Standaard notitie / instructie voor alle facturen in dit contract</v-subheader>
-                  <v-flex xs12 px-3 v-if="editDefaultNote">
-                    <v-textarea v-model="contract.default_note"></v-textarea>
-                    <v-btn class="ml-0" color="primary" @click="saveDefaultNote">Opslaan</v-btn>
-                  </v-flex>
-                  <v-flex xs12 v-if="!editDefaultNote" px-3>
-                    <p>{{ contract.default_note }}</p>
-                    <v-tooltip bottom>
-                      <v-btn
-                        class="ml-0"
-                        slot="activator"
-                        color="primary--text"
-                        icon
-                        @click="editDefaultNote = !editDefaultNote"
-                      >
-                        <v-icon>edit</v-icon>
-                      </v-btn>
-                      <span>Aanpassen van standaard notitie</span>
-                    </v-tooltip>
-                  </v-flex>
                 </v-flex>
               </v-layout>
             </v-card>
@@ -151,12 +183,45 @@ export default class SingleContract extends Vue {
   private contract: any = null;
   private freeUnits: boolean = false;
   private dialog: boolean = false;
-  private editDefaultNote: boolean = false;
   private showWarning: boolean = false;
   private snackbar: any = {
     show: false,
     message: ""
   };
+  get customerFields() {
+    return [
+      {
+        field: this.contract.customer.name,
+        icon: "person",
+        tooltip: "Klantnaam"
+      },
+      {
+        field: this.contract.customer.email,
+        icon: "mail",
+        tooltip: "Klant e-mailadres"
+      },
+      {
+        field: this.contract.customer.phone,
+        icon: "phone",
+        tooltip: "Klant telefoonnummer"
+      },
+      {
+        field: this.contract.payment_method,
+        icon: "money",
+        tooltip: "Betaalwijze"
+      },
+      {
+        field: this.contract.customer.company_name || "Particulier",
+        icon: "store",
+        tooltip: "Bedrijf of particulier"
+      },
+      {
+        field: this.contract.customer.id ,
+        icon: "android",
+        tooltip: "Klant ID"
+      }      
+    ];
+  }
 
   get isActive() {
     if (!this.contract) return;
@@ -181,11 +246,6 @@ export default class SingleContract extends Vue {
   async mounted() {
     await this.getData();
     this.loading = false;
-  }
-
-  async saveDefaultNote() {
-    this.saveContract();
-    this.editDefaultNote = !this.editDefaultNote;
   }
 
   async saveContract() {

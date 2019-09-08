@@ -13,22 +13,29 @@
         :pagination.sync="paginationSync"
       >
         <template v-slot:items="props">
-          <td v-if="status[props.item.status]">
-            <v-chip flat dark class="ml-0 lighten-2 text--darken-1" :class="status[props.item.status].color">
-              <v-avatar>
-                <v-icon>{{ status[props.item.status].icon }}</v-icon>
-              </v-avatar>
-              {{ status[props.item.status].text }}
-            </v-chip>
-          </td>
-          <td v-else>
-            <v-chip flat class="ml-0">Geen status</v-chip>
-          </td>
-          <td>{{ props.item.customer }}</td>
-          <td>{{ props.item.amount }}</td>
-          <td>{{ props.item.mode }}</td>
-          <td>{{ props.item.created_at }}</td>
-          <td>{{ props.item.updated_at }}</td>
+          <tr @click="$router.push('/contracts/' + props.item.contract_id)" style="cursor:pointer;">
+            <td v-if="status[props.item.status]">
+              <v-chip
+                flat
+                dark
+                class="ml-0 lighten-2 text--darken-1"
+                :class="status[props.item.status].color"
+              >
+                <v-avatar>
+                  <v-icon>{{ status[props.item.status].icon }}</v-icon>
+                </v-avatar>
+                {{ status[props.item.status].text }}
+              </v-chip>
+            </td>
+            <td v-else>
+              <v-chip flat class="ml-0">Geen status</v-chip>
+            </td>
+            <td>{{ props.item.customer }}</td>
+            <td>{{ props.item.amount }}</td>
+            <td>{{ props.item.mode }}</td>
+            <td>{{ props.item.created_at }}</td>
+            <td>{{ props.item.updated_at }}</td>
+          </tr>
         </template>
         <template v-slot:no-data>
           <td colspan="100%" v-if="loading">Betalingen laden...</td>

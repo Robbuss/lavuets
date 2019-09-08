@@ -11,6 +11,7 @@ class PaymentController extends Controller
         return Payment::all()->map(function($q){
             return [
                 'customer' => $q->customer->name,  
+                'contract_id' => $q->contract_id,  
                 'payment_id' => $q->payment_id,  
                 'mode' => $q->mode,
                 'amount' => $q->amount,
