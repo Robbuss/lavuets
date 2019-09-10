@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Carbon\Carbon;
 use App\Models\Invoice;
 use App\Mail\SendInvoice;
 use App\Utils\MolliePayment;
@@ -41,29 +42,34 @@ class SendInvoices extends Command
      */
     public function handle()
     {
-        $invoicesDue = Invoice::where('sent', 0)->get();
-        activity()->log('Running Crontab. Sending ' . count($invoicesDue). ' invoices');
+        $invoicesDue = Invoice::whereNull('sent')->get();
+        $count = 0;
         if (count($invoicesDue) > 0) {
             // send invoices to mail 
             foreach ($invoicesDue as $invoice) {
+                // check if the contract allows auto invoicing
+                if(!$invoice->contract->auto_invoice || $invoice->contract->deactivated_at)
+                    return;
+
                 // send invoice to the customer
                 try{
                     Mail::to($invoice->customer->email)
-                    ->bcc(config('mail.from.address'))
                     ->queue(new SendInvoice($invoice));
-                    activity()->log('Factuur verstuurd naar '. $invoice->customer->email);
+                    activity('email')->log('Factuur verstuurd naar '. $invoice->customer->email);
                 }catch(\Exception $e){
-                    activity()->log('Fout tijdens verzenden factuur naar '. $invoice->customer->email);
+                    activity('email')->log('Fout tijdens verzenden factuur naar '. $invoice->customer->email);
                 }
 
                 // update the database so the invoice cannot be send again
                 $invoice->update([
-                    'sent' => true
+                    'sent' => Carbon::now()
                 ]);
 
                 // charge the customers card/account via a mollie payment. 
                 (new MolliePayment($invoice->customer, $invoice->contract, 'recurring'))->payment();
+                $count++;
             }
         }
+        activity('crontab')->log('Sent ' . $count . ' invoices');
     }
 }

@@ -40,11 +40,13 @@ class FreeUnitsExpiredContract extends Command
     public function handle()
     {
         $contracts = Contract::whereNotNull('deactivated_at')->get();
-        activity()->log('Running Crontab. Freeing ' . count($contracts). ' units');
+        $count = 0;
         foreach($contracts as $contract){
-            if(Carbon::now() > Carbon::parse($contract->deactivated_at)->{$contract->method}($contract->period)){
+            if(Carbon::now() > $contract->invoices()->orderBy('end_date', 'desc')->first()->end_date){
+                $count += $contract->units()->count();
                 $contract->units()->detach();
             }
         }
+        activity('crontab')->log('Freeing ' . $count . ' units');
     }
 }

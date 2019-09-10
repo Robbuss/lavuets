@@ -50,7 +50,7 @@ class MolliePayment
             $mollieCustomer = Mollie::api()->customers()->get($this->customer->mollie_id);
             $mandates = Mollie::api()->mandates()->listFor($mollieCustomer);
             if (!$mandates) {
-                activity()->log('Geen geldige mandaat gevonden in Mollie voor ' . $this->customer->name);
+                activity('mollie')->log('Geen geldige mandaat gevonden in Mollie voor ' . $this->customer->name);
                 return;
             }
         }
@@ -67,7 +67,7 @@ class MolliePayment
             'webhookUrl' => config('app.mollie_webhook'),
             'redirectUrl' => config('app.booking_complete_url'),
         ]);
-        activity()->log('Mollie betaling gemaakt met type ' . $this->type . ' voor ' . $this->customer->name);
+        activity('mollie')->log('Mollie betaling gemaakt met type ' . $this->type . ' voor ' . $this->customer->name);
 
         // save the payment to our database
         Payment::create([

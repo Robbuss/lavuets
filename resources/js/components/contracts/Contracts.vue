@@ -35,12 +35,18 @@
             @click="$router.push('/contracts/' + props.item.id)"
           >{{ props.item.customer_name }}</td>
           <td>{{ props.item.company_name }}</td>
-          <td>{{ props.item.start_date }}</td>
+          <td>{{ props.item.start_date_localized }}</td>
           <td v-if="!props.item.deactivated_at">
             <v-chip class="ml-0" flat dark color="green">Actief</v-chip>
           </td>
           <td v-if="props.item.deactivated_at">
             <v-chip class="ml-0" flat>{{ props.item.deactivated_at }}</v-chip>
+          </td>
+          <td v-if="props.item.auto_invoice">
+            <v-chip class="ml-0 green lighten-3" flat dark>Aan</v-chip>
+          </td>
+          <td v-if="!props.item.auto_invoice">
+            <v-chip class="ml-0 red lighten-3" flat dark>Uit</v-chip>
           </td>
           <td class="justify-center layout px-0">
             <v-icon small class="mr-2" @click="editItem(props.item)">edit</v-icon>
@@ -83,7 +89,8 @@ export default class Contracts extends Vue {
     { text: "Klantnaam", value: "customer_name" },
     { text: "Bedrijfsnaam", value: "company_name" },
     { text: "Ingangsdatum", value: "start_date" },
-    { text: "Status", value: "active" },
+    { text: "Gedeactiveerd op", value: "active" },
+    { text: "Automatisch factureren", value: "auto_invoice" },
     { text: "Actions", value: "name", sortable: false }
   ];
   private pagination: any = {

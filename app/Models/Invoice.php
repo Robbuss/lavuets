@@ -10,12 +10,10 @@ class Invoice extends Model
 {
     use SoftDeletes, LogsActivity;
     protected $fillable = ['ref', 'contract_id', 'customer_id', 'payment_id', 'note', 'start_date', 'end_date', 'sent'];
-    protected $casts = [
-        'sent' => 'boolean'
-    ];
     protected $dates = [
         'end_date',
-        'start_date'
+        'start_date',
+        'sent',
     ];
     public function getStartDateLocalizedAttribute()
     {
@@ -25,6 +23,11 @@ class Invoice extends Model
     {
         return ($this->end_date) ? $this->end_date->isoFormat('LL'): null;
     }    
+    public function getSentLocalizedAttribute()
+    {
+        return ($this->sent) ? $this->sent->isoFormat('LL'): null;
+    }   
+ 
     protected static $logName = 'systeem';
     public function getDescriptionForEvent(string $eventName): string
     {

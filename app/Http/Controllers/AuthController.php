@@ -23,7 +23,7 @@ class AuthController extends Controller
                     'password' => $request->password
                 ]
             ]);
-            activity()->log($request->email . ' heeft ingelogd');
+            activity('auth')->log($request->email . ' heeft ingelogd');
             return json_decode((string) $response->getBody(), true);
         } catch (BadResponseException $e) {
             $response = $e->getResponse();

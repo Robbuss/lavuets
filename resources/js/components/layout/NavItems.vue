@@ -1,5 +1,5 @@
 <template>
-  <v-list >
+  <v-list>
     <v-list-tile @click="$router.push(item.link)" v-for="(item, key) in items" :key="key">
       <v-list-tile-action>
         <v-icon class="primary--text">{{ item.icon }}</v-icon>
@@ -31,32 +31,37 @@ export default class NavItems extends Vue {
       icon: "store",
       link: "/units",
       text: "Boxes"
-    },    
+    },
     {
       icon: "person",
       link: "/customers",
       text: "Klanten"
-    },      
+    },
     {
       icon: "description",
       link: "/contracts",
       text: "Contracten"
+    },
+    {
+      icon: "account_balance_wallet",
+      link: "/invoices",
+      text: "Facturen"
     },    
+    {
+      icon: "attach_money",
+      link: "/payments",
+      text: "Betalingen"
+    },
+    {
+      icon: "description",
+      link: "/logs",
+      text: "Logs"
+    },
     {
       icon: "people",
       link: "/u",
       text: "Gebruikers"
     },
-    {
-      icon: "attach_money",
-      link: "/payments",
-      text: "Betalingen"
-    },    
-    {
-      icon: "description",
-      link: "/logs",
-      text: "Logs"
-    },           
     {
       icon: "exit_to_app",
       link: "/logout",

@@ -24,7 +24,8 @@ class ContractController extends Controller
                         'customer_id' => $q->customer_id,
                         'customer_name' => $q->customer->name,
                         'company_name' => $q->customer->company_name,
-                        'deactivated_at' => $q->deactivated_at,
+                        'deactivated_at' => ($q->deactivated_at) ? $q->deactivated_at->isoFormat('LL') : null,
+                        'auto_invoice' => $q->auto_invoice,
                         'period' => $q->period,
                         'method' => $q->method,
                         'payment_method' => $q->payment_method,
@@ -38,6 +39,7 @@ class ContractController extends Controller
                         }),
                         'price' => $q->price,
                         'start_date' => $q->start_date,
+                        'start_date_localized' => $q->start_date_localized,
                     ];
                 }
             ),
@@ -88,6 +90,7 @@ class ContractController extends Controller
                 'price' => $q->pivot->price
             ];
         });
+        $contract->start_date_localized = $contract->start_date->format('Y-m-d');
 
         return $contract;
     }

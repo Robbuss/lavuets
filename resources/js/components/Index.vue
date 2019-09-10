@@ -7,24 +7,40 @@
     </v-layout>
 
     <v-layout row wrap>
-      <v-flex xs12 sm4 py-3 pr-3>
+      <v-flex xs12 sm5 py-3 pr-3>
         <v-card>
           <v-toolbar class="primary white--text">
             <v-toolbar-title>Bezetting</v-toolbar-title>
           </v-toolbar>
           <v-layout row wrap justify-center align-center>
-            <v-flex pa-3 shrink>
-              <v-progress-circular
-                :size="128"
-                :width="24"
-                color="primary"
-                :value="calculateOccupiedPercentage"
-              ></v-progress-circular>
-              <p>
-                Aantal verhuurde boxen: {{ this.units.occupied.length }}
-                <br />
-                Aantal vrije boxen: {{ this.units.free.length }}
-              </p>
+            <v-flex pa-1>
+              <canvas ref="canvas"></canvas>
+            </v-flex>
+            <v-flex pa-1>
+              <v-divider></v-divider>
+              <v-list dense>
+                <v-list-tile>
+                  <v-list-tile-content>Aantal verhuurde actieve boxen:</v-list-tile-content>
+                  <v-list-tile-action>{{ this.units.occupied_active }}</v-list-tile-action>
+                </v-list-tile>
+
+                <v-list-tile>
+                  <v-list-tile-content>Aantal verhuurde niet actieve boxen:</v-list-tile-content>
+
+                  <v-list-tile-action>{{ this.units.occupied_not_active }}</v-list-tile-action>
+                </v-list-tile>
+
+                <v-list-tile>
+                  <v-list-tile-content>Aantal niet verhuurde actieve boxen:</v-list-tile-content>
+
+                  <v-list-tile-action>{{ this.units.free_active }}</v-list-tile-action>
+                </v-list-tile>
+                <v-list-tile>
+                  <v-list-tile-content>Aantal niet verhuurde niet actieve boxen:</v-list-tile-content>
+
+                  <v-list-tile-action>{{ this.units.free_not_active }}</v-list-tile-action>
+                </v-list-tile>
+              </v-list>
             </v-flex>
           </v-layout>
         </v-card>
@@ -49,7 +65,7 @@
         </v-card>
       </v-flex>
 
-      <v-flex xs12 sm4 pl-3 pt-3>
+      <v-flex xs12 sm3 pl-3 pt-3>
         <v-card>
           <v-toolbar color="primary white--text">
             <v-toolbar-title>Todo list:</v-toolbar-title>
@@ -58,8 +74,7 @@
             <ul>
               <li>Mollie mislukte betalingen afhandelen</li>
               <li>Huisregels in mail attachment</li>
-              <li>Contract page units stylen</li>
-              <li>Maken van invoices sent op aan of uitzetten</li>
+              <li>Maken van invoices sent op aan of uitzetten werken met datum</li>
               <li>Algemene voorwaarden link op wordpress en linken in mail & checkout process</li>
             </ul>
           </v-flex>
@@ -73,6 +88,7 @@
 import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
 import axios from "js/axios";
+const Chart = require("chart.js");
 
 @Component({})
 export default class Index extends Vue {
@@ -81,12 +97,34 @@ export default class Index extends Vue {
   private units: any = [];
   private user: any = {};
   private customers: any = [];
-
-  get calculateOccupiedPercentage() {
-    return Math.round(
-      (this.units.occupied.length / this.units.free.length) * 100
-    );
+  get doughnut() {
+    return {
+      labels: [
+        "Verhuurd en actief",
+        "Niet vehuurd en actief",
+        "Niet verhuurd en niet actief",
+        "Verhuurd en niet actief"
+      ],
+      datasets: [
+        {
+          label: "a",
+          data: [
+            this.units.occupied_active,
+            this.units.free_active,
+            this.units.free_not_active,
+            this.units.occupied_not_active
+          ],
+          backgroundColor: ["#264B6C", "#CAD7E3", "#F9B698", "#97AFC4"]
+        }
+      ]
+    };
   }
+
+  // get calculateOccupiedPercentage() {
+  //   return Math.round(
+  //     (this.units.occupied.length / this.units.free.length) * 100
+  //   );
+  // }
 
   get realizedProfit() {
     let p = 0;
@@ -105,14 +143,23 @@ export default class Index extends Vue {
   }
 
   async mounted() {
-    const r = (await axios.get("/api/contracts")).data;
-    const c = (await axios.get("/api/customers")).data;
-    const u = (await axios.get("/api/user/profile")).data;
+    const r = (await axios.get("/api/dashboard")).data;
     this.contracts = r.contracts;
     this.units = r.units;
-    this.customers = c;
-    this.user = u;
+    this.customers = r.customers;
+    this.user = r.user;
     this.loading = false;
+    this.$nextTick(() => {
+      new Chart((this.$refs.canvas as any).getContext("2d"), {
+        type: "doughnut",
+        data: this.doughnut,
+        options: {
+          legend: {
+            display: false
+          }
+        }
+      });
+    });
   }
 }
 </script>

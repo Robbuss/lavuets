@@ -48,7 +48,10 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/invoices/{invoice}/pdf', 'InvoiceController@getPdf');
     Route::post('/invoices/{invoice}', 'InvoiceController@update');
     Route::post('/invoices/{invoice}/delete', 'InvoiceController@delete');    
+    Route::post('/invoices/{invoice}/send', 'InvoiceController@send');    
 
     Route::get('/logs', 'LogController@index');    
     Route::get('/payments', 'PaymentController@index');    
+
+    Route::get('/dashboard', 'DashboardController@index');
 });

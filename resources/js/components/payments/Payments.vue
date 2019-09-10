@@ -32,7 +32,7 @@
             </td>
             <td>{{ props.item.customer }}</td>
             <td>{{ props.item.amount }}</td>
-            <td>{{ props.item.mode }}</td>
+            <td>{{ props.item.payment_id }}</td>
             <td>{{ props.item.created_at }}</td>
             <td>{{ props.item.updated_at }}</td>
           </tr>
@@ -67,7 +67,7 @@ export default class Payments extends Vue {
     { text: "status", align: "left", value: "status" },
     { text: "klant", align: "left", value: "customer" },
     { text: "bedrag", align: "left", value: "amount" },
-    { text: "modus", align: "left", value: "mode" },
+    { text: "mollie_id", align: "left", value: "payment_id" },
     { text: "gemaakt op", value: "created_at" },
     { text: "gewijzigd op", value: "updated_at" }
   ];

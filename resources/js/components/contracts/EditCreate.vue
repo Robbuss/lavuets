@@ -46,6 +46,8 @@
               :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
               required
             ></v-select>
+
+            <v-checkbox v-model="contract.auto_invoice" label="Automagische facturatie"/>
             <v-btn color="primary" @click="navigate(3)">Verder</v-btn>
 
             <v-btn flat @click="$emit('input')">Annuleren</v-btn>

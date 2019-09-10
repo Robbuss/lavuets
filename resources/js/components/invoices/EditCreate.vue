@@ -23,13 +23,6 @@
                   label="Referentie"
                 ></v-text-field>
               </v-flex>
-              <v-flex xs12 sm6 md6>
-                <v-select
-                  :items="paymentStatuses"
-                  v-model="editedItem.payment_status"
-                  label="Status van betaling"
-                ></v-select>
-              </v-flex>
             </v-layout>
 
             <v-layout wrap>
@@ -96,15 +89,15 @@ export default class EditInvoice extends Vue {
   contract: any;
 
   private valid: boolean = true;
-  private paymentStatuses: string[] = ["paid", "unpaid"];
   private step: number = 0;
   private working: boolean = false;
   private customer: any;
   private editedItem: any = {
     id: null,
     contract_id: null,
-    payment_status: "unpaid",
+    payment_id: null,
     ref: "",
+    sent: null,
     note: "",
     start_date: moment().subtract(1, 'months').format("YYYY-MM-DD"),
     end_date:  moment().format("YYYY-MM-DD")
@@ -115,6 +108,7 @@ export default class EditInvoice extends Vue {
     payment_status: "unpaid",
     ref: "",
     note: "",
+    sent: null,
     start_date: moment().subtract(1, 'months').format("YYYY-MM-DD"),
     end_date:  moment().format("YYYY-MM-DD")
   };

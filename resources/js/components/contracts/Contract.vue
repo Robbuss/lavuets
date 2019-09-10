@@ -34,7 +34,7 @@
                           <v-icon color="primary">date_range</v-icon>
                         </v-list-tile-action>
                         <v-list-tile-content>
-                          <v-list-tile-title>Vanaf {{ contract.start_date }}</v-list-tile-title>
+                          <v-list-tile-title>Vanaf {{ contract.start_date_localized }}</v-list-tile-title>
                         </v-list-tile-content>
                       </v-list-tile>
                       <span>Startdatum van het contract</span>
@@ -125,7 +125,7 @@
         </v-layout>
       </v-flex>
     </v-layout>
-    <edit-create :contract="contract" v-if="dialog" :dialog="dialog" @input="dialog = !dialog"></edit-create>
+    <edit-create :contract="contract" v-if="dialog" :dialog="dialog" @input="finished"></edit-create>
     <v-dialog v-model="showWarning" width="80%" persistent>
       <v-card>
         <v-toolbar class="primary" dark>
@@ -211,6 +211,11 @@ export default class SingleContract extends Vue {
         tooltip: "Betaalwijze"
       },
       {
+        field: this.contract.auto_invoice ? 'Automagische facturatie aan' : 'Automagische facturatie uit',
+        icon: "money",
+        tooltip: "Automagische facturatie"
+      },      
+      {
         field: this.contract.customer.company_name || "Particulier",
         icon: "store",
         tooltip: "Bedrijf of particulier"
@@ -245,6 +250,13 @@ export default class SingleContract extends Vue {
   }
   async mounted() {
     await this.getData();
+    this.loading = false;
+  }
+
+  finished(){
+    this.loading = true;
+    this.getData();
+    this.dialog = !this.dialog
     this.loading = false;
   }
 

@@ -20,7 +20,6 @@
           <td>{{ props.item.subject_type }}</td>
           <td>{{ props.item.causer_id }}</td>
           <td>{{ props.item.causer_type }}</td>
-          <td>{{ props.item.properties }}</td>
           <td>{{ props.item.created_at }}</td>
         </template>
         <template v-slot:no-data>
@@ -57,7 +56,6 @@ export default class Logs extends Vue {
     { text: "subject_type", value: "subject_type" },
     { text: "causer_id", value: "causer_id" },
     { text: "causer_type", value: "causer_type" },
-    { text: "properties", value: "properties" },
     { text: "created_at", value: "created_at" },
   ];
 

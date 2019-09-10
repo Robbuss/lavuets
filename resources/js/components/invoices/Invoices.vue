@@ -13,7 +13,7 @@
           hide-details
         ></v-text-field>
         <v-tooltip bottom>
-          <v-btn icon slot="activator" router href="/invoices" target="_blank">
+          <v-btn icon slot="activator" @click="$router.push('/invoices')">
             <v-icon>info</v-icon>
           </v-btn>
           <span>Alle facturen van alle klanten bekijken</span>
@@ -35,6 +35,19 @@
             :invoice="editedItem"
           ></edit-create-invoice>
         </v-dialog>
+        <v-dialog v-model="confirmSend" max-width="80%" persistent v-if="contract">
+          <v-toolbar class="primary white--text">
+            <v-toolbar-title>Factuur handmatig versturen</v-toolbar-title>
+          </v-toolbar>
+          <v-card>
+            Wil je de factuur versturen naar {{ contract.customer.email }}?
+            <v-btn color="primary" dark @click="sendInvoice">
+              <v-icon left>mail</v-icon>
+              Ja, versturen
+            </v-btn>
+            <v-btn @click="close">Nee, laat maar</v-btn>
+          </v-card>
+        </v-dialog>
       </v-toolbar>
       <v-data-table
         :search="search"
@@ -48,21 +61,33 @@
         <template v-slot:items="props">
           <td>
             <v-chip
+              v-if="props.item.payment.payment_id"
               flat
               :class="{
             'white--text green' : props.item.payment.payment_id}"
             >{{ props.item.payment.payment_id }}</v-chip>
+            <v-chip v-else flat class="grey lighten-3">{{ props.item.payment.status }}</v-chip>
           </td>
           <td>{{ props.item.customer.name }}</td>
           <td>{{ getUnits(props.item.contract.units) }}</td>
           <td>€{{ props.item.contract.price }}</td>
-          <td>{{ props.item.sent }}</td>
-          <td>{{ props.item.start_date }}</td>
-          <td>{{ props.item.end_date }}</td>
+          <td>{{ props.item.start_date_localized }}</td>
+          <td>{{ props.item.end_date_localized }}</td>
+          <td v-if="props.item.sent">{{ props.item.sent_localized }}</td>
+          <td v-else>Niet verzonden</td>
           <td class="justify-center layout px-0">
-            <v-icon small class="mr-2" @click="editItem(props.item)">edit</v-icon>
-            <v-icon small @click="deleteItem(props.item)">delete</v-icon>
-            <v-icon small @click="download(props.item)">attach_file</v-icon>
+            <v-btn class="primary--text" small icon @click="editItem(props.item)">
+              <v-icon small>edit</v-icon>
+            </v-btn>
+            <v-btn class="primary--text" small icon @click="editItem(props.item)">
+              <v-icon small @click="deleteItem(props.item)">delete</v-icon>
+            </v-btn>
+            <v-btn class="primary--text" small icon @click="download(props.item)">
+              <v-icon small>attach_file</v-icon>
+            </v-btn>
+            <v-btn class="primary--text" :disabled="props.item.sent ? true : false" small icon @click="confirmSendingInvoice(props.item)">
+              <v-icon small>mail</v-icon>
+            </v-btn>
           </td>
         </template>
         <template v-slot:no-data>
@@ -101,6 +126,7 @@ export default class Invoices extends Vue {
   private loading: boolean = true;
 
   private createMode: boolean = true;
+  private confirmSend: boolean = false;
   private editedItem: any = null;
   private pagination: any = {
     rowsPerPage: 25
@@ -110,10 +136,10 @@ export default class Invoices extends Vue {
     { text: "Naam", value: "invoice.name" },
     { text: "Producten", value: "contract.units" },
     { text: "Prijs", value: "contract.price" },
-    { text: "Verzonden", value: "sent" },
     { text: "Van", value: "start_date" },
     { text: "Tot", value: "end_date" },
-    { text: "Actions", sortable: false }
+    { text: "Verzonden", value: "sent" },
+    { text: "Acties", sortable: false }
   ];
 
   @Watch("dialog")
@@ -127,6 +153,18 @@ export default class Invoices extends Vue {
 
   getUnits(unit: any) {
     return unit.map((x: any) => x.name).join(", ");
+  }
+
+  confirmSendingInvoice(invoice: any){
+    this.confirmSend = true;
+    this.editedItem = invoice;
+  }
+
+  async sendInvoice(){
+    this.confirmSend = false;
+    await axios.post("/api/invoices/" + this.editedItem.id + "/send");
+    this.getData();
+    this.editedItem = null;
   }
 
   async getData() {
@@ -166,6 +204,7 @@ export default class Invoices extends Vue {
 
   close() {
     this.editedItem = null;
+    this.confirmSend = false;
     this.dialog = false;
   }
 

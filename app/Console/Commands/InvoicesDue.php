@@ -40,9 +40,9 @@ class InvoicesDue extends Command
      */
     public function handle()
     {
-        activity()->log('Running Crontab. Check what invoices are overdue');
         // first get all active contracts
         $contracts = Contract::whereNull('deactivated_at')->with('invoices')->get();
+        $count = 0;
         foreach ($contracts as $contract) {
             // get the last invoice on the contract
             $lastInvoice = $contract->invoices()->orderBy('end_date', 'DESC')->first();
@@ -50,7 +50,9 @@ class InvoicesDue extends Command
             if ($lastInvoice && ($lastInvoice->end_date < Carbon::now())) {
                 // create a new invoice
                 new InvoiceGenerator($contract, $lastInvoice);
+                $count++;
             }
         }
+        activity('crontab')->log('Created '. $count . ' new invoices');
     }
 }

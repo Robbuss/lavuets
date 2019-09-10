@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Payment;
 use App\Utils\PdfGenerator;
 use Illuminate\Http\Request;
@@ -14,7 +15,7 @@ class MollieWebhookController extends Controller
 {
     public function handle(Request $request)
     {
-        activity()->log('Mollie webhook post id ' . $request->id);
+        activity('mollie')->log('Mollie webhook post id ' . $request->id);
         
         $payment = Payment::where('payment_id', $request->id)->with(['customer', 'contract'])->firstOrFail();
         $molliePayment =  Mollie::api()->payments()->get($payment->payment_id);
@@ -30,19 +31,18 @@ class MollieWebhookController extends Controller
             // send a mail to the customer
             try {
                 Mail::to($payment->customer->email)
-                    ->bcc(config('mail.from.address'))
                     ->queue(new BookingComplete(
                         $payment->load(['customer', 'contract']),
                         storage_path('app/' . $payment->contract->customer_id . '/') . 'huurcontract-opslagmagazijn.pdf',
                         storage_path('app/' . $payment->contract->customer_id . '/') . $generator->lastInvoice->ref . '.pdf',
                     ));
-                activity()->log('Welkomsmail en eerste factuur verstuurd naar' . $payment->customer->email);
+                activity('email')->log('Welkomsmail en eerste factuur verstuurd naar' . $payment->customer->email);
             } catch (\Exception $e) {
-                activity()->log('Something went wrong send mail');
+                activity('email')->log('Something went wrong send mail');
             }
 
             $generator->lastInvoice->update([
-                'sent' => true,
+                'sent' => Carbon::now(),
                 'payment_id' => $payment->id
             ]);
 

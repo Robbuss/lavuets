@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Invoice;
-use Illuminate\Http\Request;
+use App\Mail\SendInvoice;
 use App\Utils\PdfGenerator;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class InvoiceController extends Controller
 {
@@ -26,9 +29,12 @@ class InvoiceController extends Controller
                     'ref' => $q->ref,
                     'payment' => $q->payment ? $q->payment : ['payment_id' => false, 'status' => 'Geen id'],
                     'note' => $q->note,
-                    'start_date' => $q->start_date_localized,
-                    'end_date' => $q->end_date_localized,
-                    'sent' => $q->sent,
+                    'start_date' => $q->start_date->format('Y-m-d'),
+                    'start_date_localized' => $q->start_date_localized,
+                    'end_date' => $q->end_date->format('Y-m-d'),
+                    'end_date_localized' => $q->end_date_localized,
+                    'sent' => ($q->sent) ? $q->sent->format('Y-m-d') : null,
+                    'sent_localized' => $q->sent_localized,
                     'customer' => [
                         'id' => $q->customer->id,
                         'name' => $q->customer->name,
@@ -98,6 +104,25 @@ class InvoiceController extends Controller
         $invoice->delete();
 
         return ['success' => true];
+    }
+
+    public function send(Invoice $invoice)
+    {
+        // send invoice to the customer
+        try {
+            Mail::to($invoice->customer->email)
+                ->queue(new SendInvoice($invoice));
+            activity('email')->log('Factuur verstuurd naar ' . $invoice->customer->email);
+        } catch (\Exception $e) {
+            activity('email')->log('Fout tijdens verzenden factuur naar ' . $invoice->customer->email);
+        }
+
+        // update the database so the invoice cannot be send again
+        $invoice->update([
+            'sent' => Carbon::now()
+        ]);
+
+        return ["success" => true, "message" => "Er is nog geen betaling aangemaakt."];
     }
 
     public function getPdf(Invoice $invoice)
