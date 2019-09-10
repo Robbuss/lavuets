@@ -34,6 +34,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/customers/{customer}', 'CustomerController@read');
     Route::post('/customers/create', 'CustomerController@create');
     Route::post('/customers/{customer}', 'CustomerController@update');
+    Route::post('/customers/{customer}/files', 'CustomerController@files');
     Route::post('/customers/{customer}/delete', 'CustomerController@delete');
 
     Route::get('/contracts', 'ContractController@index');

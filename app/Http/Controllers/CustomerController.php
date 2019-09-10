@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use App\Models\Customer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class CustomerController extends Controller
 {
@@ -78,5 +79,22 @@ class CustomerController extends Controller
         $customer->delete();
 
         return ['success' => true];
+    }
+
+    public function files(Customer $customer)
+    {
+        $files = [];
+        foreach(Storage::files($customer->id) as $key => $file){
+
+            $content = file_get_contents(storage_path('app/' . $file));
+            
+            $files[$key] = [
+                'title' => substr($file, strpos($file, '/') +1),
+                'content' => base64_encode($content),
+                'mime' => 'application/pdf',
+                'extension' => 'pdf'
+            ];
+        }
+        return $files;
     }
 }

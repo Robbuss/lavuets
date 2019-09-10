@@ -11,6 +11,7 @@
             <v-flex xs12 sm6 md4>
               <v-text-field
                 box
+                :disabled="!editFields"
                 :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                 required
                 v-model="editedItem.name"
@@ -20,6 +21,7 @@
             <v-flex xs12 sm6 md4>
               <v-text-field
                 box
+                :disabled="!editFields"
                 :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                 required
                 v-model="editedItem.email"
@@ -29,6 +31,7 @@
             <v-flex xs12 sm6 md4>
               <v-text-field
                 box
+                :disabled="!editFields"
                 :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                 required
                 v-model="editedItem.phone"
@@ -39,6 +42,7 @@
             <v-flex xs12 sm6 md10>
               <v-text-field
                 box
+                :disabled="!editFields"
                 :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                 required
                 v-model="editedItem.street_addr"
@@ -48,6 +52,7 @@
             <v-flex xs12 sm6 md2>
               <v-text-field
                 box
+                :disabled="!editFields"
                 :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                 required
                 v-model="editedItem.street_number"
@@ -57,15 +62,17 @@
             <v-flex xs12 sm6>
               <v-text-field
                 box
+                :disabled="!editFields"
                 :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                 required
                 v-model="editedItem.city"
                 label="Stad"
               ></v-text-field>
-            </v-flex>            
+            </v-flex>
             <v-flex xs12 sm6>
               <v-text-field
                 box
+                :disabled="!editFields"
                 :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                 required
                 v-model="editedItem.postal_code"
@@ -73,16 +80,26 @@
               ></v-text-field>
             </v-flex>
             <v-flex xs12>
-              <v-text-field box v-model="editedItem.iban" label="IBAN Rekeningnummer"></v-text-field>
+              <v-text-field
+                box
+                :disabled="!editFields"
+                v-model="editedItem.iban"
+                label="IBAN Rekeningnummer"
+              ></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md4>
-              <v-text-field box v-model="editedItem.company_name" label="Bedrijfsnaam"></v-text-field>
+              <v-text-field
+                box
+                :disabled="!editFields"
+                v-model="editedItem.company_name"
+                label="Bedrijfsnaam"
+              ></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md4>
-              <v-text-field box v-model="editedItem.kvk" label="KVK"></v-text-field>
+              <v-text-field box :disabled="!editFields" v-model="editedItem.kvk" label="KVK"></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md4>
-              <v-text-field box v-model="editedItem.btw" label="BTW"></v-text-field>
+              <v-text-field box :disabled="!editFields" v-model="editedItem.btw" label="BTW"></v-text-field>
             </v-flex>
           </v-layout>
         </v-container>
@@ -91,12 +108,18 @@
 
     <v-card-actions>
       <v-btn
+        v-if="editFields"
         :dark="!working"
         color="primary darken-1"
         :loading="working"
         :disabled="working"
         @click="save"
       >Opslaan</v-btn>
+      <v-btn
+        v-if="!editFields"
+        color="secondary lighten-1"
+        @click="editFields = true"
+      >Aanpassen</v-btn>      
       <v-btn flat color="primary darken-1" @click="cancel">Annuleren</v-btn>
     </v-card-actions>
   </v-card>
@@ -115,6 +138,7 @@ export default class EditCustomer extends Vue {
   @Prop()
   creating: boolean;
 
+  private editFields: boolean = false;
   private valid: boolean = null;
   private working: boolean = false;
   private editedItem: any = {
@@ -168,6 +192,7 @@ export default class EditCustomer extends Vue {
   }
 
   async save() {
+    this.editFields = false;
     if (!(this.$refs.form as any).validate()) return;
     this.working = true;
     if (!this.creating) {

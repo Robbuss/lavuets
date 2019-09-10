@@ -87,6 +87,12 @@ class InvoiceController extends Controller
     public function update(Request $request, Invoice $invoice)
     {
         $invoice->update($request->all());
+        $file = storage_path('app/' . $invoice->customer_id . '/') . $invoice->ref . '.pdf';
+        if (file_exists($file)){
+            rename($file, storage_path('app/' . $invoice->customer_id . '/') . $invoice->ref . '-' . substr(md5(microtime()), -5) . '-edited.pdf');
+        }
+        new PdfGenerator($invoice);      
+
         return ['success' => true];
     }
 
