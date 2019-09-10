@@ -38,7 +38,7 @@ class BookingController extends Controller
         // create a contract that is inactive till after payment is received (activated in the webhook)
         $contract = Contract::create(array_merge($request->contract, [
             'customer_id' => $customer->id,
-            'active' => false,
+            'auto_invoice' => true,
         ]));
         $contract->units()->sync($this->getSyncArray($request->units));
 
