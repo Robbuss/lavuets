@@ -13,14 +13,16 @@ class SendInvoice extends Mailable
     use Queueable, SerializesModels;
 
     public $invoice;
+    public $payment;
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(Invoice $invoice)
+    public function __construct(Invoice $invoice, $payment = null)
     {
         $this->invoice = $invoice;
+        $this->payment = $payment;
     }
 
     /**
@@ -32,6 +34,7 @@ class SendInvoice extends Mailable
     {
         return $this->view('emails.sendinvoice')->with([
             'invoice' => $this->invoice,
+            'payment' => $this->payment,
         ])->attach(
             storage_path('app/' . $this->invoice->customer_id . '/') . $this->invoice->ref . '.pdf',
             ['mime' => 'application/pdf'],
