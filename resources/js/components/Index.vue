@@ -74,8 +74,10 @@
             <ul>
               <li>Mollie mislukte betalingen afhandelen</li>
               <li>Huisregels in mail attachment</li>
-              <li>Maken van invoices sent op aan of uitzetten werken met datum</li>
               <li>Algemene voorwaarden link op wordpress en linken in mail & checkout process</li>
+              <li>Add Settings</li>
+              <li>Change icons for filetype</li>
+              <li>Make file work level deeper</li>
             </ul>
           </v-flex>
         </v-card>

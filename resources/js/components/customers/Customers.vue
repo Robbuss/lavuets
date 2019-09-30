@@ -16,6 +16,7 @@
           @saved="createdItem"
           @canceled="close"
           :creating="createMode" 
+          :enableFields="true"
           :customer="editedItem">
           </edit-create-customer>
         </v-dialog>

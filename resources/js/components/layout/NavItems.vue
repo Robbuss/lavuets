@@ -46,7 +46,7 @@ export default class NavItems extends Vue {
       icon: "account_balance_wallet",
       link: "/invoices",
       text: "Facturen"
-    },    
+    },
     {
       icon: "attach_money",
       link: "/payments",
@@ -58,14 +58,9 @@ export default class NavItems extends Vue {
       text: "Logs"
     },
     {
-      icon: "people",
-      link: "/u",
-      text: "Gebruikers"
-    },
-    {
-      icon: "exit_to_app",
-      link: "/logout",
-      text: "Uitloggen"
+      icon: "folder",
+      link: "/files",
+      text: "Bestanden"
     }
   ];
   private itemsLoggedOut: { [k: string]: string }[] = [

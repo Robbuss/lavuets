@@ -10,7 +10,7 @@ class Customer extends Model
 {
     use SoftDeletes, LogsActivity;
     
-    protected $fillable = ['mollie_id', 'company_name', 'name', 'email', 'city', 'street_addr', 'street_number', 'postal_code', 'phone', 'iban', 'btw', 'kvk'];
+    protected $fillable = ['mollie_id', 'mandate_id' ,'company_name', 'name', 'email', 'city', 'street_addr', 'street_number', 'postal_code', 'phone', 'iban', 'btw', 'kvk'];
     protected static $logName = 'systeem';
     public function getDescriptionForEvent(string $eventName): string
     {

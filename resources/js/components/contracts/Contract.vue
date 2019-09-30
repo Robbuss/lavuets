@@ -214,7 +214,12 @@ export default class SingleContract extends Vue {
         field: this.contract.auto_invoice ? 'Automagische facturatie aan' : 'Automagische facturatie uit',
         icon: "money",
         tooltip: "Automagische facturatie"
-      },      
+      },
+      {
+        field: this.contract.customer.mandate_id ? 'Geldig mandaat in Mollie' : 'Geen mandaat',
+        icon: "money",
+        tooltip: "Is er een geldig mandaat in mollie?"
+      },                
       {
         field: this.contract.customer.company_name || "Particulier",
         icon: "store",

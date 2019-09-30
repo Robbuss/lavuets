@@ -42,6 +42,14 @@
           <td v-if="props.item.deactivated_at">
             <v-chip class="ml-0" flat>{{ props.item.deactivated_at }}</v-chip>
           </td>
+          <td>
+            <v-chip
+              :class="{'info' : props.item.payment_method === 'incasso', 'grey' : props.item.payment_method === 'factuur'}"
+              class="ml-0"
+              flat
+              dark
+            >{{ props.item.payment_method }}</v-chip>
+          </td>
           <td v-if="props.item.auto_invoice">
             <v-chip class="ml-0 green lighten-3" flat dark>Aan</v-chip>
           </td>
@@ -90,6 +98,7 @@ export default class Contracts extends Vue {
     { text: "Bedrijfsnaam", value: "company_name" },
     { text: "Ingangsdatum", value: "start_date" },
     { text: "Gedeactiveerd op", value: "active" },
+    { text: "Type", value: "payment_method" },
     { text: "Automatisch factureren", value: "auto_invoice" },
     { text: "Actions", value: "name", sortable: false }
   ];

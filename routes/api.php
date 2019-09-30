@@ -34,7 +34,6 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/customers/{customer}', 'CustomerController@read');
     Route::post('/customers/create', 'CustomerController@create');
     Route::post('/customers/{customer}', 'CustomerController@update');
-    Route::post('/customers/{customer}/files', 'CustomerController@files');
     Route::post('/customers/{customer}/delete', 'CustomerController@delete');
 
     Route::get('/contracts', 'ContractController@index');
@@ -55,4 +54,10 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/payments', 'PaymentController@index');    
 
     Route::get('/dashboard', 'DashboardController@index');
+
+    Route::post('/files/browser', 'FileController@index');
+    Route::post('/files/backup', 'FileController@backup');
+
+    Route::get('/settings', 'SettingController@index');
+    Route::post('/settings', 'SettingController@update');
 });

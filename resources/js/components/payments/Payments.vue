@@ -31,7 +31,7 @@
               <v-chip flat class="ml-0">Geen status</v-chip>
             </td>
             <td>{{ props.item.customer }}</td>
-            <td>{{ props.item.amount }}</td>
+            <td>€{{ props.item.amount }}</td>
             <td>{{ props.item.payment_id }}</td>
             <td>{{ props.item.created_at }}</td>
             <td>{{ props.item.updated_at }}</td>

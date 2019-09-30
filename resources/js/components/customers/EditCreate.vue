@@ -138,6 +138,9 @@ export default class EditCustomer extends Vue {
   @Prop()
   creating: boolean;
 
+  @Prop()
+  enableFields: boolean;
+
   private editFields: boolean = false;
   private valid: boolean = null;
   private working: boolean = false;
@@ -178,6 +181,8 @@ export default class EditCustomer extends Vue {
   }
 
   mounted() {
+    if(this.enableFields)
+      this.editFields = true;
     if (this.customer) {
       this.editedItem = Object.assign({}, this.customer);
     }

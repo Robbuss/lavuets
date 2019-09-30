@@ -2,10 +2,7 @@
   <v-app>
     <v-navigation-drawer v-model="drawer" clipped fixed app v-if="authenticated">
       <nav-items :authenticated="authenticated" class="pt-4"></nav-items>
-      <v-img
-        :width="150"
-        src="https://www.opslagmagazijn.nl/wp-content/uploads/2018/02/self-storage-breukelen-1-1.png"
-      />
+      <img style="position: absolute; bottom:0" :width="120" src="/logo.png" />
     </v-navigation-drawer>
     <v-toolbar app fixed clipped-left class="primary" dark>
       <v-toolbar-side-icon
@@ -14,6 +11,46 @@
         v-if="authenticated"
       ></v-toolbar-side-icon>
       <v-toolbar-title style="cursor: pointer" @click="$router.push('/')">OPSLAGMAGAZIJN</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-toolbar-items v-if="authenticated">
+        <v-menu offset-y bottom left open-on-hover>
+          <template v-slot:activator="{ on }">
+            <v-btn icon v-on="on" :class="{'mt-0' : $vuetify.breakpoint.mdAndUp}">
+              <v-avatar
+                :tile="false"
+                :size="$vuetify.breakpoint.smAndDown ? 32 : 42"
+                color="grey lighten-4"
+              >
+                <img src="/avatar.png" alt="avatar" />
+              </v-avatar>
+            </v-btn>
+          </template>
+          <v-list>
+            <v-list-tile @click="$router.push('/u/profile')">
+              <v-list-tile-action>
+                <v-icon>person</v-icon>
+              </v-list-tile-action>
+              <v-list-tile-title>Mijn profiel</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile @click="$router.push('/u')">
+              <v-list-tile-action>
+                <v-icon>people</v-icon>
+              </v-list-tile-action>
+              <v-list-tile-title>Alle gebruikers</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile @click="$router.push('/settings')">
+              <v-list-tile-action>
+                <v-icon>settings</v-icon>
+              </v-list-tile-action>
+              <v-list-tile-title>Instellingen</v-list-tile-title>
+            </v-list-tile>
+          </v-list>
+        </v-menu>
+
+        <v-btn icon @click="$router.push('/logout')">
+          <v-icon>exit_to_app</v-icon>
+        </v-btn>
+      </v-toolbar-items>
     </v-toolbar>
     <v-content :class="{ 'bg--image' : !authenticated}">
       <v-container fluid fill-height>
@@ -34,6 +71,7 @@
 <script lang="ts">
 // import "@babel/polyfill";
 import Vue from "vue";
+import axios from "js/axios";
 import Router from "vue-router";
 import { Component, Prop, Watch } from "vue-property-decorator";
 import Users from "./user/Users.vue";
@@ -41,6 +79,7 @@ import Index from "./Index.vue";
 import Login from "./auth/Login.vue";
 import Customers from "./customers/Customers.vue";
 import Customer from "./customers/Customer.vue";
+import Settings from "./settings/Settings.vue";
 import Logs from "./logs/Logs.vue";
 import Payments from "./payments/Payments.vue";
 import Units from "./units/Units.vue";
@@ -53,6 +92,7 @@ import Dashboard from "./user/Dashboard.vue";
 import NavItems from "./layout/NavItems.vue";
 import NotFound from "./errors/404.vue";
 import Booking from "./bookings/Booking.vue";
+import Files from "./files/Files.vue";
 import Store from "js/store";
 
 Vue.use(Router);
@@ -135,7 +175,7 @@ const router = new Router({
       component: Payments,
       beforeEnter: (to: any, from: any, next: any) =>
         !Store.getters.authenticated ? next("/login") : next()
-    },    
+    },
     {
       path: "/logs",
       component: Logs,
@@ -148,6 +188,18 @@ const router = new Router({
       beforeEnter: (to: any, from: any, next: any) =>
         !Store.getters.authenticated ? next("/login") : next()
     },
+    {
+      path: "/settings",
+      component: Settings,
+      beforeEnter: (to: any, from: any, next: any) =>
+        !Store.getters.authenticated ? next("/login") : next()
+    },
+    {
+      path: "/files",
+      component: Files,
+      beforeEnter: (to: any, from: any, next: any) =>
+        !Store.getters.authenticated ? next("/login") : next()
+    },    
     {
       path: "/logout",
       component: () => {
@@ -172,7 +224,9 @@ const router = new Router({
 export default class RouterComponent extends Vue {
   private drawer: boolean = true;
 
-  mounted() {}
+  async mounted() {
+    const r = (await axios.get('/api/settings')).data
+  }
   get authRoutes() {
     if (
       this.$route.fullPath.startsWith("/login") ||

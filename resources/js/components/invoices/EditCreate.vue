@@ -31,6 +31,43 @@
               </v-flex>
             </v-layout>
 
+            <v-layout wrap>
+              <v-flex xs12 v-if="showSentDate">
+                Deze factuur is verzonden op:
+                <v-menu
+                  ref="datePicker"
+                  v-model="datePicker"
+                  :close-on-content-click="false"
+                  :nudge-right="40"
+                  lazy
+                  transition="scale-transition"
+                  offset-y
+                  full-width
+                  max-width="290px"
+                  min-width="290px"
+                >
+                  <template v-slot:activator="{ on }">
+                    <v-text-field
+                      box
+                      v-model="formattedDate"
+                      :rules="[
+                        v => !!v || 'Dit veld mag niet leeg zijn',
+                        v => isInPast || 'Datum moet in het verleden liggen!'
+                        ]"
+                      required
+                      label="Verzenddatum factuur"
+                      @blur="$emit('formatDate')"
+                      v-on="on"
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker v-model="editedItem.sent" no-title @input="datePicker = false"></v-date-picker>
+                </v-menu>
+              </v-flex>
+              <v-flex xs12>
+                <v-checkbox v-model="showSentDate" label="Deze factuur is al verzonden"></v-checkbox>
+              </v-flex>
+            </v-layout>
+
             <v-btn color="primary" @click="navigate(2)">Verder</v-btn>
             <v-btn flat @click="cancel">Annuleren</v-btn>
           </v-form>
@@ -38,7 +75,7 @@
 
         <v-stepper-content step="2">
           <v-form ref="form2" v-model="valid" lazy-validation>
-            <v-layout wrap>
+            <v-layout row wrap>
               <v-flex xs12 sm6>
                 <h6 class="headline">
                   Kies een
@@ -90,6 +127,8 @@ export default class EditInvoice extends Vue {
 
   private valid: boolean = true;
   private step: number = 0;
+  private datePicker: boolean = false;
+  private showSentDate: boolean = false;
   private working: boolean = false;
   private customer: any;
   private editedItem: any = {
@@ -99,8 +138,10 @@ export default class EditInvoice extends Vue {
     ref: "",
     sent: null,
     note: "",
-    start_date: moment().subtract(1, 'months').format("YYYY-MM-DD"),
-    end_date:  moment().format("YYYY-MM-DD")
+    start_date: moment()
+      .subtract(1, "months")
+      .format("YYYY-MM-DD"),
+    end_date: moment().format("YYYY-MM-DD")
   };
   private defaultItem: any = {
     id: null,
@@ -109,10 +150,19 @@ export default class EditInvoice extends Vue {
     ref: "",
     note: "",
     sent: null,
-    start_date: moment().subtract(1, 'months').format("YYYY-MM-DD"),
-    end_date:  moment().format("YYYY-MM-DD")
+    start_date: moment()
+      .subtract(1, "months")
+      .format("YYYY-MM-DD"),
+    end_date: moment().format("YYYY-MM-DD")
   };
   private response = "";
+
+  @Watch('showSentDate')
+  onShowSentDateChanged(newval: boolean, oldval: boolean){
+    if(!newval && oldval){
+      this.editedItem.sent = null;
+    }
+  }
 
   get formTitle() {
     return this.invoice
@@ -120,9 +170,21 @@ export default class EditInvoice extends Vue {
       : "Nieuwe factuur maken";
   }
 
+  get isInPast() {
+    return moment().format("LL") >= this.formattedDate;
+  }
+
+  get formattedDate() {
+    if(!this.editedItem.sent)
+      return moment().format("LL")
+    return moment(this.editedItem.sent).format("LL");
+  }
+
   mounted() {
     if (this.invoice) {
       this.editedItem = Object.assign({}, this.invoice);
+      if(this.invoice.sent)
+        this.showSentDate = true;
     }
     this.editedItem.contract_id = this.contract.id;
     this.editedItem.customer_id = this.contract.customer_id;

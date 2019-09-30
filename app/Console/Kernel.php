@@ -26,6 +26,8 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('invoices:due')
             ->dailyAt('09:00');
+        $schedule->command('mollie:mandates')
+            ->dailyAt('09:15');            
         $schedule->command('invoices:mail')
             ->dailyAt('15:00');
         $schedule->command('contract:expired')
