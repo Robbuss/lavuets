@@ -7,6 +7,7 @@ use App\Models\Invoice;
 use App\Mail\SendInvoice;
 use App\Utils\MolliePayment;
 use Illuminate\Console\Command;
+use Mollie\Laravel\Facades\Mollie;
 use Illuminate\Support\Facades\Mail;
 
 class SendInvoices extends Command
