@@ -29,7 +29,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('mollie:mandates')
             ->dailyAt('09:15');            
         $schedule->command('invoices:mail')
-            ->dailyAt('17:00');
+            ->dailyAt('15:00');
         $schedule->command('contract:expired')
             ->dailyAt('23:59');
         $schedule->command('payment:status')
