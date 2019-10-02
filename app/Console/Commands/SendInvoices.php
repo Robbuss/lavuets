@@ -43,17 +43,18 @@ class SendInvoices extends Command
      */
     public function handle()
     {
-        $invoicesDue = Invoice::whereNull('sent')->get();
-        $count = 0;
+        // Get all the invoices that are not sent and belong to an active contract that allows auto_invoicing
+        $invoicesDue = Invoice::whereNull('sent')->with('contract')->whereHas('contract', function($q){
+            $q->where('auto_invoice', 1)->whereNull('deactivated_at');
+        })->get(); 
+
         if (count($invoicesDue) > 0) {
             // send invoices to mail 
             foreach ($invoicesDue as $invoice) {
-                // check if the contract allows auto invoicing
-                if (!$invoice->contract->auto_invoice || $invoice->contract->deactivated_at)
-                    return;
 
-                // charge the customers bankaccount or create a new payment url
-                $payment = $this->paymentUrl($invoice);
+                // only charge the customers that use incasso for the moment
+                if($invoice->contract->payment_method === 'incasso')
+                    $payment = $this->paymentUrl($invoice);
                 
                 // send invoice to the customer
                 try {
@@ -68,24 +69,17 @@ class SendInvoices extends Command
                 $invoice->update([
                     'sent' => Carbon::now()
                 ]);
-
-                $count++;
             }
         }
-        activity('crontab')->log('Sent ' . $count . ' invoices');
+        activity('crontab')->log('Sent ' . count($invoicesDue) . ' invoices');
     }
 
     public function paymentUrl($invoice)
     {
         // charge the customers card/account via a mollie payment or create payment url
-        $payment = null;
         $type = 'first';
-        if ($invoice->customer->mollie_id) {
-            $mollieCustomer = Mollie::api()->customers()->get($invoice->customer->mollie_id);
-            $mandates = Mollie::api()->mandates()->listFor($mollieCustomer);
-            if ($mollieCustomer && $mandates) {
-                $type = 'recurring';
-            }
+        if ($invoice->customer->mollie_id && $invoice->customer->mandate_id) {
+            $type = 'recurring';
         }
         return (new MolliePayment($invoice->customer, $invoice->contract, $type))->payment();
     }

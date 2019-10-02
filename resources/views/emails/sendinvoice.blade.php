@@ -96,15 +96,11 @@
                 <p>
                     In de bijlage vind je jouw nieuwe factuur.
                 </p>
-                @if(isset($payment->_links->checkout))
+
                 <p>
-                    <a href="{{ $payment->_links->checkout->href }}">Naar betalen</a>
+                    Wanneer je automatische incasso hebt ingesteld, wordt het te bedrag automatisch van je rekening afgeschreven. 
+                    Betaal je met factuur, maak dan het bedrag voor de verval datum over.                    
                 </p>
-                @else
-                <p>
-                    Wanneer je automatische incasso hebt ingesteld, wordt het te bedrag automatisch van je rekening afgeschreven.                    
-                </p>
-                @endif
                 <!--[if (gte mso 9)|(IE)]>
                 </td></tr></table>
                 <![endif]-->
