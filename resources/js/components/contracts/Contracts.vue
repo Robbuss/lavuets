@@ -103,7 +103,8 @@ export default class Contracts extends Vue {
     { text: "Actions", value: "name", sortable: false }
   ];
   private pagination: any = {
-    rowsPerPage: 25
+    rowsPerPage: 25,
+    sortByDesc: 'start_date',
   };
 
   async getData() {

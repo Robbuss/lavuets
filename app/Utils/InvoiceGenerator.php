@@ -25,13 +25,12 @@ class InvoiceGenerator
     {
         // if there is a lastinvoice, use that date. Else use the contract start_date
         $date = $this->lastInvoice && $this->lastInvoice->end_date ? $this->lastInvoice->end_date : $this->contract->start_date;
-
         $newInvoice = Invoice::create([
             'ref' => 'Factuur-' . Carbon::parse($date)->format('m-Y'),
+            'ref_number' =>  Invoice::orderBy('id', 'DESC')->first()->ref_number, // get the last invoice from the db and grab that number
             'contract_id' => $this->contract->id,
             'customer_id' => $this->contract->customer->id,
             'note' => ($this->note) ? $this->note : $this->contract->default_note,
-            'payment_id' => null,
             'start_date' => $date,
             'end_date' => Carbon::parse($date)->{$this->contract->method}($this->contract->period)
         ]);

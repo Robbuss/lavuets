@@ -27,7 +27,8 @@ class InvoiceController extends Controller
                 return [
                     'id' => $q->id,
                     'ref' => $q->ref,
-                    'payment' => $q->payment ? $q->payment : ['payment_id' => false, 'status' => 'Geen id'],
+                    'ref_number' => $q->ref_number,
+                    'payment' => $q->payment ? $q->payment->last() : ['payment_id' => false, 'status' => 'Geen id'],
                     'note' => $q->note,
                     'start_date' => $q->start_date->format('Y-m-d'),
                     'start_date_localized' => $q->start_date_localized,

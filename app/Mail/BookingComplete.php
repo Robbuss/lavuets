@@ -37,12 +37,14 @@ class BookingComplete extends Mailable
                 'as' => 'huurcontract-opslagmagazijn.pdf',
                 'mime' => 'application/pdf',
             ])
+            ->attach(storage_path('app/public/'). 'algemene-voorwaarden-opslagmagazijn.pdf', [
+                'mime' => 'application/pdf',
+            ])
+            ->attach(storage_path('app/public/') . 'huisregels-opslagmagazijn.pdf', [
+                'mime' => 'application/pdf',
+            ])
             ->attach($this->invoicePdf, [
                 'mime' => 'application/pdf',
             ])->subject('Welkom bij opslagmagazijn');
-            // ->attach('algemene/voorwaarden/path', [
-            //     'as' => 'name.pdf',
-            //     'mime' => 'application/pdf',
-            // ]);
     }
 }

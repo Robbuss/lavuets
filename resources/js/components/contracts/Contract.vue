@@ -211,7 +211,7 @@ export default class SingleContract extends Vue {
         tooltip: "Betaalwijze"
       },
       {
-        field: this.contract.auto_invoice ? 'Automagische facturatie aan' : 'Automagische facturatie uit',
+        field: this.contract.auto_invoice ? 'Facturen automagisch verzenden aan' : 'Facturen niet verzenden',
         icon: "money",
         tooltip: "Automagische facturatie"
       },

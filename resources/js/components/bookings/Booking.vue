@@ -10,7 +10,7 @@
         style="cursor:pointer"
       >
         Kies een locatie
-        <small>Waar je een box wilt huren</small>
+        <small>Waar u een box wilt huren</small>
       </v-stepper-step>
 
       <v-stepper-content step="1">
@@ -18,7 +18,7 @@
       </v-stepper-content>
 
       <v-stepper-step :complete="step > 2" step="2" @click="step > 2 ? step = 2 : false">
-        Kies de grootte van de box die je wil huren
+        Kies de gewenste grootte van de box
         <small>Prijs is per maand</small>
       </v-stepper-step>
 
@@ -31,12 +31,12 @@
       </v-stepper-content>
 
       <v-stepper-step :complete="step > 3" step="3">
-        Vul je gegevens in
-        <small>Binnen 24 uur kan je de ruimte gebruiken!</small>
+        Vul de gegevens in
+        <small>Binnen 24 uur kunt u de ruimte gebruiken!</small>
       </v-stepper-step>
 
       <v-stepper-content step="3">
-        <StepCustomer @done="completeOrder($event)" :customer="customer" :contract="contract"></StepCustomer>
+        <StepCustomer @done="completeOrder($event)" :working="working" :customer="customer" :contract="contract"></StepCustomer>
       </v-stepper-content>
     </v-stepper>
   </v-flex>

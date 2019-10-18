@@ -73,9 +73,13 @@
           <v-flex pa-3>
             <ul>
               <li>Mollie mislukte betalingen afhandelen</li>
-              <li>Huisregels in mail attachment</li>
-              <li>Algemene voorwaarden link op wordpress en linken in mail & checkout process</li>
+              <li>Alle datums naar de frontend</li>
               <li>Add Settings</li>
+              <li>Creditfacturen</li>
+              <li>Producten in Contract aanpassen</li>
+              <li>Betalingsherinneringen</li>
+              <li>Relatienummers op facturen</li>
+              <li>Handmatige klant invoer</li>
               <li>Change icons for filetype</li>
               <li>Make file work level deeper</li>
             </ul>

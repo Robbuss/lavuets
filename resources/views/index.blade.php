@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    <div id="app">
+    <div id="vue-app">
         <router-component></router-component>
     </div>
     <script src="/js/app.js"></script>

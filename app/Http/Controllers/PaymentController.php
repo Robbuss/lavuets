@@ -12,7 +12,8 @@ class PaymentController extends Controller
             return [
                 'customer' => $q->customer->name,  
                 'contract_id' => $q->contract_id,  
-                'payment_id' => $q->payment_id,  
+                'payment_id' => $q->payment_id, 
+                'invoice_id' => $q->invoice_id, 
                 'mode' => $q->mode,
                 'amount' => $q->amount,
                 'status' => $q->status,  

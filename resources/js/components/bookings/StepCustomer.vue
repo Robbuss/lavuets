@@ -1,9 +1,14 @@
 <template>
   <v-card flat class="grey lighten-3 pa-1">
     <v-form v-model="valid" lazy-validation ref="form">
-      <v-layout row fill-height justify-center align-center 
-      :class="{'pa-5' :$vuetify.breakpoint.mdAndUp, 'pa-1': $vuetify.breakpoint.smAndDown}"
-       class="text-xs-center white">
+      <v-layout
+        row
+        fill-height
+        justify-center
+        align-center
+        :class="{'pa-5' :$vuetify.breakpoint.mdAndUp, 'pa-1': $vuetify.breakpoint.smAndDown}"
+        class="text-xs-center white"
+      >
         <v-layout row wrap>
           <v-flex xs12 md8 :class="{'pr-5' :$vuetify.breakpoint.mdAndUp}">
             <v-container grid-list-md ma-0 pa-0>
@@ -72,6 +77,8 @@
                     required
                     v-model="customer.name"
                     label="Naam"
+                    autocomplete="name"
+                    name="name"
                   ></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6>
@@ -81,6 +88,9 @@
                     v => !!v || 'Dit veld mag niet leeg zijn',
                     v => /.+@.+/.test(v) || 'Geef een geldig e-mailadres op']"
                     required
+                    type="email"
+                    name="email"
+                    autocomplete="email"
                     v-model="customer.email"
                     label="E-mail"
                   ></v-text-field>
@@ -88,19 +98,15 @@
                 <v-flex xs12 sm6>
                   <v-text-field
                     box
-                    :rules="[v => (!!v || wantsDongle) || 'Dit veld mag niet leeg zijn']"
+                    :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                     required
                     v-model="customer.phone"
                     label="Mobiel nummer voor toegang"
                     placeholder="Telefoonnummer"
+                    type="tel"
+                    name="phone"
+                    autocomplete="tel"
                   ></v-text-field>
-                </v-flex>
-                <v-flex xs12>
-                  <v-checkbox
-                    v-model="wantsDongle"
-                    required
-                    label="Ik heb geen mobiel nummer en kom een dongle halen"
-                  />
                 </v-flex>
                 <v-flex xs12 sm10>
                   <v-text-field
@@ -109,6 +115,8 @@
                     required
                     v-model="customer.street_addr"
                     label="Straat"
+                    autocomplete="shipping street-address"
+                    name="ship-address"
                   ></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md2>
@@ -128,6 +136,8 @@
                     required
                     v-model="customer.city"
                     label="Stad"
+                    autocomplete="shipping locality"
+                    name="ship-city"
                   ></v-text-field>
                 </v-flex>
 
@@ -138,13 +148,15 @@
                     required
                     v-model="customer.postal_code"
                     label="Postcode"
+                    autocomplete="shipping postal-code"
+                    name="ship-zip"
                   ></v-text-field>
                 </v-flex>
 
                 <v-flex xs12 sm12>
                   <v-text-field
                     box
-                    :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
+                    :rules="ibanRules"
                     required
                     v-model="customer.iban"
                     label="IBAN Bankrekeningnummer"
@@ -164,6 +176,7 @@
                     <v-text-field
                       :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                       required
+                      id="company"
                       box
                       v-model="customer.company_name"
                       label="Bedrijfsnaam"
@@ -201,9 +214,12 @@
               <v-toolbar flat class="primary white--text text-xs-center">
                 <v-toolbar-title>Overzicht</v-toolbar-title>
               </v-toolbar>
-              <v-flex xs12 :class="{'pa-5' :$vuetify.breakpoint.mdAndUp, 'pa-2' : $vuetify.breakpoint.smAndDown}">
+              <v-flex
+                xs12
+                :class="{'pa-5' :$vuetify.breakpoint.mdAndUp, 'pa-2' : $vuetify.breakpoint.smAndDown}"
+              >
                 <h3 class="subheading grey--text">
-                  Je huurt een box in
+                  U huurt een box in
                   <span class="primary--text">Breukelen</span>
                 </h3>
                 <h3 class="subheading grey--text">
@@ -236,7 +252,7 @@
                   v-model="terms"
                   :rules="[v => !!v || 'Je moet akkoord gaan met de algemene voorwaarden']"
                   required
-                  label="Ik ga akkoord met de algemene voorwaarden"
+                  label="Ik ga akkoord met de algemene voorwaarden en de automatische afschrijving van vervolg betalingen"
                 />
               </v-flex>
               <v-flex xs12>
@@ -263,6 +279,7 @@ import { Component, Prop, Watch } from "vue-property-decorator";
 import axios from "js/axios";
 import * as moment from "moment";
 import "moment/locale/nl";
+import * as iban from "iban";
 
 @Component({})
 export default class StepCustomer extends Vue {
@@ -272,18 +289,24 @@ export default class StepCustomer extends Vue {
   @Prop()
   customer: any;
 
+  @Prop()
+  working: boolean;
+
   @Watch("contract.start_date")
   onStartDateChanged(newval: any, oldval: any) {
     if (oldval) (this.$refs.form as any).resetValidation();
   }
+
+  private ibanRules: any = [
+    (v: string) => !!v || "Dit veld mag niet leeg zijn",
+    (v: string) => !!iban.isValid(v) || "Dit is geen geldig IBAN nummer"
+  ];
 
   private valid: boolean = true;
   public items = ["1 maand", "3 maanden", "6 maanden", "12 maanden"];
   private datePicker: boolean = false;
   private terms: boolean = false;
   private isCompany: boolean = false;
-  private wantsDongle: boolean = false;
-  private working: boolean = false;
 
   mounted() {
     moment().locale("nl");

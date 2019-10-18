@@ -134,7 +134,7 @@
             </div>
         </div>
         <div class="title-bar default-padding">
-            {{ $invoice->ref }} <span class="right">Periode {{ \Carbon\Carbon::parse($invoice->start_date)->isoFormat('LL') }} tot {{ \Carbon\Carbon::parse($invoice->end_date)->isoFormat('LL') }}</span>
+            Factuurnummer: {{ $invoice->ref_number }} <span class="right">Periode {{ \Carbon\Carbon::parse($invoice->start_date)->isoFormat('LL') }} tot {{ \Carbon\Carbon::parse($invoice->end_date)->isoFormat('LL') }}</span>
             {{ $invoice->customer->name }}
         </div>
         <div class="customer-bar">
@@ -170,8 +170,8 @@
         <div class="item-bar default-padding">
             <div class="col1">1</div>
             <div class="col2">{{ $unit->name }} ({{ $unit->size }}m3)</div>
-            <div class="col3">€{{ $unit->pivot->price }}</div>
-            <div class="col4">€{{ $unit->pivot->price }}</div>
+            <div class="col3">€ {{ $unit->pivot->price }}</div>
+            <div class="col4">€ {{ $unit->pivot->price }}</div>
         </div>
         @endforeach
         <div class="item-bar default-padding">
@@ -179,7 +179,7 @@
             <div class="col2" style="border-bottom: 0px !important;"></div>
             @if($invoice->customer->kvk)
             <div class="col3">21% BTW</div>
-            <div class="col4">€{{ $total['btw'] }}</div>
+            <div class="col4">€ {{ $total['btw'] }}</div>
             @else
             <div class="col3">Vrij van BTW</div>
             <div class="col4"></div>
@@ -190,9 +190,9 @@
             <div class="col2"></div>
             <div class="col3">Totaal</div>
             @if($invoice->customer->kvk)
-            <div class="col4">€{{ $total['price_vat'] }}</div>
+            <div class="col4">€ {{ $total['price_vat'] }}</div>
             @else
-            <div class="col4">€{{ $total['price'] }}</div>
+            <div class="col4">€ {{ $total['price'] }}</div>
             @endif
         </div>
         <div class="footer">

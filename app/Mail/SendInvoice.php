@@ -34,6 +34,7 @@ class SendInvoice extends Mailable
     {
         return $this->view('emails.sendinvoice')->with([
             'invoice' => $this->invoice,
+            'payment_method' => $this->invoice->contract->payment_method,
             'payment' => $this->payment,
         ])->attach(
             storage_path('app/' . $this->invoice->customer_id . '/') . $this->invoice->ref . '.pdf',

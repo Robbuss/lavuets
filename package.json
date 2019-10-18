@@ -11,10 +11,13 @@
         "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=webpack.config.js --profile"
     },
     "dependencies": {
+        "@types/iban": "0.0.30",
+        "@webcomponents/webcomponentsjs": "^2.3.0",
         "blob-util": "^2.0.2",
         "chart.js": "^2.8.0",
         "dotenv": "^8.1.0",
         "file-saver": "^2.0.1",
+        "iban": "0.0.12",
         "moment": "^2.24.0",
         "register-service-worker": "^1.6.2",
         "vue": "^2.6.6",

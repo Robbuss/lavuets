@@ -2,6 +2,7 @@
 
 namespace App\Utils;
 
+use App\Models\Invoice;
 use App\Models\Payment;
 use App\Models\Contract;
 use App\Models\Customer;
@@ -12,14 +13,23 @@ class MolliePayment
     public $price;
     public $customer;
     public $contract;
+    public $invoice;
     public $type;
+    public $webhook;
 
-    public function __construct(Customer $customer, Contract $contract, $type)
+    public function __construct(Customer $customer, Contract $contract, Invoice $invoice, $type, $webhook = false)
     {
         $this->customer = $customer;
         $this->contract = $contract;
+        $this->invoice = $invoice;
         $this->price = $this->calculatePrice();
         $this->type = $type;
+
+        if(!$webhook){
+            $this->webhook = config('app.mollie_webhook');
+        }else{
+            $this->webhook = $webhook;
+        }
     }
 
     private function calculatePrice()
@@ -40,13 +50,26 @@ class MolliePayment
                 "email"  => $this->customer->email,
             ]);
 
-            $this->customer->update(['mollie_id' => $mollieCustomer->id]);
+            // i believe we need to get the mollie model again, for security's sake (something in their api docs about this)
+            $mollieCustomer = Mollie::api()->customers()->get($mollieCustomer->id);
+
+            // create a mandate  
+            $mandate = $mollieCustomer->createMandate([
+                "method" => \Mollie\Api\Types\MandateMethod::DIRECTDEBIT,
+                "consumerName" => $this->customer->name,
+                "consumerAccount" => str_replace(' ', '', $this->customer->iban), // make sure there are no spaces in the iban
+                "signatureDate" => \Carbon\Carbon::now()->format('Y-m-d'),
+                "mandateReference" => "OPSLAGMAG-" . $this->customer->id,
+            ]);
+            // save it to the customer. The next time recurring will be used. 
+            $this->customer->update(['mollie_id' => $mollieCustomer->id, 'mandate_id' => $mandate->id]);
         }
 
         // if its a recurring payment, there must a valid mandate in mollie.
         if ($this->type === 'recurring') {
-            if(!$this->customer->mollie_id) // there is no mollie_id so we cant check for mandates and should abort
+            if (!$this->customer->mollie_id) // there is no mollie_id so we cant check for mandates and should abort
                 return;
+
             $mollieCustomer = Mollie::api()->customers()->get($this->customer->mollie_id);
             $mandates = Mollie::api()->mandates()->listFor($mollieCustomer);
             if (!$mandates) {
@@ -56,7 +79,7 @@ class MolliePayment
         }
 
         // create the mollie payment, if sequenceType is first; this also generates a mandate for the customer.
-        $payment = Mollie::api()->payments()->create([
+        $molliePayment = Mollie::api()->payments()->create([
             'amount' => [
                 'currency' => 'EUR',
                 'value' => (string) $this->price, // You must send the correct number of decimals, thus we enforce the use of strings
@@ -64,21 +87,25 @@ class MolliePayment
             'customerId'    => $mollieCustomer->id, // the mollie customer is either created or requested via the api
             'sequenceType' => $this->type, //'first' or 'recurring',
             'description' => 'Verhuur van opslagruimte',
-            'webhookUrl' => config('app.mollie_webhook'),
+            'webhookUrl' => $this->webhook,
             'redirectUrl' => config('app.booking_complete_url'),
         ]);
         activity('mollie')->log('Mollie betaling gemaakt met type ' . $this->type . ' voor ' . $this->customer->name);
 
         // save the payment to our database
-        Payment::create([
+        $payment = Payment::create([
             'contract_id' => $this->contract->id,
             'customer_id' => $this->customer->id,
-            'payment_id' => $payment->id,
+            'invoice_id' => $this->invoice->id,
+            'payment_id' => $molliePayment->id,
             'status' => 'pending',
             'amount' => (string) $this->price
         ]);
 
         // returns the mollie payment object, including a checkout url
-        return $payment;
+        return [
+            'molliepayment' => $molliePayment,
+            'payment' => $payment
+        ];
     }
 }

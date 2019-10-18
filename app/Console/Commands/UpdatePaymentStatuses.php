@@ -41,13 +41,17 @@ class UpdatePaymentStatuses extends Command
     {
         $unpaid = Payment::whereNotIn('status', ['paid', 'canceled', 'expired'])->orWhereNull('status')->whereNotNull('payment_id')->get();
         foreach ($unpaid as $payment) {
-            $molliePayment =  Mollie::api()->payments()->get($payment->payment_id);
-            $payment->update([
-                'status' => $molliePayment->status,
-                'mode' => $molliePayment->mode,
-                'amount' => $molliePayment->amount->value,
-            ]);
-            print_r('Updated' . $payment->id);
+            try {
+                $molliePayment =  Mollie::api()->payments()->get($payment->payment_id);
+                $payment->update([
+                    'status' => $molliePayment->status,
+                    'mode' => $molliePayment->mode,
+                    'amount' => $molliePayment->amount->value,
+                ]);
+                print_r('Updated' . $payment->id);
+            } catch (\Exception $e) {
+                activity('crontab')->log('Error payment update: ' . $payment->payment_id);
+            }
         }
     }
 }

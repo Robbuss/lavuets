@@ -61,13 +61,14 @@
         <template v-slot:items="props">
           <td>
             <v-chip
-              v-if="props.item.payment.payment_id"
+              v-if="props.item.payment"
               flat
               :class="{
             'white--text green' : props.item.payment.payment_id}"
-            >{{ props.item.payment.payment_id }}</v-chip>
-            <v-chip v-else flat class="grey lighten-3">{{ props.item.payment.status }}</v-chip>
+            >{{ props.item.payment.status }}</v-chip>
+            <v-chip v-else flat class="grey lighten-3">geen id</v-chip>
           </td>
+          <td> {{ props.item.ref_number }}</td>
           <td>{{ props.item.customer.name }}</td>
           <td>{{ getUnits(props.item.contract.units) }}</td>
           <td>€{{ props.item.contract.price }}</td>
@@ -133,6 +134,7 @@ export default class Invoices extends Vue {
   };
   private headers: any = [
     { text: "Status", value: "payment.payment_id" },
+    { text: "Factuur nr", value: "invoice.ref_number" },
     { text: "Naam", value: "invoice.name" },
     { text: "Producten", value: "contract.units" },
     { text: "Prijs", value: "contract.price" },

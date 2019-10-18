@@ -24,16 +24,16 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('invoices:due')
-            ->dailyAt('09:00');
         $schedule->command('mollie:mandates')
-            ->dailyAt('09:15');            
-        $schedule->command('invoices:mail')
+            ->dailyAt('10:00');
+        $schedule->command('invoices:due')
+            ->dailyAt('11:00');
+        $schedule->command('invoices:send')
             ->dailyAt('15:00');
         $schedule->command('contract:expired')
             ->dailyAt('23:59');
         $schedule->command('payment:status')
-            ->everyFiveMinutes();
+            ->twiceDaily(9, 17);
     }
 
     /**

@@ -18,7 +18,8 @@
         "laravel/tinker": "^1.0",
         "mollie/laravel-mollie": "2.0",
         "nesbot/carbon": "^2.24",
-        "spatie/laravel-activitylog": "^3.7"
+        "spatie/laravel-activitylog": "^3.7",
+        "spatie/laravel-cors": "^1.6"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.0",

@@ -20,9 +20,17 @@
                   :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                   required
                   v-model="editedItem.ref"
-                  label="Referentie"
+                  label="Referentie (bestandsnaam)"
                 ></v-text-field>
               </v-flex>
+              <v-flex xs12 sm6 md6>
+                <v-text-field
+                  :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
+                  required
+                  v-model="editedItem.ref_number"
+                  label="Referentie nummer administratie"
+                ></v-text-field>
+              </v-flex>              
             </v-layout>
 
             <v-layout wrap>
@@ -136,6 +144,7 @@ export default class EditInvoice extends Vue {
     contract_id: null,
     payment_id: null,
     ref: "",
+    ref_number: "",
     sent: null,
     note: "",
     start_date: moment()
@@ -148,6 +157,7 @@ export default class EditInvoice extends Vue {
     contract_id: null,
     payment_status: "unpaid",
     ref: "",
+    ref_number: "",
     note: "",
     sent: null,
     start_date: moment()

@@ -59,26 +59,25 @@ class CreateMollieMandate extends Command
 
             $mollieCustomer = Mollie::api()->customers()->get($customer->mollie_id);
             $mandates = Mollie::api()->mandates()->listFor($mollieCustomer);
-            // if($mandates->count > 0){
-            //     foreach($mandates as $mandate){
-            //         $mandate->revoke();
-            //         print_r('revoked ' . $mandate->id);
-            //     }
-            // }
+
             if ($mandates->count === 0) {
                 // create a mandate  
-                $mandate = Mollie::api()->customers()->get($customer->mollie_id)->createMandate([
-                    "method" => \Mollie\Api\Types\MandateMethod::DIRECTDEBIT,
-                    "consumerName" => $customer->name,
-                    "consumerAccount" => $customer->iban,
-                    "signatureDate" => \Carbon\Carbon::now()->format('Y-m-d'),
-                    "mandateReference" => "OPSLAGMAG-" . $customer->id,
-                ]);
-                // print_r($mandate->id);
+                try{
+                    $mandate = Mollie::api()->customers()->get($customer->mollie_id)->createMandate([
+                        "method" => \Mollie\Api\Types\MandateMethod::DIRECTDEBIT,
+                        "consumerName" => $customer->name,
+                        "consumerAccount" => $customer->iban,
+                        "signatureDate" => \Carbon\Carbon::now()->format('Y-m-d'),
+                        "mandateReference" => "OPSLAGMAG-" . $customer->id,
+                    ]);
+                }catch(\Exception $e){
+                    activity('crontab')->log('Error mandaat maken voor: '. $customer->name . ' iban: ' . $customer->iban);
+                }
+
                 $customer->update(['mandate_id' => $mandate->id]);
             }
 
         }
-        activity('crontab')->log('Created ' . $customer->count() . ' mandates');
+        activity('crontab')->log('Created ' . $customers->count() . ' mandates');
     }
 }

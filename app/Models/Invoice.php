@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Invoice extends Model
 {
     use SoftDeletes, LogsActivity;
-    protected $fillable = ['ref', 'contract_id', 'customer_id', 'payment_id', 'note', 'start_date', 'end_date', 'sent'];
+    protected $fillable = ['ref', 'ref_number', 'contract_id', 'customer_id', 'payment_id', 'note', 'start_date', 'end_date', 'sent'];
     protected $dates = [
         'end_date',
         'start_date',
@@ -46,6 +46,6 @@ class Invoice extends Model
 
     public function payment()
     {
-        return $this->BelongsTo(Payment::class);
+        return $this->hasMany(Payment::class);
     }
 }

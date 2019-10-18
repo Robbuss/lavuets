@@ -7,6 +7,7 @@ use App\Models\Contract;
 use App\Models\Customer;
 use App\Utils\MolliePayment;
 use Illuminate\Http\Request;
+use App\Utils\InvoiceGenerator;
 
 class BookingController extends Controller
 {
@@ -39,14 +40,20 @@ class BookingController extends Controller
         $contract = Contract::create(array_merge($request->contract, [
             'customer_id' => $customer->id,
             'auto_invoice' => true,
+            'method' => 'addMonth',
+            'payment_method' => 'incasso',
         ]));
         $contract->units()->sync($this->getSyncArray($request->units));
 
+        // generate an invoice
+        $invoice = new InvoiceGenerator($contract);
+
         // create a mollie customer, create a mollie payment and store the payment in our database. 
-        $payment = (new MolliePayment($customer, $contract, 'first'))->payment();
+        // TODO: move the hardcoded url to a setting when customers scope is active.
+        $payments = (new MolliePayment($customer, $contract, $invoice->lastInvoice, 'first', 'https://boekonline.opslagmagazijn.nl/webhooks/mollie-first'))->payment();
 
         // redirect customer to Mollie checkout page
-        return ['success' => true, 'payment_url' => $payment->getCheckoutUrl()];
+        return ['success' => true, 'payment_url' => $payments['molliepayment']->getCheckoutUrl()];
     }
 
     public function getSyncArray($priceArray = [])
@@ -58,4 +65,5 @@ class BookingController extends Controller
 
         return $contractUnitPrice;
     }
+  
 }
