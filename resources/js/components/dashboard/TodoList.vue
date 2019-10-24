@@ -26,6 +26,9 @@ import store from "js/store";
 export default class TodoList extends Vue {
   todos: any = [
     "Aanpasbare verhuur tijd van producten",
+    "Media library toevoegen",
+    "Locaties toevoegen",
+    "Tentant scope maken",
     "Mollie mislukte betalingen afhandelen (redirect nog naar succes page)",
     "Mollie first payment save mandate_id to db",
     "Add price formatting to manual payments",
