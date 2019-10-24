@@ -58,6 +58,7 @@
 import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
 import axios from "js/axios";
+import store from "js/store";
 
 @Component({})
 export default class Editunit extends Vue {
