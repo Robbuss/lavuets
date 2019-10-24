@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid grid-list-md v-if="!loading" fill-height>
+  <v-flex v-if="!loading" fill-height>
     <v-layout row wrap>
       <v-flex xs12 sm6 md4>
         <edit-create-unit :unit="unit" :creating="false"></edit-create-unit>
@@ -35,7 +35,7 @@
       </v-list>
     </v-flex>
   </v-layout>
-  </v-container>
+  </v-flex>
 </template>
 
 <script lang="ts">

@@ -17,19 +17,24 @@ class MolliePayment
     public $type;
     public $webhook;
 
-    public function __construct(Customer $customer, Contract $contract, Invoice $invoice, $type, $webhook = false)
+    public function __construct(Customer $customer, Contract $contract, Invoice $invoice, $webhook = false)
     {
         $this->customer = $customer;
         $this->contract = $contract;
         $this->invoice = $invoice;
         $this->price = $this->calculatePrice();
-        $this->type = $type;
+        $this->type = $this->firstOrRecurring();
+        $this->webhook = $this->createWebhook($webhook);
+    }
 
-        if(!$webhook){
-            $this->webhook = config('app.mollie_webhook');
-        }else{
-            $this->webhook = $webhook;
-        }
+    private function createWebhook($webhook)
+    {
+        return (!$webhook) ? config('app.mollie_webhook') : $webhook;
+    }
+
+    private function firstOrRecurring()
+    {
+        return ($this->contract->customer->mollie_id && $this->contract->customer->mandate_id) ? 'recurring' : 'first';
     }
 
     private function calculatePrice()
@@ -67,29 +72,32 @@ class MolliePayment
 
         // if its a recurring payment, there must a valid mandate in mollie.
         if ($this->type === 'recurring') {
-            if (!$this->customer->mollie_id) // there is no mollie_id so we cant check for mandates and should abort
-                return;
-
             $mollieCustomer = Mollie::api()->customers()->get($this->customer->mollie_id);
             $mandates = Mollie::api()->mandates()->listFor($mollieCustomer);
-            if (!$mandates) {
+            if ($mandates->count === 0) {
                 activity('mollie')->log('Geen geldige mandaat gevonden in Mollie voor ' . $this->customer->name);
                 return;
             }
         }
 
         // create the mollie payment, if sequenceType is first; this also generates a mandate for the customer.
-        $molliePayment = Mollie::api()->payments()->create([
-            'amount' => [
-                'currency' => 'EUR',
-                'value' => (string) $this->price, // You must send the correct number of decimals, thus we enforce the use of strings
-            ],
-            'customerId'    => $mollieCustomer->id, // the mollie customer is either created or requested via the api
-            'sequenceType' => $this->type, //'first' or 'recurring',
-            'description' => 'Verhuur van opslagruimte',
-            'webhookUrl' => $this->webhook,
-            'redirectUrl' => config('app.booking_complete_url'),
-        ]);
+        try {
+            $molliePayment = Mollie::api()->payments()->create([
+                'amount' => [
+                    'currency' => 'EUR',
+                    'value' => (string) $this->price, // You must send the correct number of decimals, thus we enforce the use of strings
+                ],
+                'customerId'    => $mollieCustomer->id, // the mollie customer is either created or requested via the api
+                'sequenceType' => $this->type, //'first' or 'recurring',
+                'description' => 'Verhuur van opslagruimte',
+                'webhookUrl' => $this->webhook,
+                'redirectUrl' => config('app.booking_complete_url'),
+            ]);
+
+            // TODO: save the mollie mandate to our db
+        } catch (\Exception $e) {
+            activity('mollie')->log('something went wrong with the payment: ' . $e);
+        }
         activity('mollie')->log('Mollie betaling gemaakt met type ' . $this->type . ' voor ' . $this->customer->name);
 
         // save the payment to our database

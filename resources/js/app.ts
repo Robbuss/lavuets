@@ -16,6 +16,7 @@ Vue.use(Vuetify, {
 });
 Vue.component('router-component', require('./components/Router.vue').default);
 Vue.component('booking-form', require('./components/bookings/Booking.vue').default);
+Vue.component('BackButton', require('js/components/BackButton.vue').default);
 
 const app = new Vue({
     el: '#vue-app',

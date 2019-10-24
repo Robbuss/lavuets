@@ -8,7 +8,7 @@
           class="white--text"
           v-model="search"
           append-icon="search"
-          label="Search"
+          label="Zoeken"
           single-line
           hide-details
         ></v-text-field>
@@ -74,6 +74,7 @@
 import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
 import axios from "js/axios";
+import store from "js/store";
 import EditCreateUnit from "./EditCreate.vue";
 
 @Component({
@@ -128,6 +129,8 @@ export default class Units extends Vue {
     confirm("Are you sure you want to delete this item?") &&
       this.units.splice(index, 1) &&
       axios.post("/api/units/" + item.id + "/delete");
+      
+    store.commit("snackbar", { type: "success", message: "Product verwijderd!" });
   }
 
   createItem() {

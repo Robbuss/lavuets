@@ -50,10 +50,13 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/invoices/{invoice}/delete', 'InvoiceController@delete');    
     Route::post('/invoices/{invoice}/send', 'InvoiceController@send');    
 
-    Route::get('/logs', 'LogController@index');    
-    Route::get('/payments', 'PaymentController@index');    
+    Route::get('/logs', 'LogController@index');
+    Route::get('/payments', 'PaymentsController@index');    
+    Route::post('/payments/{contract}/{invoice}/create', 'PaymentsController@create');    
+    Route::post('/payments/{payment}/related', 'PaymentsController@relatedPayments');
 
     Route::get('/dashboard', 'DashboardController@index');
+    Route::get('/dashboard/unpaid-invoices', 'DashboardController@unpaidInvoices');
 
     Route::post('/files/browser', 'FileController@index');
     Route::post('/files/backup', 'FileController@backup');

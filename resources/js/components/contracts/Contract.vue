@@ -1,10 +1,11 @@
 <template>
-  <v-container fluid v-if="!loading" fill-height>
+  <v-flex fluid v-if="!loading" fill-height>
     <v-layout row wrap>
       <v-flex xs12>
         <v-layout row wrap mb-3>
           <v-flex xs12>
             <v-toolbar class="primary" dark>
+              <BackButton />
               <v-toolbar-title
                 style="cursor:pointer;"
                 @click="$router.push('/customers/' + contract.customer.id)"
@@ -34,7 +35,7 @@
                           <v-icon color="primary">date_range</v-icon>
                         </v-list-tile-action>
                         <v-list-tile-content>
-                          <v-list-tile-title>Vanaf {{ contract.start_date_localized }}</v-list-tile-title>
+                          <v-list-tile-title>Vanaf {{ formatDate(contract.start_date) }}</v-list-tile-title>
                         </v-list-tile-content>
                       </v-list-tile>
                       <span>Startdatum van het contract</span>
@@ -115,7 +116,7 @@
               :disabled="!isActive"
               class="pa-0"
               v-model="isActive"
-              :label="!contract.deactivated_at ? 'Dit contract is actief' : 'Gedeactiveerd op ' + contract.deactivated_at"
+              :label="!contract.deactivated_at ? 'Dit contract is actief' : 'Gedeactiveerd op ' + formatDate(contract.deactivated_at)"
               color="green"
             ></v-switch>
           </v-flex>
@@ -154,11 +155,7 @@
         </v-layout>
       </v-card>
     </v-dialog>
-    <v-snackbar v-model="snackbar.show">
-      {{ snackbar.message }}
-      <v-btn color="pink" text @click="snackbar = false">Close</v-btn>
-    </v-snackbar>
-  </v-container>
+  </v-flex>
 </template>
 
 <script lang="ts">
@@ -170,6 +167,7 @@ import axios from "js/axios";
 import { base64StringToBlob } from "blob-util";
 const saveAs: any = require("file-saver");
 import * as moment from "moment";
+import store from "js/store";
 
 @Component({
   components: {
@@ -184,10 +182,7 @@ export default class SingleContract extends Vue {
   private freeUnits: boolean = false;
   private dialog: boolean = false;
   private showWarning: boolean = false;
-  private snackbar: any = {
-    show: false,
-    message: ""
-  };
+
   get customerFields() {
     return [
       {
@@ -211,26 +206,34 @@ export default class SingleContract extends Vue {
         tooltip: "Betaalwijze"
       },
       {
-        field: this.contract.auto_invoice ? 'Facturen automagisch verzenden aan' : 'Facturen niet verzenden',
+        field: this.contract.auto_invoice
+          ? "Facturen automagisch verzenden aan"
+          : "Facturen niet verzenden",
         icon: "money",
         tooltip: "Automagische facturatie"
       },
       {
-        field: this.contract.customer.mandate_id ? 'Geldig mandaat in Mollie' : 'Geen mandaat',
+        field: this.contract.customer.mandate_id
+          ? "Geldig mandaat in Mollie"
+          : "Geen mandaat",
         icon: "money",
         tooltip: "Is er een geldig mandaat in mollie?"
-      },                
+      },
       {
         field: this.contract.customer.company_name || "Particulier",
         icon: "store",
         tooltip: "Bedrijf of particulier"
       },
       {
-        field: this.contract.customer.id ,
+        field: this.contract.customer.id,
         icon: "android",
         tooltip: "Klant ID"
-      }      
+      }
     ];
+  }
+
+  formatDate(date: any) {
+    return moment(date).format("LL");
   }
 
   get isActive() {
@@ -241,33 +244,28 @@ export default class SingleContract extends Vue {
   set isActive(value: any) {
     if (!value) this.contract.deactivated_at = moment().format("YYYY-MM-DD");
   }
+
   @Watch("contract.deactivated_at")
   onActiveChanged(newval: boolean, oldval: boolean) {
     if (oldval === null) this.showWarning = true;
   }
 
-  @Watch("snackbar.show")
-  onSnackbarChanged(newval: boolean, oldval: boolean) {
-    if (oldval !== undefined) {
-      let t = setTimeout(() => (this.snackbar.show = false), 4000);
-      clearTimeout(t);
-    }
-  }
   async mounted() {
     await this.getData();
     this.loading = false;
   }
 
-  finished(){
+  finished() {
     this.loading = true;
     this.getData();
-    this.dialog = !this.dialog
+    this.dialog = !this.dialog;
     this.loading = false;
   }
 
   async saveContract() {
     this.contract.free_units = this.freeUnits;
     axios.post("/api/contracts/" + this.contract.id, this.contract);
+    store.commit("snackbar", { type: "success", message: "Contract opgeslagen" });
   }
 
   async getData() {
@@ -285,16 +283,11 @@ export default class SingleContract extends Vue {
       "/api/contracts/" + this.$route.params.id + "/pdf"
     )) as any).data;
     if (pdf.success === false) {
-      this.showSnackbar(pdf.message);
+      store.commit("snackbar", { type: "error", message: pdf.message });
       return;
     }
     var blob = base64StringToBlob(pdf.content, pdf.mime);
     saveAs(blob, "huurcontract." + pdf.extension);
-  }
-
-  showSnackbar(message: string) {
-    this.snackbar.show = true;
-    this.snackbar.message = message;
   }
 
   async deactivate() {

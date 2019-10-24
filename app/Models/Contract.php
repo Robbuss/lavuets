@@ -19,12 +19,7 @@ class Contract extends Model
         'deactivated_at'
     ];
     protected static $logName = 'systeem';
-
-    public function getStartDateLocalizedAttribute()
-    {
-        return ($this->start_date) ? $this->start_date->isoFormat('LL') : null;
-    }
-    
+   
     public function getDescriptionForEvent(string $eventName): string
     {
         return "Contract {$eventName}";

@@ -42,7 +42,7 @@ class CreateMollieMandate extends Command
         $customers = Customer::whereHas('contracts', function ($q) {
             $q->where('payment_method', 'incasso');
         })->whereNotNull('iban')->whereNull('mandate_id')->get();
-
+        $count = 0;
         foreach ($customers as $customer) {
             // make sure there are no spaces in iban; else mollie will rage. Fix this in frontend
             $customer->update(['iban' => str_replace(' ', '', $customer->iban)]);
@@ -76,8 +76,8 @@ class CreateMollieMandate extends Command
 
                 $customer->update(['mandate_id' => $mandate->id]);
             }
-
+            $count++;
         }
-        activity('crontab')->log('Created ' . $customers->count() . ' mandates');
+        activity('crontab')->log('Created ' . $count . ' mandates');
     }
 }

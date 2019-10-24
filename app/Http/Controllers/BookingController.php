@@ -50,7 +50,7 @@ class BookingController extends Controller
 
         // create a mollie customer, create a mollie payment and store the payment in our database. 
         // TODO: move the hardcoded url to a setting when customers scope is active.
-        $payments = (new MolliePayment($customer, $contract, $invoice->lastInvoice, 'first', 'https://boekonline.opslagmagazijn.nl/webhooks/mollie-first'))->payment();
+        $payments = (new MolliePayment($customer, $contract, $invoice->lastInvoice, 'https://boekonline.opslagmagazijn.nl/webhooks/mollie-first'))->payment();
 
         // redirect customer to Mollie checkout page
         return ['success' => true, 'payment_url' => $payments['molliepayment']->getCheckoutUrl()];

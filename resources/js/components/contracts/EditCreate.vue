@@ -21,7 +21,7 @@
         <v-stepper-content step="1">
           <v-form ref="form1" v-model="valid" lazy-validation>
             Welke producten wil je verhuren?
-            <v-select
+            <v-autocomplete
               :items="mergeUnits"
               v-model="contract.units"
               item-value="id"
@@ -29,7 +29,7 @@
               multiple
               chips
               @input="unitsChanged"
-            ></v-select>
+            ></v-autocomplete>
             <v-btn color="primary" @click="navigate(2)">Verder</v-btn>
             <v-btn flat @click="$emit('input')">Annuleren</v-btn>
           </v-form>
@@ -38,16 +38,18 @@
         <v-stepper-content step="2">
           <v-form ref="form2" v-model="valid" lazy-validation>
             Aan welke klant verhuur je die?
-            <v-select
+            <v-autocomplete
               :items="customers"
               item-value="id"
               item-text="name"
               v-model="contract.customer_id"
               :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
               required
-            ></v-select>
+              color="blue-grey lighten-2"
+              label="Select"
+            ></v-autocomplete>
 
-            <v-checkbox v-model="contract.auto_invoice" label="Automagische facturatie"/>
+            <v-checkbox v-model="contract.auto_invoice" label="Automagische facturatie" />
             <v-btn color="primary" @click="navigate(3)">Verder</v-btn>
 
             <v-btn flat @click="$emit('input')">Annuleren</v-btn>
@@ -71,12 +73,12 @@
               </v-flex>
               <v-flex xs12 sm6 md4>
                 Betalingsmethode
-                <v-select
+                <v-autocomplete
                   :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                   required
                   :items="['factuur', 'incasso']"
                   v-model="contract.payment_method"
-                ></v-select>
+                ></v-autocomplete>
               </v-flex>
               <v-flex xs12>
                 Standaard notitie / instructie voor alle facturen
@@ -121,6 +123,7 @@
 import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
 import axios from "js/axios";
+import store from "js/store";
 
 @Component({})
 export default class EditCreateContract extends Vue {
@@ -164,6 +167,7 @@ export default class EditCreateContract extends Vue {
   }
 
   async mounted() {
+    if (!this.contract.payment_method) this.contract.payment_method = "incasso";
     try {
       // refactor this to an api call that gets the units in {free: [], occupied: []} and customers
       const r = (await axios.get("/api/contracts")).data;
@@ -189,8 +193,10 @@ export default class EditCreateContract extends Vue {
     if (!this.validate()) return;
     if (this.contract.id) {
       axios.post("/api/contracts/" + this.contract.id, this.contract);
+      store.commit("snackbar", { type: "success", message: "Contract aangepast!" });
     } else {
       axios.post("/api/contracts/create", this.contract);
+      store.commit("snackbar", { type: "success", message: "Contract aangemaakt!" });
     }
     this.$emit("input");
   }

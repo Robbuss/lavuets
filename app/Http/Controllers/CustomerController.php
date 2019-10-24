@@ -27,7 +27,6 @@ class CustomerController extends Controller
      */
     public function create(Request $request)
     {
-        // TODO: validate fields 
         $customer = Customer::create([
             'company_name' => $request->company_name,
             'name' => $request->name,

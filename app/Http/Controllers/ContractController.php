@@ -6,6 +6,8 @@ use App\Models\Unit;
 use App\Models\Contract;
 use App\Models\Customer;
 use Illuminate\Http\Request;
+use App\Utils\InvoiceGenerator;
+use App\Utils\PdfGenerator;
 
 class ContractController extends Controller
 {
@@ -39,7 +41,6 @@ class ContractController extends Controller
                         }),
                         'price' => $q->price,
                         'start_date' => $q->start_date,
-                        'start_date_localized' => $q->start_date_localized,
                     ];
                 }
             ),
@@ -74,7 +75,8 @@ class ContractController extends Controller
     {
         $contract = Contract::create($request->except(['units']));
         $contract->units()->sync($this->getSyncArray($request->units));
-
+        // create the first invoice
+        new InvoiceGenerator($contract);
 
         return ['id' => $contract->id];
     }
@@ -90,7 +92,6 @@ class ContractController extends Controller
                 'price' => $q->pivot->price
             ];
         });
-        $contract->start_date_localized = $contract->start_date->format('Y-m-d');
 
         return $contract;
     }
@@ -141,8 +142,12 @@ class ContractController extends Controller
     public function getPdf(Contract $contract)
     {
         $file = storage_path('app/' . $contract->customer_id . '/') . 'huurcontract-opslagmagazijn.pdf';
-        if (!file_exists($file))
-            return ["success" => false, "message" => "Er is geen huurcontract gevonden..."];
+        if (!file_exists($file)){
+            (new PdfGenerator($contract));
+            $file = storage_path('app/' . $contract->customer_id . '/') . 'huurcontract-opslagmagazijn.pdf';
+        }
+
+        // return ["success" => false, "message" => "Er is geen huurcontract gevonden..."];
     
         $content = file_get_contents($file);
 

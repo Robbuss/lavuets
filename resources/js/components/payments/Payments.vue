@@ -13,28 +13,16 @@
         :pagination.sync="paginationSync"
       >
         <template v-slot:items="props">
-          <tr @click="$router.push('/contracts/' + props.item.contract_id)" style="cursor:pointer;">
-            <td v-if="status[props.item.status]">
-              <v-chip
-                flat
-                dark
-                class="ml-0 lighten-2 text--darken-1"
-                :class="status[props.item.status].color"
-              >
-                <v-avatar>
-                  <v-icon>{{ status[props.item.status].icon }}</v-icon>
-                </v-avatar>
-                {{ status[props.item.status].text }}
-              </v-chip>
-            </td>
-            <td v-else>
-              <v-chip flat class="ml-0">Geen status</v-chip>
+          <tr @click="toggleInfo(props.item)" style="cursor:pointer;">
+            <td class="font-weight-bold">€ {{ props.item.amount }}</td>
+            <td>
+              <PaymentStatusChip :payment="props.item" />
             </td>
             <td>{{ props.item.customer }}</td>
-            <td>€{{ props.item.amount }}</td>
             <td>{{ props.item.payment_id }}</td>
-            <td>{{ props.item.created_at }}</td>
-            <td>{{ props.item.updated_at }}</td>
+            <td>{{ props.item.invoice_ref_number }}</td>
+            <td>{{ formatDate(props.item.created_at) }}</td>
+            <td>{{ formatDate(props.item.updated_at) }}</td>
           </tr>
         </template>
         <template v-slot:no-data>
@@ -43,6 +31,32 @@
         </template>
       </v-data-table>
     </div>
+    <v-dialog v-model="showPaymentInfo" :width="responsiveWidth">
+      <v-card v-if="!loadingRelated && showPaymentInfo">
+        <v-card-title class="primary white--text">
+          <h3 class="card-title">Informatie over deze betaling</h3>
+        </v-card-title>
+        <v-layout row wrap>
+          <v-flex xs12>
+            Betalingen op dit factuurnummer: {{ relatedPayments.length }}
+            <v-list>
+              <v-list-tile v-for="(payment, i) in relatedPayments" :key="i">
+                <v-list-tile-content>
+                  <span class="font-weight-bold">€ {{ payment.amount }}</span>
+                </v-list-tile-content>
+                <v-list-tile-content>
+                  <PaymentStatusChip :payment="payment" />
+                </v-list-tile-content>
+              </v-list-tile>
+            </v-list>
+          </v-flex>
+        </v-layout>
+        <v-card-actions>
+          <v-btn @click="$router.push('/contracts/' + selectedPayment.contract_id)">naar contract</v-btn>
+          <v-btn @click="showPaymentInfo = false; selectedPayment = null">sluiten</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-flex>
 </template>
 
@@ -50,12 +64,22 @@
 import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
 import axios from "js/axios";
+import PaymentStatusChip from "js/components/PaymentStatusChip.vue";
+import * as moment from "moment";
 
-@Component({})
+@Component({
+  components: {
+    PaymentStatusChip
+  }
+})
 export default class Payments extends Vue {
   private response = "";
   private payments: any = [];
   private loading: boolean = true;
+  private loadingRelated: boolean = false;
+  private showPaymentInfo: boolean = false;
+  private selectedPayment: any = null;
+  private relatedPayments: any = null;
 
   private paginationSync: any = {
     descending: true,
@@ -64,36 +88,36 @@ export default class Payments extends Vue {
   };
 
   private headers: any = [
-    { text: "status", align: "left", value: "status" },
-    { text: "klant", align: "left", value: "customer" },
-    { text: "bedrag", align: "left", value: "amount" },
-    { text: "mollie_id", align: "left", value: "payment_id" },
-    { text: "gemaakt op", value: "created_at" },
-    { text: "gewijzigd op", value: "updated_at" }
+    { text: "Bedrag", align: "left", value: "amount" },
+    { text: "Status", align: "left", value: "status" },
+    { text: "Klant", align: "left", value: "payment.customer.name" },
+    { text: "Betalings nr", align: "left", value: "payment_id" },
+    { text: "Factuur nr", align: "left", value: "invoice_ref_number" },
+    { text: "Gemaakt op", value: "created_at" },
+    { text: "Gewijzigd op", value: "updated_at" }
   ];
 
-  private status: any = {
-    paid: {
-      text: "Betaald",
-      icon: "check_circle",
-      color: "green"
-    },
-    expired: {
-      text: "Verlopen",
-      icon: "schedule",
-      color: "orange"
-    },
-    canceled: {
-      text: "Geannuleerd",
-      icon: "error",
-      color: "red"
-    },
-    pending: {
-      text: "Verwerken",
-      icon: "slow_motion_video",
-      color: "info"
-    }
-  };
+  formatDate(date: any) {
+    return moment(date).format("LL");
+  }
+
+  get responsiveWidth() {
+    return this.$vuetify.breakpoint.smAndDown ? "100%" : "60%";
+  }
+
+  async toggleInfo(payment: any) {
+    this.selectedPayment = payment;
+    await this.relatedPaymentsRequest();
+    this.showPaymentInfo = true;
+  }
+
+  async relatedPaymentsRequest() {
+    this.loadingRelated = true;
+    this.relatedPayments = (await axios.post(
+      "/api/payments/" + this.selectedPayment.id + "/related"
+    )).data;
+    this.loadingRelated = false;
+  }
 
   async mounted() {
     await this.getData();

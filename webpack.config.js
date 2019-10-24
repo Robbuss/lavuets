@@ -1,16 +1,16 @@
 let webpack = require("webpack");
 const { VueLoaderPlugin } = require("vue-loader");
 const VuetifyLoaderPlugin = require("vuetify-loader/lib/plugin")
-// const fs = require('fs')
-// const dotenv = require('dotenv').config();
+    // const fs = require('fs')
+    // const dotenv = require('dotenv').config();
 
 let path = require("path");
 const utils = {
-    resolve: function (dir) {
+    resolve: function(dir) {
         return path.join(__dirname, dir)
     },
 
-    assetsPath: function (_path) {
+    assetsPath: function(_path) {
         const assetsSubDirectory = "static"
         return path.posix.join(assetsSubDirectory, _path)
     }
@@ -26,8 +26,7 @@ module.exports = {
         }
     },
     module: {
-        rules: [
-            {
+        rules: [{
                 test: /\.tsx?$/,
                 exclude: [
                     /node_modules/
@@ -42,7 +41,7 @@ module.exports = {
             {
                 test: /\.vue$/,
                 use: {
-                    loader: "vue-loader"
+                    loader: "vue-loader",
                 }
             },
             {
@@ -54,14 +53,14 @@ module.exports = {
                 ]
             },
             {
-                test: /\.(scss)|(sass)|(css)$/,
+                test: /\.(scss|sass|css)$/,
                 use: [
                     "vue-style-loader",
-                    //"style-loader", // creates style nodes from JS strings
+                    "style-loader", // creates style nodes from JS strings
                     "css-loader", // translates CSS into CommonJS
                     "sass-loader" // compiles Sass to CSS, using Node Sass by default
                 ],
-                enforce: "pre"
+                // enforce: "pre"
             }, {
                 test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
                 use: {
@@ -97,7 +96,7 @@ module.exports = {
         path: utils.resolve("public"),
         pathinfo: false,
         publicPath: "/"
-        // chunkFilename: "js/[name]-[hash].js", // for long term caching
+            // chunkFilename: "js/[name]-[hash].js", // for long term caching
     },
     plugins: [
         new VueLoaderPlugin(),

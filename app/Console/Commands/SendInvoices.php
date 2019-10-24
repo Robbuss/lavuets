@@ -47,7 +47,6 @@ class SendInvoices extends Command
         $invoicesDue = Invoice::whereNull('sent')->with('contract')->whereHas('contract', function ($q) {
             $q->where('auto_invoice', 1)->whereNull('deactivated_at');
         })->get();
-
         // send invoices to mail 
         $count = 0;
         foreach ($invoicesDue as $invoice) {

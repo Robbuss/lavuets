@@ -8,7 +8,7 @@
           class="white--text"
           v-model="search"
           append-icon="search"
-          label="Search"
+          label="Zoeken"
           single-line
           hide-details
         ></v-text-field>
@@ -34,8 +34,7 @@
             class="pointer"
             @click="$router.push('/contracts/' + props.item.id)"
           >{{ props.item.customer_name }}</td>
-          <td>{{ props.item.company_name }}</td>
-          <td>{{ props.item.start_date_localized }}</td>
+          <td>{{ formatDate(props.item.start_date) }}</td>
           <td v-if="!props.item.deactivated_at">
             <v-chip class="ml-0" flat dark color="green">Actief</v-chip>
           </td>
@@ -56,6 +55,7 @@
           <td v-if="!props.item.auto_invoice">
             <v-chip class="ml-0 red lighten-3" flat dark>Uit</v-chip>
           </td>
+          <td>{{ props.item.company_name }}</td>
           <td class="justify-center layout px-0">
             <v-icon small class="mr-2" @click="editItem(props.item)">edit</v-icon>
             <v-icon small @click="deleteItem(props.item)">delete</v-icon>
@@ -75,6 +75,8 @@ import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
 import EditCreate from "./EditCreate.vue";
 import axios from "js/axios";
+import store from "js/store";
+import * as moment from "moment";
 
 @Component({
   components: {
@@ -95,17 +97,22 @@ export default class Contracts extends Vue {
 
   private headers: any = [
     { text: "Klantnaam", value: "customer_name" },
-    { text: "Bedrijfsnaam", value: "company_name" },
     { text: "Ingangsdatum", value: "start_date" },
     { text: "Gedeactiveerd op", value: "active" },
     { text: "Type", value: "payment_method" },
     { text: "Automatisch factureren", value: "auto_invoice" },
+    { text: "Bedrijfsnaam", value: "company_name" },
     { text: "Actions", value: "name", sortable: false }
   ];
   private pagination: any = {
     rowsPerPage: 25,
-    sortByDesc: 'start_date',
+    sortBy: "start_date",
+    descending: true,
   };
+
+  formatDate(date: any) {
+    return moment(date).format("LL");
+  }
 
   async getData() {
     this.loading = true;
@@ -134,6 +141,8 @@ export default class Contracts extends Vue {
     confirm("Are you sure you want to delete this item?") &&
       this.contracts.splice(index, 1) &&
       axios.post("/api/contracts/" + item.id + "/delete");
+
+    store.commit("snackbar", { type: "success", message: "Contract verwijderd." });
   }
 
   async close() {

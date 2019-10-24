@@ -2,7 +2,6 @@
   <v-app>
     <v-navigation-drawer v-model="drawer" clipped fixed app v-if="authenticated">
       <nav-items :authenticated="authenticated" class="pt-4"></nav-items>
-      <img style="position: absolute; bottom:0" :width="120" src="/logo.png" />
     </v-navigation-drawer>
     <v-toolbar app fixed clipped-left class="primary" dark>
       <v-toolbar-side-icon
@@ -44,12 +43,14 @@
               </v-list-tile-action>
               <v-list-tile-title>Instellingen</v-list-tile-title>
             </v-list-tile>
+            <v-list-tile @click="$router.push('/logout')">
+              <v-list-tile-action>
+                <v-icon>exit_to_app</v-icon>
+              </v-list-tile-action>
+              <v-list-tile-title>Uitloggen</v-list-tile-title>
+            </v-list-tile>
           </v-list>
         </v-menu>
-
-        <v-btn icon @click="$router.push('/logout')">
-          <v-icon>exit_to_app</v-icon>
-        </v-btn>
       </v-toolbar-items>
     </v-toolbar>
     <v-content :class="{ 'bg--image' : !authenticated}">
@@ -58,6 +59,9 @@
           <router-view></router-view>
         </v-layout>
       </v-container>
+      <v-snackbar v-model="snackbar.show" :color="snackbar.type">
+        {{ snackbar.message }}
+      </v-snackbar>
     </v-content>
   </v-app>
 </template>
@@ -75,7 +79,7 @@ import axios from "js/axios";
 import Router from "vue-router";
 import { Component, Prop, Watch } from "vue-property-decorator";
 import Users from "./user/Users.vue";
-import Index from "./Index.vue";
+import Index from "./dashboard/Index.vue";
 import Login from "./auth/Login.vue";
 import Customers from "./customers/Customers.vue";
 import Customer from "./customers/Customer.vue";
@@ -199,7 +203,7 @@ const router = new Router({
       component: Files,
       beforeEnter: (to: any, from: any, next: any) =>
         !Store.getters.authenticated ? next("/login") : next()
-    },    
+    },
     {
       path: "/logout",
       component: () => {
@@ -225,7 +229,7 @@ export default class RouterComponent extends Vue {
   private drawer: boolean = true;
 
   async mounted() {
-    const r = (await axios.get('/api/settings')).data
+    const r = (await axios.get("/api/settings")).data;
   }
   get authRoutes() {
     if (
@@ -238,6 +242,18 @@ export default class RouterComponent extends Vue {
 
   get authenticated() {
     return Store.getters.authenticated;
+  }
+
+  get snackbar() {
+    return Store.getters.snackbarStatus
+  }
+
+  @Watch("snackbar.show")
+  onSnackbarChanged(newval: boolean, oldval: boolean) {
+    if (oldval !== undefined) {
+      let t = setTimeout(() => (Store.commit('snackbar', { show: false, message: ""})), 3500);
+      clearTimeout(t);
+    }
   }
 }
 </script>

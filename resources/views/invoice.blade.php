@@ -142,9 +142,11 @@
                 <div class="left two-column">
                     Factuuradres
                 </div>
+                @if($invoice->note)
                 <div class="right two-column">
                     Instructies
                 </div>
+                @endif
             </div>
             <div class="left two-column">
                 <ul>

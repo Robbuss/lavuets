@@ -48,20 +48,12 @@ class InvoicesDue extends Command
             // get the last invoice on the contract
             $lastInvoice = $contract->invoices()->orderBy('end_date', 'DESC')->first();
             // if there is a last invoice and its end_date is in the past
-            if ($lastInvoice && ($lastInvoice->end_date < Carbon::now())) {
+            if (!$lastInvoice || ($lastInvoice->end_date < Carbon::now())) {
                 // create a new invoice
                 $lastInvoice = (new InvoiceGenerator($contract, $lastInvoice))->lastInvoice;
                 $count++;
-
-                // charge the customers card/account via a mollie payment or create payment url
-                if ($contract->customer->iban && $contract->payment_method === 'incasso') {
-                    $type = 'first';
-                    if ($contract->customer->mollie_id && $contract->customer->mandate_id) { // there already is a mandate && mollie customer
-                        $type = 'recurring';
-                    }
-                    (new MolliePayment($contract->customer, $contract, $lastInvoice, $type))->payment();
-                }
             }
+
         }
         activity('crontab')->log('Created ' . $count . ' new invoices');
     }

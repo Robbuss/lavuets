@@ -1,16 +1,16 @@
 <template>
-  <v-container v-if="!loading">
-    <v-layout row wrap pa-3>
+  <v-flex v-if="!loading">
+    <v-layout row wrap>
       <v-flex xs12 sm12>
         <edit-create-customer :customer="customer" :creating="false"></edit-create-customer>
       </v-flex>
     </v-layout>
-    <v-layout row wrap pa-3 mt-3>
+    <v-layout row wrap mt-3>
       <v-flex xs12>
         <files :customer="customer"></files>
       </v-flex>
     </v-layout>
-  </v-container>
+  </v-flex>
 </template> 
 
 <script lang="ts">

@@ -23,7 +23,7 @@
                   label="Referentie (bestandsnaam)"
                 ></v-text-field>
               </v-flex>
-              <v-flex xs12 sm6 md6>
+              <v-flex xs12 sm6 md6  v-if="!creating">
                 <v-text-field
                   :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                   required
@@ -90,7 +90,6 @@
                   <span class="font-weight-black">startdatum</span>
                 </h6>
                 <v-date-picker landscape v-model="editedItem.start_date" label="Startdatum factuur"></v-date-picker>
-                <p>Gekozen datum: {{ editedItem.start_date }}</p>
               </v-flex>
               <v-flex xs12 sm6>
                 <h6 class="headline">
@@ -98,7 +97,6 @@
                   <span class="font-weight-black">einddatum</span>
                 </h6>
                 <v-date-picker landscape v-model="editedItem.end_date" label="Einddatum factuur"></v-date-picker>
-                <p>Gekozen datum: {{ editedItem.end_date }}</p>
               </v-flex>
             </v-layout>
             <v-btn
@@ -120,6 +118,7 @@
 import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
 import axios from "js/axios";
+import store from "js/store";
 import * as moment from "moment";
 
 @Component({})
@@ -223,8 +222,10 @@ export default class EditInvoice extends Vue {
     this.working = true;
     if (!this.creating) {
       await axios.post("/api/invoices/" + this.editedItem.id, this.editedItem);
+      store.commit("snackbar", { type: "success", message: "Factuur aangepast!" });
     } else {
       await axios.post("/api/invoices/create", this.editedItem);
+      store.commit("snackbar", { type: "success", message: "Factuur aangemaakt!" });
     }
     this.$emit("saved");
     this.working = false;

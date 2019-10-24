@@ -1,6 +1,7 @@
 <template>
   <v-card>
     <v-toolbar flat color="primary" dark>
+      <BackButton />
       <v-toolbar-title>{{ formTitle }}</v-toolbar-title>
     </v-toolbar>
     <v-form v-model="valid" lazy-validation ref="form">
@@ -35,11 +36,7 @@
           />
         </v-flex>
         <v-flex sm12>
-          <v-select
-            :items="activeBox"
-            v-model="editedItem.active"
-            label="Box is verhuurbaar"
-          />
+          <v-select :items="activeBox" v-model="editedItem.active" label="Box is verhuurbaar" />
         </v-flex>
       </v-layout>
     </v-form>
@@ -72,13 +69,16 @@ export default class Editunit extends Vue {
 
   private working: boolean = false;
   private valid: boolean = true;
-  private activeBox: any = [{
-    text: 'Ja',
-    value: true,
-  },{
-    text: 'Nee',
-    value: false,
-  }];
+  private activeBox: any = [
+    {
+      text: "Ja",
+      value: true
+    },
+    {
+      text: "Nee",
+      value: false
+    }
+  ];
   private editedItem: any = {
     id: null,
     name: "",
@@ -122,8 +122,10 @@ export default class Editunit extends Vue {
     this.working = true;
     if (!this.creating) {
       await axios.post("/api/units/" + this.editedItem.id, this.editedItem);
+      store.commit("snackbar", { type: "success", message: "Product aangepast!" });
     } else {
       await axios.post("/api/units/create", this.editedItem);
+      store.commit("snackbar", { type: "success", message: "Product aangemaakt!" });
     }
     this.$emit("saved");
     this.working = false;

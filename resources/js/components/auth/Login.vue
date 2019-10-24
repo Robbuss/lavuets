@@ -12,7 +12,7 @@
         <v-text-field
           label="E-mailadres"
           required
-          :rules="[v => !!v || 'This field is required.']"
+          :rules="[v => !!v || 'Dit veld is verplicht']"
           type="text"
           v-model="user.email"
           placeholder="willecoyote@acme.mail"
@@ -21,7 +21,7 @@
         <v-text-field
           label="Wachtwoord"
           type="password"
-          :rules="[v => !!v || 'This field is required.']"
+          :rules="[v => !!v || 'Dit veld is verplicht']"
           required
           v-model="user.password"
           placeholder="RoadRunnermustdie"

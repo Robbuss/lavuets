@@ -15,9 +15,9 @@ class InvoiceGenerator
 
     public function __construct(Contract $contract, Invoice $lastInvoice = null, $note = null)
     {
+        if(!$contract->method) $contract->method = 'addMonth'; // set a default when nothing is set (its the database default; but doesnt get returned on create())
         $this->contract = $contract;
         $this->lastInvoice = $lastInvoice;
-
         $this->generate();
     }
 
@@ -27,7 +27,6 @@ class InvoiceGenerator
         $date = $this->lastInvoice && $this->lastInvoice->end_date ? $this->lastInvoice->end_date : $this->contract->start_date;
         $newInvoice = Invoice::create([
             'ref' => 'Factuur-' . Carbon::parse($date)->format('m-Y'),
-            'ref_number' =>  Invoice::orderBy('id', 'DESC')->first()->ref_number, // get the last invoice from the db and grab that number
             'contract_id' => $this->contract->id,
             'customer_id' => $this->contract->customer->id,
             'note' => ($this->note) ? $this->note : $this->contract->default_note,

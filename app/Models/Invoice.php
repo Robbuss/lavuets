@@ -15,25 +15,13 @@ class Invoice extends Model
         'start_date',
         'sent',
     ];
-    public function getStartDateLocalizedAttribute()
-    {
-        return ($this->start_date) ? $this->start_date->isoFormat('LL'): null;
-    }
-    public function getEndDateLocalizedAttribute()
-    {
-        return ($this->end_date) ? $this->end_date->isoFormat('LL'): null;
-    }    
-    public function getSentLocalizedAttribute()
-    {
-        return ($this->sent) ? $this->sent->isoFormat('LL'): null;
-    }   
- 
+
     protected static $logName = 'systeem';
     public function getDescriptionForEvent(string $eventName): string
     {
         return "Factuur {$eventName}";
     }
-    
+
     public function contract()
     {
         return $this->belongsTo(Contract::class);
@@ -44,8 +32,33 @@ class Invoice extends Model
         return $this->belongsTo(Customer::class);
     }
 
-    public function payment()
+    public function payments()
     {
         return $this->hasMany(Payment::class);
+    }
+
+    /* Gets the invoices from an active contract, but without a payment with status pending or paid */
+    public function scopeNotPaid($query)
+    {
+        return $query->with(['contract', 'customer', 'payments'])
+            ->whereHas('contract', function ($q) {
+                $q->whereNull('deactivated_at');
+            })->whereHas('payments', function ($q) {
+                $q->whereIn('status', ['expired', 'canceled']);
+            })->whereDoesntHave('payments', function ($q) {
+                $q->where('status', 'paid');
+            });
+    }
+
+    /* 
+    * Gets the invoice without a payment
+    * this result could be merged with scopeNotPaid
+    */
+    public function scopeWithoutPayment($query)
+    {
+        return $query->with(['contract', 'customer', 'payments'])
+            ->whereHas('contract', function ($q) {
+                $q->whereNull('deactivated_at');
+            })->whereDoesntHave('payments');
     }
 }
