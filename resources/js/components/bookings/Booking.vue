@@ -13,7 +13,7 @@
         <small>Waar u een box wilt huren</small>
       </v-stepper-step>
 
-      <v-stepper-content step="1">
+      <v-stepper-content :class="{'ml-0' : $vuetify.breakpoint.smAndDown}" step="1">
         <StepLocation :count="count" @done="locationDone($event)"></StepLocation>
       </v-stepper-content>
 
@@ -22,7 +22,7 @@
         <small>Prijs is per maand</small>
       </v-stepper-step>
 
-      <v-stepper-content step="2">
+      <v-stepper-content :class="{'ml-0' : $vuetify.breakpoint.smAndDown}" step="2">
         <v-layout row wrap>
           <v-flex xs12 pa-1>
             <StepUnit :contract="contract" :units="units" @done="unitDone($event)"></StepUnit>
@@ -35,7 +35,7 @@
         <small>Binnen 24 uur kunt u de ruimte gebruiken!</small>
       </v-stepper-step>
 
-      <v-stepper-content step="3">
+      <v-stepper-content :class="{'ml-0' : $vuetify.breakpoint.smAndDown}" step="3">
         <StepCustomer @done="completeOrder($event)" :working="working" :customer="customer" :contract="contract"></StepCustomer>
       </v-stepper-content>
     </v-stepper>

@@ -53,8 +53,8 @@
         </v-menu>
       </v-toolbar-items>
     </v-toolbar>
-    <v-content :class="{ 'bg--image' : !authenticated}">
-      <v-container fluid fill-height>
+    <v-content>
+      <v-container fluid fill-height :class="{'pa-0' : $vuetify.breakpoint.smAndDown}">
         <v-layout justify-center :align-center="authRoutes">
           <router-view></router-view>
         </v-layout>
@@ -65,12 +65,6 @@
     </v-content>
   </v-app>
 </template>
-<style>
-.bg--image {
-  /* background-image: url("/images/your-background-image.jpg"); */
-  /* background-position: center center; */
-}
-</style>
 
 <script lang="ts">
 // import "@babel/polyfill";

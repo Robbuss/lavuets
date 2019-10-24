@@ -265,6 +265,9 @@
                   class="primary"
                 >Naar betalen</v-btn>
               </v-flex>
+              <v-flex class="justify-content">
+                <img width="100px" src="logo.png" />
+              </v-flex>
             </v-layout>
           </v-flex>
         </v-layout>
