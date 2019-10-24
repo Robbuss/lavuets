@@ -4,9 +4,19 @@
       <v-toolbar flat color="primary" dark>
         <v-toolbar-title>Logs</v-toolbar-title>
         <v-spacer></v-spacer>
+        <v-text-field
+          class="white--text pt-0"
+          clearable
+          v-model="search"
+          append-icon="search"
+          label="Zoeken"
+          single-line
+          hide-details
+        ></v-text-field>            
       </v-toolbar>
       <v-data-table
         :headers="headers"
+        :search="search"
         :items="logs"
         class="elevation-1"
         :loading="loading"
@@ -41,6 +51,7 @@ export default class Logs extends Vue {
   private response = "";
   private logs: any = [];
   private loading: boolean = true;
+  private search: string|null = null;
 
   private paginationSync: any = {
     descending: true,

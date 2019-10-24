@@ -5,7 +5,7 @@
         <v-toolbar-title>Facturen</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-text-field
-          class="white--text"
+          class="white--text pt-0"
           v-model="search"
           append-icon="search"
           label="Zoeken"

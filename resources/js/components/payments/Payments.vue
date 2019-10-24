@@ -4,10 +4,19 @@
       <v-toolbar flat color="primary" dark>
         <v-toolbar-title>Betalingen</v-toolbar-title>
         <v-spacer></v-spacer>
+        <v-text-field
+          class="white--text pt-0"
+          v-model="search"
+          append-icon="search"
+          label="Zoeken"
+          single-line
+          hide-details
+        ></v-text-field>        
       </v-toolbar>
       <v-data-table
         :headers="headers"
         :items="payments"
+        :search="search"
         class="elevation-1"
         :loading="loading"
         :pagination.sync="paginationSync"
@@ -80,6 +89,7 @@ export default class Payments extends Vue {
   private showPaymentInfo: boolean = false;
   private selectedPayment: any = null;
   private relatedPayments: any = null;
+  private search: string|null = null;
 
   private paginationSync: any = {
     descending: true,
