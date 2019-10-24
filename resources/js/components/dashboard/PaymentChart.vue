@@ -41,7 +41,9 @@ export default class PaymentChart extends Vue {
 
   get labels() {
     // use Set to make sure we only have unique values
-    return [...new Set(this.payments.map((x: any) => moment(x.date).format('DD-MM')))]; 
+    return [
+      ...new Set(this.payments.map((x: any) => moment(x.date).format("DD-MM")))
+    ];
   }
 
   async mounted() {
@@ -67,7 +69,12 @@ export default class PaymentChart extends Vue {
             yAxes: [
               {
                 ticks: {
-                  stepSize: 250
+                  stepSize: 250,
+                  callback: function(label: any, index: any, labels: any) {
+                    return "€ " + label;
+                    // return "€ " label / 1000 + "k";
+                    // return label.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&,");
+                  }
                 }
               }
             ]

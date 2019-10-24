@@ -13,9 +13,9 @@
           :pagination.sync="pagination"
         >
           <template v-slot:items="props">
-            <tr @click="createPayment(props.item)">
+            <tr @click="createPayment(props.item)" class="pointer">
               <td>{{ props.item.ref_number }}</td>
-              <td>€ {{ props.item.price }}</td>
+              <td>€ {{ props.item.price.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&,") }}</td>
               <td>
                 <PaymentStatusChip :payment="props.item.payments[0]" />
               </td>
@@ -23,17 +23,27 @@
               <td>{{ props.item.payment_method }}</td>
               <td>{{ formatDate(props.item.start_date, 'LL') }}</td>
               <td>{{ formatDate(props.item.end_date, 'LL') }}</td>
-              <td v-if="props.item.sent">{{ formatDate(props.item.sent, 'LLL') }}</td>
-              <td v-else>Niet verzonden</td>
               <td>
-                <v-btn
-                  icon
-                  small
-                  class="grey--text text-lighten-1"
-                  @click="$router.push('/contracts/' + props.item.contract_id)"
-                >
-                  <v-icon small>send</v-icon>
-                </v-btn>
+                <v-tooltip bottom v-if="props.item.sent">
+                  <v-icon class="grey--text text-lighten-1" small slot="activator">mail</v-icon>
+                  <span>{{ formatDate(props.item.sent, 'LLL') }}</span>
+                </v-tooltip>
+                <v-tooltip bottom v-else>
+                  <v-icon class="primary--text" small slot="activator">mail</v-icon>
+                  <span>Niet verzonden</span>
+                </v-tooltip>
+                <v-tooltip bottom>
+                  <v-btn
+                    slot="activator"
+                    icon
+                    small
+                    class="grey--text text-lighten-1"
+                    @click="$router.push('/contracts/' + props.item.contract_id)"
+                  >
+                    <v-icon small>send</v-icon>
+                  </v-btn>
+                  <span>Naar het contract</span>
+                </v-tooltip>
               </td>
             </tr>
           </template>
@@ -95,7 +105,6 @@ export default class UnsedInvoice extends Vue {
     { text: "Van", value: "start_date" },
     { text: "Tot", value: "end_date" },
     { text: "Verzonden", value: "sent" },
-    { text: "Acties", sortable: false }
   ];
 
   async mounted() {
