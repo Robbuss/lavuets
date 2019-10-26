@@ -18,7 +18,7 @@ class InvoiceController extends Controller
      */
     public function index(Request $request)
     {
-        return Invoice::with(['customer', 'contract', 'contract.units', 'payments'])
+        return Invoice::with(['contract', 'contract.units', 'contract.tenant', 'payments'])
             ->where(function ($q) use ($request) {
                 if ($request->contract_id)
                     return $q->where('contract_id', $request->contract_id);
@@ -34,17 +34,17 @@ class InvoiceController extends Controller
                     'start_date' => $q->start_date,
                     'end_date' => $q->end_date,
                     'sent' => $q->sent,
-                    'customer' => [
-                        'id' => $q->customer->id,
-                        'name' => $q->customer->name,
-                        'company_name' => $q->customer->company_name,
-                        'email' => $q->customer->email,
-                        'city' => $q->customer->city,
-                        'street_addr' => $q->customer->street_addr,
-                        'street_number' => $q->customer->street_number,
-                        'postal_code' => $q->customer->postal_code,
-                        'btw' => $q->customer->btw,
-                        'kvk' => $q->customer->kvk
+                    'tenant' => [
+                        'id' => $q->contract->tenant->id,
+                        'name' => $q->contract->tenant->name,
+                        'company_name' => $q->contract->tenant->company_name,
+                        'email' => $q->contract->tenant->email,
+                        'city' => $q->contract->tenant->city,
+                        'street_addr' => $q->contract->tenant->street_addr,
+                        'street_number' => $q->contract->tenant->street_number,
+                        'postal_code' => $q->contract->tenant->postal_code,
+                        'btw' => $q->contract->tenant->btw,
+                        'kvk' => $q->contract->tenant->kvk
                     ],
                     'contract' => [
                         'id' => $q->contract->id,
@@ -86,9 +86,9 @@ class InvoiceController extends Controller
     public function update(Request $request, Invoice $invoice)
     {
         $invoice->update($request->all());
-        $file = storage_path('app/' . $invoice->customer_id . '/') . $invoice->ref . '.pdf';
+        $file = storage_path('app/' . $invoice->contract->tenant_id . '/') . $invoice->ref . '.pdf';
         if (file_exists($file)) {
-            rename($file, storage_path('app/' . $invoice->customer_id . '/') . $invoice->ref . '-' . substr(md5(microtime()), -5) . '-edited.pdf');
+            rename($file, storage_path('app/' . $invoice->contract->tenant_id . '/') . $invoice->ref . '-' . substr(md5(microtime()), -5) . '-edited.pdf');
         }
         new PdfGenerator($invoice);
 
@@ -103,9 +103,9 @@ class InvoiceController extends Controller
      */
     public function delete(Invoice $invoice)
     {
-        $file = storage_path('app/' . $invoice->customer_id . '/') . $invoice->ref . '.pdf';
+        $file = storage_path('app/' . $invoice->contract->tenant_id . '/') . $invoice->ref . '.pdf';
         if (file_exists($file))
-            rename($file, storage_path('app/' . $invoice->customer_id . '/') . $invoice->ref . '-' . substr(md5(microtime()), -5) . '-deleted.pdf');
+            rename($file, storage_path('app/' . $invoice->contract->tenant_id . '/') . $invoice->ref . '-' . substr(md5(microtime()), -5) . '-deleted.pdf');
         $invoice->delete();
 
         return ['success' => true];
@@ -113,13 +113,13 @@ class InvoiceController extends Controller
 
     public function send(Invoice $invoice)
     {
-        // send invoice to the customer
+        // send invoice to the tenant
         try {
-            Mail::to($invoice->customer->email)
+            Mail::to($invoice->contract->tenant->email)
                 ->queue(new SendInvoice($invoice));
-            activity('email')->log('Factuur verstuurd naar ' . $invoice->customer->email);
+            activity('email')->log('Factuur verstuurd naar ' . $invoice->contract->tenant->email);
         } catch (\Exception $e) {
-            activity('email')->log('Fout tijdens verzenden factuur naar ' . $invoice->customer->email);
+            activity('email')->log('Fout tijdens verzenden factuur naar ' . $invoice->contract->tenant->email);
         }
 
         // update the database so the invoice cannot be send again
@@ -132,7 +132,7 @@ class InvoiceController extends Controller
 
     public function getPdf(Invoice $invoice)
     {
-        $file = storage_path('app/' . $invoice->customer_id . '/') . $invoice->ref . '.pdf';
+        $file = storage_path('app/' . $invoice->contract->tenant_id . '/') . $invoice->ref . '.pdf';
         if (!file_exists($file))
             return ["success" => false, "message" => "Er is geen Factuur gevonden gevonden..."];
 

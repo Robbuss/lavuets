@@ -19,7 +19,7 @@
               <td>
                 <PaymentStatusChip :payment="props.item.payments[0]" />
               </td>
-              <td>{{ props.item.customer.name }}</td>
+              <td>{{ props.item.tenant.name }}</td>
               <td>{{ props.item.payment_method }}</td>
               <td>{{ formatDate(props.item.start_date, 'LL') }}</td>
               <td>{{ formatDate(props.item.end_date, 'LL') }}</td>
@@ -100,7 +100,7 @@ export default class UnsedInvoice extends Vue {
     { text: "Factuur nr", value: "ref_number" },
     { text: "Prijs", value: "price" },
     { text: "Betaling", value: "payment.payment_id" },
-    { text: "Naam", value: "customer.name" },
+    { text: "Naam", value: "tenant.name" },
     { text: "Betaalmethode", value: "payment_method" },
     { text: "Van", value: "start_date" },
     { text: "Tot", value: "end_date" },

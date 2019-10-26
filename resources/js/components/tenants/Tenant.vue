@@ -2,12 +2,12 @@
   <v-flex v-if="!loading">
     <v-layout row wrap>
       <v-flex xs12 sm12>
-        <edit-create-customer :customer="customer" :creating="false"></edit-create-customer>
+        <edit-create-tenant :tenant="tenant" :creating="false"></edit-create-tenant>
       </v-flex>
     </v-layout>
     <v-layout row wrap mt-3>
       <v-flex xs12>
-        <files :customer="customer"></files>
+        <files :tenant="tenant"></files>
       </v-flex>
     </v-layout>
   </v-flex>
@@ -17,25 +17,25 @@
 import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
 import axios from "js/axios";
-import EditCreateCustomer from "./EditCreate.vue";
+import EditCreateTenant from "./EditCreate.vue";
 import Files from "../files/Files.vue";
 
 @Component({
   components: {
-    editCreateCustomer: EditCreateCustomer,
+    editCreateTenant: EditCreateTenant,
     files: Files
   }
 })
-export default class SingleCustomer extends Vue {
+export default class SingleTenant extends Vue {
   private response = "";
   private dialog: boolean = false;
   private loading: boolean = true;
-  private customer: any = {};
+  private tenant: any = {};
 
   async mounted() {
     try {
-      this.customer = (await axios.get(
-        "/api/customers/" + this.$route.params.id
+      this.tenant = (await axios.get(
+        "/api/tenants/" + this.$route.params.id
       )).data;
     } catch (e) {
       this.response = e.message;

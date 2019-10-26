@@ -43,6 +43,12 @@
               </v-list-tile-action>
               <v-list-tile-title>Instellingen</v-list-tile-title>
             </v-list-tile>
+            <v-list-tile @click="$router.push('/logs')">
+              <v-list-tile-action>
+                <v-icon>description</v-icon>
+              </v-list-tile-action>
+              <v-list-tile-title>Systeemlog</v-list-tile-title>
+            </v-list-tile>            
             <v-list-tile @click="$router.push('/logout')">
               <v-list-tile-action>
                 <v-icon>exit_to_app</v-icon>
@@ -75,10 +81,11 @@ import { Component, Prop, Watch } from "vue-property-decorator";
 import Users from "./user/Users.vue";
 import Index from "./dashboard/Index.vue";
 import Login from "./auth/Login.vue";
-import Customers from "./customers/Customers.vue";
-import Customer from "./customers/Customer.vue";
+import Tenants from "./tenants/Tenants.vue";
+import Tenant from "./tenants/Tenant.vue";
 import Settings from "./settings/Settings.vue";
 import Logs from "./logs/Logs.vue";
+import Locations from "./locations/Locations.vue";
 import Payments from "./payments/Payments.vue";
 import Units from "./units/Units.vue";
 import Unit from "./units/Unit.vue";
@@ -90,8 +97,8 @@ import Dashboard from "./user/Dashboard.vue";
 import NavItems from "./layout/NavItems.vue";
 import NotFound from "./errors/404.vue";
 import Booking from "./bookings/Booking.vue";
-import Files from "./files/Files.vue";
 import Store from "js/store";
+import NewCustomer from "./customers/NewCustomer.vue";
 
 Vue.use(Router);
 
@@ -109,6 +116,10 @@ const router = new Router({
       component: Booking
     },
     {
+      path: "/registreer-verhuurder",
+      component: NewCustomer
+    },    
+    {
       path: "/login",
       component: Login,
       beforeEnter: (to: any, from: any, next: any) =>
@@ -121,14 +132,14 @@ const router = new Router({
         Store.getters.authenticated ? next("/u") : next()
     },
     {
-      path: "/customers",
-      component: Customers,
+      path: "/tenants",
+      component: Tenants,
       beforeEnter: (to: any, from: any, next: any) =>
         !Store.getters.authenticated ? next("/login") : next()
     },
     {
-      path: "/customers/:id",
-      component: Customer,
+      path: "/tenants/:id",
+      component: Tenant,
       beforeEnter: (to: any, from: any, next: any) =>
         !Store.getters.authenticated ? next("/login") : next()
     },
@@ -181,6 +192,12 @@ const router = new Router({
         !Store.getters.authenticated ? next("/login") : next()
     },
     {
+      path: "/locations",
+      component: Locations,
+      beforeEnter: (to: any, from: any, next: any) =>
+        !Store.getters.authenticated ? next("/login") : next()
+    },    
+    {
       path: "/u/profile",
       component: Dashboard,
       beforeEnter: (to: any, from: any, next: any) =>
@@ -189,12 +206,6 @@ const router = new Router({
     {
       path: "/settings",
       component: Settings,
-      beforeEnter: (to: any, from: any, next: any) =>
-        !Store.getters.authenticated ? next("/login") : next()
-    },
-    {
-      path: "/files",
-      component: Files,
       beforeEnter: (to: any, from: any, next: any) =>
         !Store.getters.authenticated ? next("/login") : next()
     },

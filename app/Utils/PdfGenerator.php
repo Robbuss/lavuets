@@ -16,8 +16,8 @@ class PdfGenerator
     public function __construct($model)
     {
         $this->model = $model;
-        Storage::disk('local')->makeDirectory($this->model->customer_id);
-        $this->filepath = storage_path('app/' . $model->customer_id . '/');
+        Storage::disk('local')->makeDirectory($this->model->tenant_id);
+        $this->filepath = storage_path('app/' . $model->tenant_id . '/');
 
         if ($model instanceof Invoice) {
             $this->generateInvoice();
@@ -31,7 +31,7 @@ class PdfGenerator
         $this->filename =  $this->model->ref . '.pdf';
 
         // view variables
-        $this->model->load(['customer', 'contract']);
+        $this->model->load(['contract.tenant', 'contract']);
         $totalPrice = $this->totalPrice($this->model->contract);
         $pdf = PDF::loadView('invoice', ['invoice' => $this->model, 'total' => $totalPrice])
             ->setOptions(['defaultFont' => 'sans-serif']);
@@ -51,7 +51,7 @@ class PdfGenerator
             return $q->id;
         })->toArray(), ", ");
 
-        $pdf = PDF::loadView('contract', ['customer' => $this->model->customer, 'units' => $units, 'contract' => $this->model])
+        $pdf = PDF::loadView('contract', ['tenant' => $this->model->tenant, 'units' => $units, 'contract' => $this->model])
             ->setOptions(['defaultFont' => 'sans-serif']);
 
         $pdf->save($this->filepath . $this->filename);

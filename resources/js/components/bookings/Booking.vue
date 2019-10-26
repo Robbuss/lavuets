@@ -36,7 +36,7 @@
       </v-stepper-step>
 
       <v-stepper-content :class="{'ml-0' : $vuetify.breakpoint.smAndDown}" step="3">
-        <StepCustomer @done="completeOrder($event)" :working="working" :customer="customer" :contract="contract"></StepCustomer>
+        <StepTenant @done="completeOrder($event)" :working="working" :tenant="tenant" :contract="contract"></StepTenant>
       </v-stepper-content>
     </v-stepper>
   </v-flex>
@@ -49,14 +49,14 @@ import axios from "js/axios";
 import bookingHeader from "./BookingHeader.vue";
 import StepLocation from "./StepLocation.vue";
 import StepUnit from "./StepUnit.vue";
-import StepCustomer from "./StepCustomer.vue";
+import StepTenant from "./StepTenant.vue";
 
 @Component({
   components: {
     bookingHeader,
     StepLocation,
     StepUnit,
-    StepCustomer
+    StepTenant
   }
 })
 export default class Booking extends Vue {
@@ -65,7 +65,7 @@ export default class Booking extends Vue {
   private units: any = [];
   private location: string = "";
   private working: boolean = false;
-  private customer: any = {
+  private tenant: any = {
     id: null,
     name: "",
     company_name: "",
@@ -103,7 +103,7 @@ export default class Booking extends Vue {
     this.working = true;
     try {
       const r = await axios.post("/api/booking/create", {
-        customer: this.customer,
+        tenant: this.tenant,
         contract: this.contract,
         units: this.contract.units
       });

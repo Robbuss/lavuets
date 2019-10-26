@@ -31,7 +31,6 @@ export default class TodoList extends Vue {
     "Tentant scope maken",
     "Mollie mislukte betalingen afhandelen (redirect nog naar succes page)",
     "Mollie first payment save mandate_id to db",
-    "Add price formatting to manual payments",
     "Add Settings",
     "Creditfacturen",
     "On Payments, add invoice information card on hover (id, ref_number, start and end date)",
@@ -39,7 +38,9 @@ export default class TodoList extends Vue {
     "Betalingsherinneringen",
     "Relatienummers op facturen",
     "Consistentie van invoice numbers controleren",
-    "Write a test for the MolliePaymentClass"
+    "Write a test for the MolliePaymentClass",
+    "Make sure invoices and contract files are not public",
+    "Be sure to remove all default values on customer_id fields in db"
   ];
 
   mounted(){

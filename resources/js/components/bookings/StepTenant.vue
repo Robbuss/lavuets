@@ -75,7 +75,7 @@
                     box
                     :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                     required
-                    v-model="customer.name"
+                    v-model="tenant.name"
                     label="Naam"
                     autocomplete="name"
                     name="name"
@@ -91,7 +91,7 @@
                     type="email"
                     name="email"
                     autocomplete="email"
-                    v-model="customer.email"
+                    v-model="tenant.email"
                     label="E-mail"
                   ></v-text-field>
                 </v-flex>
@@ -100,7 +100,7 @@
                     box
                     :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                     required
-                    v-model="customer.phone"
+                    v-model="tenant.phone"
                     label="Mobiel nummer voor toegang"
                     placeholder="Telefoonnummer"
                     type="tel"
@@ -113,7 +113,7 @@
                     box
                     :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                     required
-                    v-model="customer.street_addr"
+                    v-model="tenant.street_addr"
                     label="Straat"
                     autocomplete="shipping street-address"
                     name="ship-address"
@@ -124,7 +124,7 @@
                     box
                     :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                     required
-                    v-model="customer.street_number"
+                    v-model="tenant.street_number"
                     label="Huisnummer"
                   ></v-text-field>
                 </v-flex>
@@ -134,7 +134,7 @@
                     box
                     :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                     required
-                    v-model="customer.city"
+                    v-model="tenant.city"
                     label="Stad"
                     autocomplete="shipping locality"
                     name="ship-city"
@@ -146,7 +146,7 @@
                     box
                     :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                     required
-                    v-model="customer.postal_code"
+                    v-model="tenant.postal_code"
                     label="Postcode"
                     autocomplete="shipping postal-code"
                     name="ship-zip"
@@ -158,7 +158,7 @@
                     box
                     :rules="ibanRules"
                     required
-                    v-model="customer.iban"
+                    v-model="tenant.iban"
                     label="IBAN Bankrekeningnummer"
                   ></v-text-field>
                 </v-flex>
@@ -178,7 +178,7 @@
                       required
                       id="company"
                       box
-                      v-model="customer.company_name"
+                      v-model="tenant.company_name"
                       label="Bedrijfsnaam"
                     ></v-text-field>
                   </v-flex>
@@ -187,7 +187,7 @@
                       :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                       required
                       box
-                      v-model="customer.kvk"
+                      v-model="tenant.kvk"
                       label="KVK"
                     ></v-text-field>
                   </v-flex>
@@ -196,7 +196,7 @@
                       :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                       required
                       box
-                      v-model="customer.btw"
+                      v-model="tenant.btw"
                       label="BTW"
                     ></v-text-field>
                   </v-flex>
@@ -285,12 +285,12 @@ import "moment/locale/nl";
 import * as iban from "iban";
 
 @Component({})
-export default class StepCustomer extends Vue {
+export default class StepTenant extends Vue {
   @Prop()
   contract: any;
 
   @Prop()
-  customer: any;
+  tenant: any;
 
   @Prop()
   working: boolean;

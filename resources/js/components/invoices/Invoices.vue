@@ -18,7 +18,7 @@
           </v-btn>
           <span>Alle facturen van alle klanten bekijken</span>
         </v-tooltip>
-        <v-tooltip bottom v-if="contract && contract.customer_id">
+        <v-tooltip bottom v-if="contract && contract.tenant_id">
           <v-btn icon slot="activator" @click="dialog = true">
             <v-icon>add</v-icon>
           </v-btn>
@@ -40,7 +40,7 @@
             <v-toolbar-title>Factuur handmatig versturen</v-toolbar-title>
           </v-toolbar>
           <v-card>
-            Wil je de factuur versturen naar {{ contract.customer.email }}?
+            Wil je de factuur versturen naar {{ contract.tenant.email }}?
             <v-btn color="primary" dark @click="sendInvoice">
               <v-icon left>mail</v-icon>Ja, versturen
             </v-btn>
@@ -85,8 +85,9 @@
             <td>
               <PaymentStatusChip :payment="props.item.payments[0]" />
             </td>
-            <td>{{ props.item.customer.name }}</td>
-            <td>{{ getUnits(props.item.contract.units) }}</td>
+            <td>{{ props.item.tenant.name }}</td>
+            <td v-if="!contract" @click="$router.push('/contracts/' + props.item.contract.id)" class="pointer">{{ getUnits(props.item.contract.units) }}</td>
+            <td v-else>{{ getUnits(props.item.contract.units) }}</td>
             <td>€{{ props.item.contract.price }}</td>
             <td>{{ formatDate(props.item.start_date, 'LL') }}</td>
             <td>{{ formatDate(props.item.end_date, 'LL') }}</td>

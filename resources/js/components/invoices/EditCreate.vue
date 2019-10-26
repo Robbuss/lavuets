@@ -137,7 +137,7 @@ export default class EditInvoice extends Vue {
   private datePicker: boolean = false;
   private showSentDate: boolean = false;
   private working: boolean = false;
-  private customer: any;
+  private tenant: any;
   private editedItem: any = {
     id: null,
     contract_id: null,
@@ -196,7 +196,7 @@ export default class EditInvoice extends Vue {
         this.showSentDate = true;
     }
     this.editedItem.contract_id = this.contract.id;
-    this.editedItem.customer_id = this.contract.customer_id;
+    this.editedItem.tenant_id = this.contract.tenant_id;
   }
 
   editItem(item: any) {

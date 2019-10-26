@@ -50,18 +50,18 @@ class SendInvoices extends Command
         // send invoices to mail 
         $count = 0;
         foreach ($invoicesDue as $invoice) {
-            // send invoice to the customer
+            // send invoice to the tenant
             try {
-                Mail::to($invoice->customer->email)
+                Mail::to($invoice->contract->tenant->email)
                     ->queue(new SendInvoice($invoice));
-                activity('email')->log('Factuur verstuurd naar ' . $invoice->customer->email);
+                activity('email')->log('Factuur verstuurd naar ' . $invoice->contract->tenant->email);
                 // update the database so the invoice cannot be send again
                 $invoice->update([
                     'sent' => Carbon::now()
                 ]);
                 $count++;
             } catch (\Exception $e) {
-                activity('email')->log('Fout tijdens verzenden factuur naar ' . $invoice->customer->email);
+                activity('email')->log('Fout tijdens verzenden factuur naar ' . $invoice->contract->tenant->email);
             }
         }
         activity('crontab')->log('Unsend invoices:  ' . count($invoicesDue) . '. Sent: ' . $count);

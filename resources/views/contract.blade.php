@@ -73,14 +73,14 @@
             width: 100%;
         }
 
-        .customer-bar {
+        .tenant-bar {
             color: #456480;
             margin-top: 10px;
             width: 100%;
             height: 150px;
         }
 
-        .customer-bar-header {
+        .tenant-bar-header {
             height: 25px;
             border-bottom: 1px solid #456480;
         }
@@ -173,7 +173,7 @@
             </p>
             <h3 class="subtitle">Artikel 2. Betalingsverplichting en betaalperiode</h3>
             <ul>
-                <li>De huurprijs voor unit nummer(s): {{ $units['units'] }}. bedraagt in totaal per kalendermaand: €{{ $units['price'] }} @if(!$customer->kvk)(vrij van B.T.W.)@endif</li>
+                <li>De huurprijs voor unit nummer(s): {{ $units['units'] }}. bedraagt in totaal per kalendermaand: €{{ $units['price'] }} @if(!$tenant->kvk)(vrij van B.T.W.)@endif</li>
                 <li>De huurprijs is door Huurder aan Verhuurder in één bedrag bij vooruitbetaling verschuldigd en dient voor de eerste dag van de desbetreffende kalendermaand volledig te zijn voldaan.</li>
                 <li>De huurprijs kan jaarlijks worden aangepast in overeenstemming met de Algemene Voorwaarden.</li>
                 <li>Verhuurder behoudt zich het recht voor om de toegangspas/dongel te deactiveren bij achterstallige betaling. Zodra de betaling is ontvangen zal de toegangspas/dongel binnen één werkdag weer geactiveerd worden.</li>
@@ -184,10 +184,10 @@
                 Huurder verklaart de Algemene Voorwaarden te hebben ontvangen en deze te zullen naleven.
             </p>
             <ul>
-                <li>Huurder {{ $customer->name }}</li>
-                <li>Adres: {{ $customer->postal_code }} {{ $customer->city }}</li>
-                <li>Telefoonnummer: {{ $customer->phone }}</li>
-                <li>Bankrekeningnummer: {{ $customer->iban }}</li>
+                <li>Huurder {{ $tenant->name }}</li>
+                <li>Adres: {{ $tenant->postal_code }} {{ $tenant->city }}</li>
+                <li>Telefoonnummer: {{ $tenant->phone }}</li>
+                <li>Bankrekeningnummer: {{ $tenant->iban }}</li>
                 <li>Heeft digitaal ondertekend op {{ $contract->created_at->isoFormat('LL') }} via www.opslagmazijn.nl</li>
             </ul>
             <p>

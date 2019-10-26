@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Customer;
+use App\Models\Tenant;
 use Illuminate\Console\Command;
 use Mollie\Laravel\Facades\Mollie;
 
@@ -20,7 +20,7 @@ class CreateMollieMandate extends Command
      *
      * @var string
      */
-    protected $description = 'Create Mollie mandates for customers with iban';
+    protected $description = 'Create Mollie mandates for tenants with iban';
 
     /**
      * Create a new command instance.
@@ -39,42 +39,42 @@ class CreateMollieMandate extends Command
      */
     public function handle()
     {
-        $customers = Customer::whereHas('contracts', function ($q) {
+        $tenants = Tenant::whereHas('contracts', function ($q) {
             $q->where('payment_method', 'incasso');
         })->whereNotNull('iban')->whereNull('mandate_id')->get();
         $count = 0;
-        foreach ($customers as $customer) {
+        foreach ($tenants as $tenant) {
             // make sure there are no spaces in iban; else mollie will rage. Fix this in frontend
-            $customer->update(['iban' => str_replace(' ', '', $customer->iban)]);
-            if (!$customer->mollie_id) {
-                //create mollie customer 
+            $tenant->update(['iban' => str_replace(' ', '', $tenant->iban)]);
+            if (!$tenant->mollie_id) {
+                //create mollie tenant 
                 $mollieCustomer = Mollie::api()->customers()->create([
-                    "name"  => $customer->name,
-                    "email"  => $customer->email,
+                    "name"  => $tenant->name,
+                    "email"  => $tenant->email,
                 ]);
 
                 // save mollie id
-                $customer->update(['mollie_id' => $mollieCustomer->id]);
+                $tenant->update(['mollie_id' => $mollieCustomer->id]);
             }
 
-            $mollieCustomer = Mollie::api()->customers()->get($customer->mollie_id);
+            $mollieCustomer = Mollie::api()->customers()->get($tenant->mollie_id);
             $mandates = Mollie::api()->mandates()->listFor($mollieCustomer);
 
             if ($mandates->count === 0) {
                 // create a mandate  
                 try{
-                    $mandate = Mollie::api()->customers()->get($customer->mollie_id)->createMandate([
+                    $mandate = Mollie::api()->customers()->get($tenant->mollie_id)->createMandate([
                         "method" => \Mollie\Api\Types\MandateMethod::DIRECTDEBIT,
-                        "consumerName" => $customer->name,
-                        "consumerAccount" => $customer->iban,
+                        "consumerName" => $tenant->name,
+                        "consumerAccount" => $tenant->iban,
                         "signatureDate" => \Carbon\Carbon::now()->format('Y-m-d'),
-                        "mandateReference" => "OPSLAGMAG-" . $customer->id,
+                        "mandateReference" => "OPSLAGMAG-" . $tenant->id,
                     ]);
                 }catch(\Exception $e){
-                    activity('crontab')->log('Error mandaat maken voor: '. $customer->name . ' iban: ' . $customer->iban);
+                    activity('crontab')->log('Error mandaat maken voor: '. $tenant->name . ' iban: ' . $tenant->iban);
                 }
 
-                $customer->update(['mandate_id' => $mandate->id]);
+                $tenant->update(['mandate_id' => $mandate->id]);
             }
             $count++;
         }

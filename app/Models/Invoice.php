@@ -2,14 +2,17 @@
 
 namespace App\Models;
 
+use App\Scopes\CustomerScope;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 
-class Invoice extends Model
+class Invoice extends Model implements HasMedia
 {
-    use SoftDeletes, LogsActivity;
-    protected $fillable = ['ref', 'ref_number', 'contract_id', 'customer_id', 'payment_id', 'note', 'start_date', 'end_date', 'sent'];
+    use SoftDeletes, LogsActivity, HasMediaTrait;
+    protected $fillable = ['ref', 'ref_number', 'contract_id', 'payment_id', 'note', 'start_date', 'end_date', 'sent'];
     protected $dates = [
         'end_date',
         'start_date',
@@ -17,6 +20,16 @@ class Invoice extends Model
     ];
 
     protected static $logName = 'systeem';
+    
+    protected static function boot()
+    {
+        parent::boot();
+        static::addGlobalScope(new CustomerScope);
+        self::creating(function($model){
+            $model->customer_id = Customer::current()->id;
+        });
+    }
+
     public function getDescriptionForEvent(string $eventName): string
     {
         return "Factuur {$eventName}";
@@ -27,11 +40,6 @@ class Invoice extends Model
         return $this->belongsTo(Contract::class);
     }
 
-    public function customer()
-    {
-        return $this->belongsTo(Customer::class);
-    }
-
     public function payments()
     {
         return $this->hasMany(Payment::class);
@@ -40,7 +48,7 @@ class Invoice extends Model
     /* Gets the invoices from an active contract, but without a payment with status pending or paid */
     public function scopeNotPaid($query)
     {
-        return $query->with(['contract', 'customer', 'payments'])
+        return $query->with(['contract', 'contract.tenant', 'payments'])
             ->whereHas('contract', function ($q) {
                 $q->whereNull('deactivated_at');
             })->whereHas('payments', function ($q) {
@@ -56,7 +64,7 @@ class Invoice extends Model
     */
     public function scopeWithoutPayment($query)
     {
-        return $query->with(['contract', 'customer', 'payments'])
+        return $query->with(['contract', 'contract.tenant', 'payments'])
             ->whereHas('contract', function ($q) {
                 $q->whereNull('deactivated_at');
             })->whereDoesntHave('payments');

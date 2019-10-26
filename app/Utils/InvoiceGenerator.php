@@ -28,7 +28,6 @@ class InvoiceGenerator
         $newInvoice = Invoice::create([
             'ref' => 'Factuur-' . Carbon::parse($date)->format('m-Y'),
             'contract_id' => $this->contract->id,
-            'customer_id' => $this->contract->customer->id,
             'note' => ($this->note) ? $this->note : $this->contract->default_note,
             'start_date' => $date,
             'end_date' => Carbon::parse($date)->{$this->contract->method}($this->contract->period)

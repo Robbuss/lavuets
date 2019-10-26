@@ -9,20 +9,13 @@ use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 
-class Contract extends Model implements HasMedia
+class Tenant extends Model implements HasMedia
 {
     use SoftDeletes, LogsActivity, HasMediaTrait;
-    protected $fillable = ['tenant_id', 'deactivated_at', 'period', 'method', 'payment_method', 'auto_invoice', 'default_note', 'start_date'];
-    protected $casts = [
-        'auto_invoice' => 'boolean',
-    ];
-    protected $dates = [
-        'start_date',
-        'end_date',
-        'deactivated_at'
-    ];
+
+    protected $fillable = ['mollie_id', 'mandate_id', 'company_name', 'name', 'email', 'city', 'street_addr', 'street_number', 'postal_code', 'phone', 'iban', 'btw', 'kvk'];
     protected static $logName = 'systeem';
-   
+
     protected static function boot()
     {
         parent::boot();
@@ -34,17 +27,12 @@ class Contract extends Model implements HasMedia
 
     public function getDescriptionForEvent(string $eventName): string
     {
-        return "Contract {$eventName}";
+        return "Huurder {$eventName}";
     }
 
-    public function tenant()
+    public function payments()
     {
-        return $this->belongsTo(Tenant::class);
-    }
-
-    public function units()
-    {
-        return $this->belongsToMany(Unit::class)->withPivot('price')->withTimestamps();
+        return $this->hasMany(Payment::class);
     }
 
     public function invoices()
@@ -52,8 +40,8 @@ class Contract extends Model implements HasMedia
         return $this->hasMany(Invoice::class);
     }
 
-    public function scopeInvoicableContracts()
+    public function contracts()
     {
-        // make sure this returns the invoicableContracts; by check active and renew
+        return $this->hasMany(Contract::class);
     }
 }

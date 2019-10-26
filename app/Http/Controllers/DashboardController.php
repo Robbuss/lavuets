@@ -7,7 +7,7 @@ use App\Models\Unit;
 use App\Models\Invoice;
 use App\Models\Payment;
 use App\Models\Contract;
-use App\Models\Customer;
+use App\Models\Tenant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -46,7 +46,7 @@ class DashboardController extends Controller
                 'occupied_not_active' => Unit::has('contracts')->where('active', 0)->get()->count(),
             ],
 
-            'customers' => Customer::all(),
+            'tenants' => Tenant::all(),
             'payments' => Payment::where('created_at', '>=', Carbon::now()->subMonths(2))
                 ->groupBy(['date', 'status'])
                 ->orderBy('date', 'ASC')
@@ -68,8 +68,8 @@ class DashboardController extends Controller
                 'id' => $q->id,
                 'ref_number' => $q->ref_number,
                 'contract_id' => $q->contract_id,
-                'customer' => [
-                    'name' => $q->customer->name,
+                'tenant' => [
+                    'name' => $q->contract->tenant->name,
                 ],
                 'payment_method' => $q->contract->payment_method,
                 'sent' => $q->sent,

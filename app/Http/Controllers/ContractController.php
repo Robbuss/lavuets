@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Unit;
 use App\Models\Contract;
-use App\Models\Customer;
+use App\Models\Tenant;
 use Illuminate\Http\Request;
 use App\Utils\InvoiceGenerator;
 use App\Utils\PdfGenerator;
@@ -19,13 +19,13 @@ class ContractController extends Controller
     public function index()
     {
         return [
-            'contracts' => Contract::with(['customer', 'units'])->get()->map(
+            'contracts' => Contract::with(['tenant', 'units'])->get()->map(
                 function ($q) {
                     return [
                         'id' => $q->id,
-                        'customer_id' => $q->customer_id,
-                        'customer_name' => $q->customer->name,
-                        'company_name' => $q->customer->company_name,
+                        'tenant_id' => $q->tenant_id,
+                        'tenant_name' => $q->tenant->name,
+                        'company_name' => $q->tenant->company_name,
                         'deactivated_at' => ($q->deactivated_at) ? $q->deactivated_at->isoFormat('LL') : null,
                         'auto_invoice' => $q->auto_invoice,
                         'period' => $q->period,
@@ -62,7 +62,7 @@ class ContractController extends Controller
                     ];
                 }),
             ],
-            'customers' => Customer::all()
+            'tenants' => Tenant::all()
         ];
     }
 
@@ -83,7 +83,7 @@ class ContractController extends Controller
 
     public function read(Contract $contract)
     {
-        $contract->load(['customer', 'units']);
+        $contract->load(['tenant', 'units']);
         $contract->units->map(function ($q) {
             return [
                 'id' => $q->id,
@@ -141,10 +141,10 @@ class ContractController extends Controller
 
     public function getPdf(Contract $contract)
     {
-        $file = storage_path('app/' . $contract->customer_id . '/') . 'huurcontract-opslagmagazijn.pdf';
+        $file = storage_path('app/' . $contract->tenant_id . '/') . 'huurcontract-opslagmagazijn.pdf';
         if (!file_exists($file)){
             (new PdfGenerator($contract));
-            $file = storage_path('app/' . $contract->customer_id . '/') . 'huurcontract-opslagmagazijn.pdf';
+            $file = storage_path('app/' . $contract->tenant_id . '/') . 'huurcontract-opslagmagazijn.pdf';
         }
 
         // return ["success" => false, "message" => "Er is geen huurcontract gevonden..."];

@@ -33,7 +33,7 @@
           <td
             class="pointer"
             @click="$router.push('/contracts/' + props.item.id)"
-          >{{ props.item.customer_name }}</td>
+          >{{ props.item.tenant_name }}</td>
           <td>{{ formatDate(props.item.start_date) }}</td>
           <td v-if="!props.item.deactivated_at">
             <v-chip class="ml-0" flat dark color="green">Actief</v-chip>
@@ -87,7 +87,7 @@ export default class Contracts extends Vue {
   private response = "";
   private search = "";
   private contracts: any = [];
-  private customers: any = [];
+  private tenants: any = [];
   private units: any = [];
   private dialog: boolean = false;
   private loading: boolean = true;
@@ -96,7 +96,7 @@ export default class Contracts extends Vue {
   private chosenContract: any = {};
 
   private headers: any = [
-    { text: "Klantnaam", value: "customer_name" },
+    { text: "Klantnaam", value: "tenant_name" },
     { text: "Ingangsdatum", value: "start_date" },
     { text: "Gedeactiveerd op", value: "active" },
     { text: "Type", value: "payment_method" },
@@ -119,7 +119,7 @@ export default class Contracts extends Vue {
     try {
       const r = (await axios.get("/api/contracts")).data;
       this.contracts = r.contracts;
-      this.customers = r.customers;
+      this.tenants = r.tenants;
       this.units = r.units;
     } catch (e) {
       this.response = e.message;

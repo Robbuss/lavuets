@@ -31,7 +31,7 @@ class EventServiceProvider extends ServiceProvider
         parent::boot();
         Invoice::creating(
             function ($contract) {
-                $contract->ref_number =  Invoice::orderBy('id', 'DESC')->first()->ref_number + 1; // get the last invoice from the db and grab that number
+                $contract->ref_number =  (Invoice::orderBy('id', 'DESC')->first()) ? Invoice::orderBy('id', 'DESC')->first()->ref_number + 1 : 1; // get the last invoice from the db and grab that number
             }
         );
         //

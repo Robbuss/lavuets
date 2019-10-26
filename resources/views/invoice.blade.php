@@ -42,21 +42,21 @@
             width: 100%;
         }
 
-        .customer-bar {
+        .tenant-bar {
             color: #456480;
             margin-top: 10px;
             width: 100%;
             height: 150px;
         }
 
-        .customer-bar-header {
+        .tenant-bar-header {
             height: 25px;
             border-bottom: 1px solid #456480;
         }
 
-        .customer-address {}
+        .tenant-address {}
 
-        .customer-instruction {}
+        .tenant-instruction {}
 
         .item-bar-header {
             height: 18px;
@@ -135,10 +135,10 @@
         </div>
         <div class="title-bar default-padding">
             Factuurnummer: {{ $invoice->ref_number }} <span class="right">Periode {{ \Carbon\Carbon::parse($invoice->start_date)->isoFormat('LL') }} tot {{ \Carbon\Carbon::parse($invoice->end_date)->isoFormat('LL') }}</span>
-            {{ $invoice->customer->name }}
+            {{ $invoice->contract->tenant->name }}
         </div>
-        <div class="customer-bar">
-            <div class="customer-bar-header default-padding">
+        <div class="tenant-bar">
+            <div class="tenant-bar-header default-padding">
                 <div class="left two-column">
                     Factuuradres
                 </div>
@@ -150,12 +150,12 @@
             </div>
             <div class="left two-column">
                 <ul>
-                    @if($invoice->customer->kvk)
-                        <li>{{ $invoice->customer->company_name }}</li>
+                    @if($invoice->contract->tenant->kvk)
+                        <li>{{ $invoice->contract->tenant->company_name }}</li>
                     @endif
-                    <li>{{ $invoice->customer->name }}</li>
-                    <li>{{ $invoice->customer->street_addr }} {{ $invoice->customer->street_number }}</li>
-                    <li>{{ $invoice->customer->postal_code }} {{ $invoice->customer->city }}</li>
+                    <li>{{ $invoice->contract->tenant->name }}</li>
+                    <li>{{ $invoice->contract->tenant->street_addr }} {{ $invoice->contract->tenant->street_number }}</li>
+                    <li>{{ $invoice->contract->tenant->postal_code }} {{ $invoice->contract->tenant->city }}</li>
                 </ul>
             </div>
             <div class="right two-column default-padding">
@@ -179,7 +179,7 @@
         <div class="item-bar default-padding">
             <div class="col1" style="border-bottom: 0px !important;"></div>
             <div class="col2" style="border-bottom: 0px !important;"></div>
-            @if($invoice->customer->kvk)
+            @if($invoice->contract->tenant->kvk)
             <div class="col3">21% BTW</div>
             <div class="col4">€ {{ $total['btw'] }}</div>
             @else
@@ -191,7 +191,7 @@
             <div class="col1"></div>
             <div class="col2"></div>
             <div class="col3">Totaal</div>
-            @if($invoice->customer->kvk)
+            @if($invoice->contract->tenant->kvk)
             <div class="col4">€ {{ $total['price_vat'] }}</div>
             @else
             <div class="col4">€ {{ $total['price'] }}</div>

@@ -4,14 +4,14 @@
       <v-flex xs12>
         <v-card>
           <v-toolbar flat class="primary" dark>
-            <v-toolbar-items v-if="!customer">
+            <v-toolbar-items v-if="!tenant">
               <v-btn icon @click="previous" :disabled="directory.current == '/'">
                 <v-icon>chevron_left</v-icon>
               </v-btn>
             </v-toolbar-items>
-            <v-toolbar-title>{{ customer ? 'Bestanden van deze klant' : 'Alle bestanden'}}</v-toolbar-title>
+            <v-toolbar-title>{{ tenant ? 'Bestanden van deze klant' : 'Alle bestanden'}}</v-toolbar-title>
             <v-spacer></v-spacer>
-              <v-tooltip bottom v-if="!customer">
+              <v-tooltip bottom v-if="!tenant">
                 <v-btn icon @click="backup" slot="activator">
                   <v-icon>folder</v-icon>
                 </v-btn>Backup maken en downloaden
@@ -82,7 +82,7 @@ export default class FileBrowser extends Vue {
   };
 
   @Prop()
-  customer: any;
+  tenant: any;
 
   download(file: any) {
     const pdf = file;
@@ -120,8 +120,8 @@ export default class FileBrowser extends Vue {
   }
 
   async mounted() {
-    if (this.customer) {
-      this.directory.current = this.customer.id.toString();
+    if (this.tenant) {
+      this.directory.current = this.tenant.id.toString();
     }
     await this.getData();
   }

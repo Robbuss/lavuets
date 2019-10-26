@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use ZipArchive;
 use Carbon\Carbon;
-use App\Models\Customer;
+use App\Models\Tenant;
 use Illuminate\Http\Request;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
@@ -49,7 +49,7 @@ class FileController extends Controller
     {
         $directories = [];
         foreach (Storage::directories($directory) as $key => $dir) {
-            $c = Customer::withTrashed()->whereId(intval($dir))->first();
+            $c = Tenant::withTrashed()->whereId(intval($dir))->first();
             $directories[$key] = [
                 'title' => $dir,
                 'meta_info' => $c ? $c->name : ''

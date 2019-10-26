@@ -19,10 +19,17 @@ Route::post('/register', 'AuthController@register');
 Route::post('/book-data', 'BookingController@index');
 Route::post('/booking/create', 'BookingController@create');
 
+Route::post('/customers/create', 'CustomerController@create');
+
 Route::middleware('auth:api')->group(function () {
     Route::post('/logout', 'AuthController@logout');
     Route::get('/user/index', 'UserController@index');
     Route::get('/user/profile', 'UserController@profile');
+
+    Route::get('/locations', 'LocationController@index');
+    Route::post('/locations/create', 'LocationController@create');
+    Route::post('/locations/{location}', 'LocationController@update');
+    Route::post('/locations/{location}/delete', 'LocationController@delete');
 
     Route::get('/units', 'UnitController@index');
     Route::get('/units/{unit}', 'UnitController@read');
@@ -30,11 +37,11 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/units/{unit}', 'UnitController@update');
     Route::post('/units/{unit}/delete', 'UnitController@delete');
 
-    Route::get('/customers', 'CustomerController@index');
-    Route::get('/customers/{customer}', 'CustomerController@read');
-    Route::post('/customers/create', 'CustomerController@create');
-    Route::post('/customers/{customer}', 'CustomerController@update');
-    Route::post('/customers/{customer}/delete', 'CustomerController@delete');
+    Route::get('/tenants', 'TenantController@index');
+    Route::get('/tenants/{tenant}', 'TenantController@read');
+    Route::post('/tenants/create', 'TenantController@create');
+    Route::post('/tenants/{tenant}', 'TenantController@update');
+    Route::post('/tenants/{tenant}/delete', 'TenantController@delete');
 
     Route::get('/contracts', 'ContractController@index');
     Route::get('/contracts/{contract}', 'ContractController@read');

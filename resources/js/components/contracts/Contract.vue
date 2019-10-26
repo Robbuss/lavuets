@@ -8,8 +8,8 @@
               <BackButton />
               <v-toolbar-title
                 style="cursor:pointer;"
-                @click="$router.push('/customers/' + contract.customer.id)"
-              >{{ contract.customer.name }}</v-toolbar-title>
+                @click="$router.push('/tenants/' + contract.tenant.id)"
+              >{{ contract.tenant.name }}</v-toolbar-title>
               <v-spacer></v-spacer>
               <v-tooltip bottom>
                 <v-btn icon slot="activator" @click="download">
@@ -89,7 +89,7 @@
                 <v-flex xs12 sm6 style="border-left: 1px solid #0000001f">
                   <v-list dense>
                     <v-subheader>Klant informatie</v-subheader>
-                    <template v-for="(f, i) in customerFields">
+                    <template v-for="(f, i) in tenantFields">
                       <v-tooltip bottom :key="i+'t'">
                         <v-list-tile :key="i" slot="activator" @click>
                           <v-list-tile-action>
@@ -101,7 +101,7 @@
                         </v-list-tile>
                         <span>{{ f.tooltip }}</span>
                       </v-tooltip>
-                      <v-divider :key="i + 'd'" v-if="i !== customerFields.length - 1"></v-divider>
+                      <v-divider :key="i + 'd'" v-if="i !== tenantFields.length - 1"></v-divider>
                     </template>
                   </v-list>
                 </v-flex>
@@ -183,20 +183,20 @@ export default class SingleContract extends Vue {
   private dialog: boolean = false;
   private showWarning: boolean = false;
 
-  get customerFields() {
+  get tenantFields() {
     return [
       {
-        field: this.contract.customer.name,
+        field: this.contract.tenant.name,
         icon: "person",
         tooltip: "Klantnaam"
       },
       {
-        field: this.contract.customer.email,
+        field: this.contract.tenant.email,
         icon: "mail",
         tooltip: "Klant e-mailadres"
       },
       {
-        field: this.contract.customer.phone,
+        field: this.contract.tenant.phone,
         icon: "phone",
         tooltip: "Klant telefoonnummer"
       },
@@ -213,19 +213,19 @@ export default class SingleContract extends Vue {
         tooltip: "Automagische facturatie"
       },
       {
-        field: this.contract.customer.mandate_id
+        field: this.contract.tenant.mandate_id
           ? "Geldig mandaat in Mollie"
           : "Geen mandaat",
         icon: "money",
         tooltip: "Is er een geldig mandaat in mollie?"
       },
       {
-        field: this.contract.customer.company_name || "Particulier",
+        field: this.contract.tenant.company_name || "Particulier",
         icon: "store",
         tooltip: "Bedrijf of particulier"
       },
       {
-        field: this.contract.customer.id,
+        field: this.contract.tenant.id,
         icon: "android",
         tooltip: "Klant ID"
       }

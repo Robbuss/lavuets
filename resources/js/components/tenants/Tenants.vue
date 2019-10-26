@@ -12,19 +12,19 @@
           <span>Klant toevoegen</span>
         </v-tooltip>
         <v-dialog v-model="dialog" max-width="80%">
-          <edit-create-customer
+          <edit-create-tenant
             v-if="dialog"
             @saved="createdItem"
             @canceled="close"
             :creating="createMode"
             :enableFields="true"
-            :customer="editedItem"
-          ></edit-create-customer>
+            :tenant="editedItem"
+          ></edit-create-tenant>
         </v-dialog>
       </v-toolbar>
       <v-data-table
         :headers="headers"
-        :items="customers"
+        :items="tenants"
         class="elevation-1"
         :loading="loading"
         :pagination.sync="paginationSync"
@@ -34,11 +34,11 @@
           <tr class="pointer">
             <td
               class="pointer"
-              @click="$router.push('/customers/' + props.item.id)"
+              @click="$router.push('/tenants/' + props.item.id)"
             >{{ props.item.name }}</td>
-            <td @click="$router.push('/customers/' + props.item.id)">{{ props.item.email }}</td>
-            <td @click="$router.push('/customers/' + props.item.id)">{{ props.item.company_name }}</td>
-            <td @click="$router.push('/customers/' + props.item.id)">{{ props.item.phone }}</td>
+            <td @click="$router.push('/tenants/' + props.item.id)">{{ props.item.email }}</td>
+            <td @click="$router.push('/tenants/' + props.item.id)">{{ props.item.company_name }}</td>
+            <td @click="$router.push('/tenants/' + props.item.id)">{{ props.item.phone }}</td>
             <td>{{ props.item.city }}</td>
             <td>{{ formatDate(props.item.created_at) }}</td>
             <td class="justify-center layout px-0">
@@ -61,17 +61,17 @@ import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
 import axios from "js/axios";
 import store from "js/store";
-import EditCreateCustomer from "./EditCreate.vue";
+import EditCreateTenant from "./EditCreate.vue";
 import * as moment from "moment";
 
 @Component({
   components: {
-    editCreateCustomer: EditCreateCustomer
+    editCreateTenant: EditCreateTenant
   }
 })
-export default class Customers extends Vue {
+export default class Tenants extends Vue {
   private response = "";
-  private customers: any = [];
+  private tenants: any = [];
   private dialog: boolean = false;
   private loading: boolean = true;
   private createMode: boolean = true;
@@ -115,7 +115,7 @@ export default class Customers extends Vue {
   async getData() {
     this.loading = true;
     try {
-      this.customers = (await axios.get("/api/customers")).data;
+      this.tenants = (await axios.get("/api/tenants")).data;
     } catch (e) {
       this.response = e.message;
     }
@@ -123,10 +123,10 @@ export default class Customers extends Vue {
   }
 
   deleteItem(item: any) {
-    const index = this.customers.indexOf(item);
+    const index = this.tenants.indexOf(item);
     confirm("Are you sure you want to delete this item?") &&
-      this.customers.splice(index, 1) &&
-      axios.post("/api/customers/" + item.id + "/delete");
+      this.tenants.splice(index, 1) &&
+      axios.post("/api/tenants/" + item.id + "/delete");
     
     store.commit("snackbar", { type: "success", message: "Klant verwijderd." });
   }
@@ -141,9 +141,9 @@ export default class Customers extends Vue {
     await this.getData();
   }
 
-  editItem(customer: any) {
+  editItem(tenant: any) {
     this.createMode = false;
-    this.editedItem = customer;
+    this.editedItem = tenant;
     this.dialog = true;
   }
 

@@ -27,7 +27,7 @@
             <td>
               <PaymentStatusChip :payment="props.item" />
             </td>
-            <td>{{ props.item.customer }}</td>
+            <td>{{ props.item.tenant }}</td>
             <td>{{ props.item.payment_id }}</td>
             <td>{{ props.item.invoice_ref_number }}</td>
             <td>{{ formatDate(props.item.created_at) }}</td>
@@ -100,7 +100,7 @@ export default class Payments extends Vue {
   private headers: any = [
     { text: "Bedrag", align: "left", value: "amount" },
     { text: "Status", align: "left", value: "status" },
-    { text: "Klant", align: "left", value: "payment.customer.name" },
+    { text: "Klant", align: "left", value: "payment.tenant.name" },
     { text: "Betalings nr", align: "left", value: "payment_id" },
     { text: "Factuur nr", align: "left", value: "invoice_ref_number" },
     { text: "Gemaakt op", value: "created_at" },

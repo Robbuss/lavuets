@@ -9,7 +9,7 @@
         <v-divider></v-divider>
         <v-stepper-step :complete="step > 2" step="2" @click="navigate(2)">
           <span v-if="step <= 2">Kies een klant</span>
-          <span v-if="step > 2">Gekozen: {{ chosenCustomerName }}</span>
+          <span v-if="step > 2">Gekozen: {{ chosenTenantName }}</span>
         </v-stepper-step>
         <v-divider></v-divider>
         <v-stepper-step step="3" @click="navigate(3)">Prijs</v-stepper-step>
@@ -39,10 +39,10 @@
           <v-form ref="form2" v-model="valid" lazy-validation>
             Aan welke klant verhuur je die?
             <v-autocomplete
-              :items="customers"
+              :items="tenants"
               item-value="id"
               item-text="name"
-              v-model="contract.customer_id"
+              v-model="contract.tenant_id"
               :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
               required
               color="blue-grey lighten-2"
@@ -134,7 +134,7 @@ export default class EditCreateContract extends Vue {
   contract: any;
 
   private response = "";
-  private customers: any = [];
+  private tenants: any = [];
   private units: any = [];
   private loading: boolean = true;
   private valid: boolean = true;
@@ -154,11 +154,11 @@ export default class EditCreateContract extends Vue {
     return this.contract.id ? "Contract aanmaken" : "Contract bewerken";
   }
 
-  get chosenCustomerName() {
-    let customer = this.customers.find(
-      (x: any) => x.id === this.contract.customer_id
+  get chosenTenantName() {
+    let tenant = this.tenants.find(
+      (x: any) => x.id === this.contract.tenant_id
     );
-    return customer && customer.name ? customer.name : null;
+    return tenant && tenant.name ? tenant.name : null;
   }
 
   get mergeUnits() {
@@ -169,9 +169,9 @@ export default class EditCreateContract extends Vue {
   async mounted() {
     if (!this.contract.payment_method) this.contract.payment_method = "incasso";
     try {
-      // refactor this to an api call that gets the units in {free: [], occupied: []} and customers
+      // refactor this to an api call that gets the units in {free: [], occupied: []} and tenants
       const r = (await axios.get("/api/contracts")).data;
-      this.customers = r.customers;
+      this.tenants = r.tenants;
       this.units = r.units;
     } catch (e) {
       this.response = e.message;

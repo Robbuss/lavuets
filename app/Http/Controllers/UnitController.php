@@ -31,7 +31,7 @@ class UnitController extends Controller
 
     public function read(Unit $unit)
     {
-        return ["unit" => $unit, "contracts" => $unit->contracts()->with('customer')->get()];
+        return ["unit" => $unit, "contracts" => $unit->contracts()->with('tenant')->get()];
     }
 
     /**

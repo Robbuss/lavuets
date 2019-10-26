@@ -5,21 +5,21 @@ namespace App\Utils;
 use App\Models\Invoice;
 use App\Models\Payment;
 use App\Models\Contract;
-use App\Models\Customer;
+use App\Models\Tenant;
 use Mollie\Laravel\Facades\Mollie;
 
 class MolliePayment
 {
     public $price;
-    public $customer;
+    public $tenant;
     public $contract;
     public $invoice;
     public $type;
     public $webhook;
 
-    public function __construct(Customer $customer, Contract $contract, Invoice $invoice, $webhook = false)
+    public function __construct(Tenant $tenant, Contract $contract, Invoice $invoice, $webhook = false)
     {
-        $this->customer = $customer;
+        $this->tenant = $tenant;
         $this->contract = $contract;
         $this->invoice = $invoice;
         $this->price = $this->calculatePrice();
@@ -34,14 +34,14 @@ class MolliePayment
 
     private function firstOrRecurring()
     {
-        return ($this->contract->customer->mollie_id && $this->contract->customer->mandate_id) ? 'recurring' : 'first';
+        return ($this->contract->tenant->mollie_id && $this->contract->tenant->mandate_id) ? 'recurring' : 'first';
     }
 
     private function calculatePrice()
     {
         // calculate value
         $price = $this->contract->units->sum('pivot.price');
-        if ($this->contract->customer->kvk)
+        if ($this->contract->tenant->kvk)
             $price = $price * 1.21; // add VAT/ BTW at 21% for companies
         return number_format($price, 2);
     }
@@ -51,8 +51,8 @@ class MolliePayment
         if ($this->type === 'first') {
             // create a mollie customer. 
             $mollieCustomer = Mollie::api()->customers()->create([
-                "name"  => $this->customer->name,
-                "email"  => $this->customer->email,
+                "name"  => $this->tenant->name,
+                "email"  => $this->tenant->email,
             ]);
 
             // i believe we need to get the mollie model again, for security's sake (something in their api docs about this)
@@ -61,21 +61,21 @@ class MolliePayment
             // create a mandate  
             $mandate = $mollieCustomer->createMandate([
                 "method" => \Mollie\Api\Types\MandateMethod::DIRECTDEBIT,
-                "consumerName" => $this->customer->name,
-                "consumerAccount" => str_replace(' ', '', $this->customer->iban), // make sure there are no spaces in the iban
+                "consumerName" => $this->tenant->name,
+                "consumerAccount" => str_replace(' ', '', $this->tenant->iban), // make sure there are no spaces in the iban
                 "signatureDate" => \Carbon\Carbon::now()->format('Y-m-d'),
-                "mandateReference" => "OPSLAGMAG-" . $this->customer->id,
+                "mandateReference" => "OPSLAGMAG-" . $this->tenant->id,
             ]);
-            // save it to the customer. The next time recurring will be used. 
-            $this->customer->update(['mollie_id' => $mollieCustomer->id, 'mandate_id' => $mandate->id]);
+            // save it to the tenant. The next time recurring will be used. 
+            $this->tenant->update(['mollie_id' => $mollieCustomer->id, 'mandate_id' => $mandate->id]);
         }
 
         // if its a recurring payment, there must a valid mandate in mollie.
         if ($this->type === 'recurring') {
-            $mollieCustomer = Mollie::api()->customers()->get($this->customer->mollie_id);
+            $mollieCustomer = Mollie::api()->customers()->get($this->tenant->mollie_id);
             $mandates = Mollie::api()->mandates()->listFor($mollieCustomer);
             if ($mandates->count === 0) {
-                activity('mollie')->log('Geen geldige mandaat gevonden in Mollie voor ' . $this->customer->name);
+                activity('mollie')->log('Geen geldige mandaat gevonden in Mollie voor ' . $this->tenant->name);
                 return;
             }
         }
@@ -98,12 +98,12 @@ class MolliePayment
         } catch (\Exception $e) {
             activity('mollie')->log('something went wrong with the payment: ' . $e);
         }
-        activity('mollie')->log('Mollie betaling gemaakt met type ' . $this->type . ' voor ' . $this->customer->name);
+        activity('mollie')->log('Mollie betaling gemaakt met type ' . $this->type . ' voor ' . $this->tenant->name);
 
         // save the payment to our database
         $payment = Payment::create([
             'contract_id' => $this->contract->id,
-            'customer_id' => $this->customer->id,
+            'tenant_id' => $this->tenant->id,
             'invoice_id' => $this->invoice->id,
             'payment_id' => $molliePayment->id,
             'status' => 'pending',

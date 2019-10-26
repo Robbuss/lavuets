@@ -16,66 +16,59 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        // $customer = Customer::whereHas('contracts')->with('contracts')->get();
+        // $Customer = Customer::whereHas('contracts')->with('contracts')->get();
         return Customer::all();
     }
 
     /**
-     * Create a new customer
+     * Create a new Customer
      *
      * @return \Illuminate\Http\Response
      */
     public function create(Request $request)
     {
-        $customer = Customer::create([
-            'company_name' => $request->company_name,
-            'name' => $request->name,
+        $Customer = Customer::create([
+            'domain' => $request->domain,
             'email' => $request->email,
-            'city' => $request->city,
-            'street_addr' => $request->street_addr,
-            'street_number' => $request->street_number,
-            'postal_code' => $request->postal_code,
-            'btw' => $request->btw,
-            'kvk' => $request->kvk,
-            'iban' => $request->iban,
-            'phone' => $request->phone,
+            'name' => $request->name,
+            'company_name' => $request->company_name,
         ]);
-        return ['id' => $customer->id];
+        return ['id' => $Customer->id];
     }
 
-    public function read(Customer $customer)
+    public function read(Customer $Customer)
     {
-        return $customer;
+        return $Customer;
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Customer  $customer
+     * @param  \App\Models\Customer  $Customer
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Customer $customer)
+    public function update(Request $request, Customer $Customer)
     {
-        $customer->update($request->all());
+        $Customer->update($request->all());
         return ['success' => true];
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Customer  $customer
+     * @param  \App\Models\Customer  $Customer
      * @return \Illuminate\Http\Response
      */
-    public function delete(Customer $customer)
+    public function delete(Customer $Customer)
     {
-        $customer->invoices()->delete();
-        foreach ($customer->contracts as $contract) {
+        $Customer->invoices()->delete();
+        foreach ($Customer->contracts as $contract) {
             $contract->units()->detach();
             $contract->delete();
         }
-        $customer->payments()->delete();
-        $customer->delete();
+        $Customer->payments()->delete();
+        $Customer->delete();
 
         return ['success' => true];
     }

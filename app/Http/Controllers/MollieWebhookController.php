@@ -16,7 +16,7 @@ class MollieWebhookController extends Controller
     {
         activity('mollie')->log('Mollie webhook post id ' . $request->id);
         // this code maybe removed since there is a cron job that runs essentially this code every five minutes
-        $payment = Payment::where('payment_id', $request->id)->with(['customer', 'contract'])->firstOrFail();
+        $payment = Payment::where('payment_id', $request->id)->firstOrFail();
         $molliePayment =  Mollie::api()->payments()->get($payment->payment_id);
         $payment->update(['status' => $molliePayment->status]);
     }
@@ -24,7 +24,7 @@ class MollieWebhookController extends Controller
     /* this method is called from the BookingController, and it sends the booking complete mail */
     public function firstOrderWebhook(Request $request) 
     {
-        $payment = Payment::where('payment_id', $request->id)->with(['customer', 'contract'])->firstOrFail();
+        $payment = Payment::where('payment_id', $request->id)->with(['tenant', 'contract'])->firstOrFail();
         $molliePayment =  Mollie::api()->payments()->get($payment->payment_id);
         $payment->update(['status' => $molliePayment->status]);
         if ($molliePayment->isPaid()) {
@@ -37,18 +37,18 @@ class MollieWebhookController extends Controller
         // generate a pdf contract
         new PdfGenerator($payment->contract);
 
-        // send a mail to the customer
+        // send a mail to the tenant
         try {
-            Mail::to($payment->customer->email)
+            Mail::to($payment->tenant->email)
                 ->queue(new BookingComplete(
-                    $payment->load(['customer', 'contract']),
-                    storage_path('app/' . $payment->contract->customer_id . '/') . 'huurcontract-opslagmagazijn.pdf',
-                    storage_path('app/' . $payment->contract->customer_id . '/') . $payment->invoice->ref . '.pdf',
+                    $payment->load(['tenant', 'contract']),
+                    storage_path('app/' . $payment->contract->tenant_id . '/') . 'huurcontract-opslagmagazijn.pdf',
+                    storage_path('app/' . $payment->contract->tenant_id . '/') . $payment->invoice->ref . '.pdf',
                 ));
             $payment->invoice->update([
                 'sent' => Carbon::now(),
             ]);
-            activity('email')->log('Welkomsmail en eerste factuur verstuurd naar' . $payment->customer->email);
+            activity('email')->log('Welkomsmail en eerste factuur verstuurd naar' . $payment->tenant->email);
         } catch (\Exception $e) {
             activity('email')->log('Something went wrong send mail');
         }

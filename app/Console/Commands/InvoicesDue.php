@@ -42,7 +42,7 @@ class InvoicesDue extends Command
     public function handle()
     {
         // first get all active contracts
-        $contracts = Contract::whereNull('deactivated_at')->with(['invoices', 'customer'])->get();
+        $contracts = Contract::whereNull('deactivated_at')->with(['invoices', 'tenant'])->get();
         $count = 0;
         foreach ($contracts as $contract) {
             // get the last invoice on the contract

@@ -141,9 +141,9 @@ import store from "js/store";
 import * as iban from "iban";
 
 @Component({})
-export default class EditCustomer extends Vue {
+export default class EditTenant extends Vue {
   @Prop()
-  customer: any;
+  tenant: any;
 
   @Prop()
   creating: boolean;
@@ -192,13 +192,13 @@ export default class EditCustomer extends Vue {
   get formTitle() {
     return this.creating
       ? "Klant aanmaken"
-      : "De gegevens van " + this.customer.name + " bewerken";
+      : "De gegevens van " + this.tenant.name + " bewerken";
   }
 
   mounted() {
     if (this.enableFields) this.editFields = true;
-    if (this.customer) {
-      this.editedItem = Object.assign({}, this.customer);
+    if (this.tenant) {
+      this.editedItem = Object.assign({}, this.tenant);
     }
   }
 
@@ -215,10 +215,10 @@ export default class EditCustomer extends Vue {
     this.editFields = false;
     this.working = true;
     if (!this.creating) {
-      await axios.post("/api/customers/" + this.editedItem.id, this.editedItem);
+      await axios.post("/api/tenants/" + this.editedItem.id, this.editedItem);
       store.commit("snackbar", { type: "success", message: "Klant aangepast!" });
     } else {
-      await axios.post("/api/customers/create", this.editedItem);
+      await axios.post("/api/tenants/create", this.editedItem);
       store.commit("snackbar", { type: "success", message: "Klant aangemaakt!" });
     }
     this.$emit("saved");

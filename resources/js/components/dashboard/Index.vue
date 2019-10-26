@@ -4,7 +4,7 @@
       <v-flex sm12>
         <h1
           class="subheading primary--text text-xs-center font-weight-bold"
-        >Welkom terug {{ user.name }}, you magnificent bastard!</h1>
+        >{{ user.name }}, you magnificent bastard!</h1>
       </v-flex>
     </v-layout>
     <v-container fluid grid-list-xl>
@@ -59,13 +59,13 @@ export default class Index extends Vue {
   private units: any = [];
   private payments: any = [];
   private user: any = {};
-  private customers: any = [];
+  private tenants: any = [];
 
   async mounted() {
     const r = (await axios.get("/api/dashboard")).data;
     this.contracts = r.contracts;
     this.units = r.units;
-    this.customers = r.customers;
+    this.tenants = r.tenants;
     this.payments = r.payments;
     this.user = r.user;
     this.loading = false;

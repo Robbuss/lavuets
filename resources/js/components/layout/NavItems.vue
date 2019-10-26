@@ -29,13 +29,18 @@ export default class NavItems extends Vue {
   private itemsLoggedIn: { [k: string]: string }[] = [
     {
       icon: "store",
+      link: "/locations",
+      text: "Locaties"
+    },    
+    {
+      icon: "store",
       link: "/units",
       text: "Boxen / producten"
     },
     {
       icon: "person",
-      link: "/customers",
-      text: "Klanten"
+      link: "/tenants",
+      text: "Huurders"
     },
     {
       icon: "description",
@@ -52,16 +57,6 @@ export default class NavItems extends Vue {
       link: "/payments",
       text: "Betalingen"
     },
-    {
-      icon: "description",
-      link: "/logs",
-      text: "Logs"
-    },
-    {
-      icon: "folder",
-      link: "/files",
-      text: "Bestanden"
-    }
   ];
   private itemsLoggedOut: { [k: string]: string }[] = [
     {

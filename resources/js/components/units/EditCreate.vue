@@ -98,7 +98,7 @@ export default class Editunit extends Vue {
 
   get formTitle() {
     return this.creating
-      ? "Klant aanmaken"
+      ? "Product of unit aanmaken"
       : "De gegevens van " + this.unit.name + " bewerken";
   }
 

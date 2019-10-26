@@ -37,7 +37,7 @@ class SendInvoice extends Mailable
             'payment_method' => $this->invoice->contract->payment_method,
             'payment' => $this->payment,
         ])->attach(
-            storage_path('app/' . $this->invoice->customer_id . '/') . $this->invoice->ref . '.pdf',
+            storage_path('app/' . $this->invoice->contract->tenant_id . '/') . $this->invoice->ref . '.pdf',
             ['mime' => 'application/pdf'],
         )->subject('Je nieuwe factuur');
     }
