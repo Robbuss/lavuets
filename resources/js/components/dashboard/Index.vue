@@ -4,7 +4,7 @@
       <v-flex sm12>
         <h1
           class="subheading primary--text text-xs-center font-weight-bold"
-        >Welkom terug, {{ user.name }}!</h1>
+        >Welkom terug {{ user.name }}, you magnificent bastard!</h1>
       </v-flex>
     </v-layout>
     <v-container fluid grid-list-xl>

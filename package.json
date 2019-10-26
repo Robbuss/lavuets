@@ -2,13 +2,13 @@
     "private": true,
     "scripts": {
         "dev": "npm run development",
-        "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=webpack.config.js --profile --mode development",
-        "development-json": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --config=webpack.config.js --json",
-        "watch": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --watch --progress --hide-modules --config=webpack.config.js --mode development",
+        "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=webpack.dev.config.js --profile --mode development",
+        "development-json": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --config=webpack.dev.config.js --json",
+        "watch": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --watch --progress --hide-modules --config=webpack.dev.config.js --mode development",
         "watch-poll": "npm run watch -- --watch-poll",
-        "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=webpack.config.js",
+        "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=webpack.dev.config.js",
         "prod": "npm run production",
-        "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=webpack.config.js --profile"
+        "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=webpack.prod.config.js --profile"
     },
     "dependencies": {
         "@types/iban": "0.0.30",
@@ -42,7 +42,8 @@
         "css-loader": "^2.1.1",
         "eslint": "^5.8.0",
         "eslint-plugin-vue": "^5.0.0",
-        "node-sass": "^4.9.0",
+        "html-webpack-plugin": "^3.2.0",
+        "node-sass": "^4.13.0",
         "popper.js": "^1.12",
         "resolve-url-loader": "^2.3.1",
         "sass": "^1.15.2",
@@ -54,6 +55,10 @@
         "vue-loader": "^15.7.0",
         "vue-template-compiler": "^2.6.10",
         "vuetify-loader": "^1.2.1",
-        "webpack-cli": "^3.3.0"
+        "webpack": "^4.41.1",
+        "webpack-bundle-analyzer": "^3.5.2",
+        "webpack-cli": "^3.3.9",
+        "webpack-dev-server": "^3.8.2",
+        "webpack-shell-plugin-next": "^0.6.4"
     }
 }
