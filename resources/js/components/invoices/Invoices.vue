@@ -232,7 +232,7 @@ export default class Invoices extends Vue {
     this.loading = true;
     try {
       this.invoices = (await axios.post("/api/invoices", {
-        customer_id: this.contract ? this.contract.customer_id : null
+        contract_id: this.contract ? this.contract.id : null
       })).data;
     } catch (e) {
       this.response = e.message;

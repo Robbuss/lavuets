@@ -20,8 +20,8 @@ class InvoiceController extends Controller
     {
         return Invoice::with(['customer', 'contract', 'contract.units', 'payments'])
             ->where(function ($q) use ($request) {
-                if ($request->customer_id)
-                    return $q->where('customer_id', $request->customer_id);
+                if ($request->contract_id)
+                    return $q->where('contract_id', $request->contract_id);
             })
             ->get()
             ->map(function ($q) {
@@ -87,10 +87,10 @@ class InvoiceController extends Controller
     {
         $invoice->update($request->all());
         $file = storage_path('app/' . $invoice->customer_id . '/') . $invoice->ref . '.pdf';
-        if (file_exists($file)){
+        if (file_exists($file)) {
             rename($file, storage_path('app/' . $invoice->customer_id . '/') . $invoice->ref . '-' . substr(md5(microtime()), -5) . '-edited.pdf');
         }
-        new PdfGenerator($invoice);      
+        new PdfGenerator($invoice);
 
         return ['success' => true];
     }
