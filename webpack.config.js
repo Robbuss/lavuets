@@ -1,5 +1,8 @@
 let webpack = require("webpack");
-const { VueLoaderPlugin } = require("vue-loader");
+const {
+    VueLoaderPlugin
+} = require("vue-loader");
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 const VuetifyLoaderPlugin = require("vuetify-loader/lib/plugin")
 let path = require("path");
 const utils = {
@@ -13,7 +16,9 @@ const utils = {
     }
 }
 module.exports = {
-    entry: { app: "./resources/js/app.ts" },
+    entry: {
+        app: "./resources/js/app.ts"
+    },
     resolve: {
         extensions: [".js", ".vue", ".json", ".ts"],
         alias: {
@@ -22,9 +27,18 @@ module.exports = {
             "vue$": "vue/dist/vue.esm.js"
         }
     },
+    devServer: {
+        contentBase: path.join(__dirname, 'public'),
+        compress: false,
+        port: 9000,
+        disableHostCheck: true,
+        hot: true,
+        historyApiFallback: true,
+        overlay: true,
+        host: '127.0.0.1',
+    },
     module: {
-        rules: [
-            {
+        rules: [{
                 test: /\.tsx?$/,
                 exclude: [
                     /node_modules/
@@ -98,6 +112,9 @@ module.exports = {
     },
     plugins: [
         new VueLoaderPlugin(),
-        new VuetifyLoaderPlugin()
+        new VuetifyLoaderPlugin(),
+        new HtmlWebpackPlugin({
+            'template': 'public/index.html'
+        })
     ]
 }
