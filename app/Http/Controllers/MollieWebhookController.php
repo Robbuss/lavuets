@@ -35,7 +35,7 @@ class MollieWebhookController extends Controller
     private function sendContractAndFirstInvoice(Payment $payment)
     {
         // generate a pdf contract
-        new PdfGenerator($payment->contract);
+        (new PdfGenerator($payment->contract))->generateContract();
 
         // send a mail to the tenant
         try {

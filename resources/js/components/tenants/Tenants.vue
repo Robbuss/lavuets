@@ -2,14 +2,14 @@
   <v-flex sm12>
     <div>
       <v-toolbar flat color="primary" dark>
-        <v-toolbar-title>Klanten</v-toolbar-title>
+        <v-toolbar-title>Huurders</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-text-field class="pt-0" v-model="search" append-icon="search" label="Zoeken" single-line hide-details></v-text-field>
         <v-tooltip bottom>
           <v-btn icon slot="activator" @click="createItem">
             <v-icon>add</v-icon>
           </v-btn>
-          <span>Klant toevoegen</span>
+          <span>Huurder toevoegen</span>
         </v-tooltip>
         <v-dialog v-model="dialog" max-width="80%">
           <edit-create-tenant

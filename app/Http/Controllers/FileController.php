@@ -12,38 +12,9 @@ use Illuminate\Support\Facades\Storage;
 
 class FileController extends Controller
 {
-    public function index(Request $request)
-    {
-        $dir = $request->directory;
-        if (is_array($dir)) {
-            $dir = $request->directory['title'];
-        }
-        return [
-            'files' => $this->getFileContents($dir),
-            'directories' => $this->getDirectories($dir)
-        ];
-    }
-
-    public function getFileContents($directory = "")
-    {
-        $files = [];
-        foreach (Storage::files($directory) as $key => $file) {
-            if(strpos($file, ".gitignore") !== false)
-                continue;
-            $content = file_get_contents(storage_path('app/' . $file));
-
-            $files[$key] = [
-                'last_modified' => Carbon::parse(Storage::lastModified($file))->isoFormat('LL'),
-                'size' => Storage::size($file),
-                'title' => (substr_count($file, '/') > 0) ? substr($file, strpos($file, '/') + 1) : $file,
-                'content' => base64_encode($content),
-                'mime' => 'application/pdf',
-                'extension' => 'pdf'
-            ];
-        }
-
-        return $files;
-    }
+    /* this controller is not called atm, but the code might be interesting for later
+    * When customers need the ability to export all their data
+    *
 
     public function getDirectories($directory = "")
     {
@@ -108,4 +79,5 @@ class FileController extends Controller
 
         return $zip->close();
     }
+    */
 }

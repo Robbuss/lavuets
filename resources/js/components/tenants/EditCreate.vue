@@ -191,7 +191,7 @@ export default class EditTenant extends Vue {
 
   get formTitle() {
     return this.creating
-      ? "Klant aanmaken"
+      ? "Huurder aanmaken"
       : "De gegevens van " + this.tenant.name + " bewerken";
   }
 

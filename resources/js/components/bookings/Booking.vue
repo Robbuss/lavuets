@@ -14,7 +14,7 @@
       </v-stepper-step>
 
       <v-stepper-content :class="{'ml-0' : $vuetify.breakpoint.smAndDown}" step="1">
-        <StepLocation :count="count" @done="locationDone($event)"></StepLocation>
+        <StepLocation @done="locationDone($event)"></StepLocation>
       </v-stepper-content>
 
       <v-stepper-step :complete="step > 2" step="2" @click="step > 2 ? step = 2 : false">
@@ -23,9 +23,9 @@
       </v-stepper-step>
 
       <v-stepper-content :class="{'ml-0' : $vuetify.breakpoint.smAndDown}" step="2">
-        <v-layout row wrap>
+        <v-layout row wrap v-if="step == 2">
           <v-flex xs12 pa-1>
-            <StepUnit :contract="contract" :units="units" @done="unitDone($event)"></StepUnit>
+            <StepUnit :location="selectedLocation" :contract="contract" @done="unitDone($event)"></StepUnit>
           </v-flex>
         </v-layout>
       </v-stepper-content>
@@ -36,7 +36,7 @@
       </v-stepper-step>
 
       <v-stepper-content :class="{'ml-0' : $vuetify.breakpoint.smAndDown}" step="3">
-        <StepTenant @done="completeOrder($event)" :working="working" :tenant="tenant" :contract="contract"></StepTenant>
+        <StepTenant :location="selectedLocation" @done="completeOrder($event)" :working="working" :tenant="tenant" :contract="contract"></StepTenant>
       </v-stepper-content>
     </v-stepper>
   </v-flex>
@@ -62,9 +62,8 @@ import StepTenant from "./StepTenant.vue";
 export default class Booking extends Vue {
   private step: number = 0;
   private count: number = 0;
-  private units: any = [];
-  private location: string = "";
   private working: boolean = false;
+  private selectedLocation: any = {};
   private tenant: any = {
     id: null,
     name: "",
@@ -84,14 +83,8 @@ export default class Booking extends Vue {
     start_date: "",
   };
 
-  async mounted() {
-    const r = (await axios.post("/api/book-data")).data;
-    this.units = r.units;
-    this.count = r.count;
-  }
-
   locationDone(event: string) {
-    this.location = event;
+    this.selectedLocation = event;
     this.step = 2;
   }
 

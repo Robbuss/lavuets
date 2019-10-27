@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Unit;
-use App\Models\Contract;
 use App\Models\Tenant;
+use App\Models\Contract;
+use App\Models\Location;
 use App\Utils\MolliePayment;
 use Illuminate\Http\Request;
 use App\Utils\InvoiceGenerator;
@@ -16,14 +17,19 @@ class BookingController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function stepLocation()
     {
-        $free = Unit::doesntHave('contracts')->where('size', '>', 0)->where('active', 1)->get();
-        $grouped = $free->mapToGroups(function ($item, $key) {
+        return Location::whereHas('units', function ($q) {
+            return $q->where('active', 1)->where('size', '>', 0)->doesntHave('contracts');
+        })->withCount('units')->get();
+    }
+
+    public function stepUnits(Request $request)
+    {
+        $free = Unit::doesntHave('contracts')->where('size', '>', 0)->where('active', 1)->where('location_id', $request->location_id)->get();
+        return $free->mapToGroups(function ($item) {
             return [$item['size'] => $item];
         });
-
-        return ['units' => $grouped, 'count' => $free->count()];
     }
 
     /**
@@ -65,5 +71,4 @@ class BookingController extends Controller
 
         return $contractUnitPrice;
     }
-  
 }

@@ -39,6 +39,7 @@
       >
         <template v-slot:items="props">
           <td>{{ props.item.id }}</td>
+          <td>{{ props.item.location.facility_name }}</td>
           <td
             style="cursor: pointer"
             @click="$router.push('/units/' + props.item.id)"
@@ -84,7 +85,6 @@ import EditCreateUnit from "./EditCreate.vue";
 })
 export default class Units extends Vue {
   private response = "";
-  private fields = ["name", "size", "price", "x", "y"];
   private units: any = [];
   private dialog: boolean = false;
   private loading: boolean = true;
@@ -94,6 +94,7 @@ export default class Units extends Vue {
 
   private headers: any = [
     { text: "id", value: "id" },
+    { text: "Locatie", value: "location.facility_name" },
     { text: "Naam", value: "name" },
     { text: "Grootte (m3)", value: "size" },
     { text: "Prijs (p/m)", value: "price" },

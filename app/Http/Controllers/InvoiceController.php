@@ -71,7 +71,7 @@ class InvoiceController extends Controller
     public function create(Request $request)
     {
         $invoice = Invoice::create($request->all());
-        new PdfGenerator($invoice);
+        (new PdfGenerator($invoice))->generateInvoice();
         return ['id' => $invoice->id];
     }
 
@@ -90,7 +90,7 @@ class InvoiceController extends Controller
         if (file_exists($file)) {
             rename($file, storage_path('app/' . $invoice->contract->tenant_id . '/') . $invoice->ref . '-' . substr(md5(microtime()), -5) . '-edited.pdf');
         }
-        new PdfGenerator($invoice);
+        (new PdfGenerator($invoice))->generateInvoice();
 
         return ['success' => true];
     }
@@ -132,14 +132,13 @@ class InvoiceController extends Controller
 
     public function getPdf(Invoice $invoice)
     {
-        $file = storage_path('app/' . $invoice->contract->tenant_id . '/') . $invoice->ref . '.pdf';
-        if (!file_exists($file))
-            return ["success" => false, "message" => "Er is geen Factuur gevonden gevonden..."];
-
-        $content = file_get_contents($file);
+        $media = $invoice->getFirstMedia('pdf');
+        if (!$media) {
+            (new PdfGenerator($invoice))->generateInvoice();
+        }
 
         return [
-            'content' => base64_encode($content),
+            'content' => base64_encode(file_get_contents($media->getPath())),
             'mime' => 'application/pdf',
             'extension' => 'pdf'
         ];

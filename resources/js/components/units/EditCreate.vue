@@ -7,6 +7,18 @@
     <v-form v-model="valid" lazy-validation ref="form">
       <v-layout row wrap class="pa-3">
         <v-flex sm12>
+          <v-select
+            label="Kies een locatie"
+            placeholder="Waar de unit zich bevindt"
+            v-model="editedItem.location_id"
+            required
+            item-text="facility_name"
+            item-value="id"
+            :items="locations"
+            :rules="[v => !!v || 'Je moet een locatie kiezen']"
+          />
+        </v-flex>
+        <v-flex sm12>
           <v-text-field
             label="Product naam"
             placeholder="Komt op de factuur"
@@ -68,8 +80,10 @@ export default class Editunit extends Vue {
   @Prop()
   creating: boolean;
 
+  private loading: boolean = true;
   private working: boolean = false;
   private valid: boolean = true;
+  private locations: any = [];
   private activeBox: any = [
     {
       text: "Ja",
@@ -83,12 +97,14 @@ export default class Editunit extends Vue {
   private editedItem: any = {
     id: null,
     name: "",
+    location_id: null,
     size: "",
     active: null,
     price: null
   };
   private defaultItem: any = {
     id: null,
+    location_id: null,
     name: "",
     size: "",
     active: null,
@@ -102,10 +118,12 @@ export default class Editunit extends Vue {
       : "De gegevens van " + this.unit.name + " bewerken";
   }
 
-  mounted() {
+  async mounted() {
     if (this.unit) {
       this.editedItem = Object.assign({}, this.unit);
     }
+    this.locations = (await axios.get("/api/locations")).data;
+    this.loading = false;
   }
 
   editItem(item: any) {
@@ -123,10 +141,16 @@ export default class Editunit extends Vue {
     this.working = true;
     if (!this.creating) {
       await axios.post("/api/units/" + this.editedItem.id, this.editedItem);
-      store.commit("snackbar", { type: "success", message: "Product aangepast!" });
+      store.commit("snackbar", {
+        type: "success",
+        message: "Product aangepast!"
+      });
     } else {
       await axios.post("/api/units/create", this.editedItem);
-      store.commit("snackbar", { type: "success", message: "Product aangemaakt!" });
+      store.commit("snackbar", {
+        type: "success",
+        message: "Product aangemaakt!"
+      });
     }
     this.$emit("saved");
     this.working = false;

@@ -34,7 +34,7 @@ class InvoiceGenerator
         ]);
 
         // generate a PDF for the invoice
-        new PdfGenerator($newInvoice);
+        (new PdfGenerator($newInvoice))->generateInvoice();
         $this->lastInvoice = $newInvoice;
     }
 }

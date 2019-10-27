@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Unit;
-use App\Models\Contract;
 use Illuminate\Http\Request;
 
 class UnitController extends Controller
@@ -17,9 +16,10 @@ class UnitController extends Controller
     {
         $occupied = Unit::has('contracts')->get();
 
-        return Unit::all()->map(function ($q) use ($occupied) {
+        return Unit::with('location')->get()->map(function ($q) use ($occupied) {
             return [
                 "id" => $q->id,
+                "location" => $q->location,
                 "name" => $q->name,
                 "size" => $q->size,
                 "active" => $q->active,

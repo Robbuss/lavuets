@@ -118,18 +118,25 @@ import axios from "js/axios";
 @Component({})
 export default class StepUnit extends Vue {
   @Prop()
-  units: any;
+  contract: any;
 
   @Prop()
-  contract: any;
+  location: any;
 
   @Watch("contract.units")
   onChosenUnitsChanged() {
     this.error ? (this.error = !this.error) : false;
   }
 
+  private units: any = [];
   private window: number = 0;
   private error: boolean = false;
+  private loading: boolean = true;
+
+  async mounted(){
+    this.units = (await axios.post("/api/book-data/units", {location_id: this.location.id})).data;
+    this.loading = false;
+  }
 
   unitChecked(units: any) {
     for (let i = 0; i < units.length; i++) {

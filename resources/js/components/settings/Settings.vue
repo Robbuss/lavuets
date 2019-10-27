@@ -60,6 +60,6 @@ export default class Settings extends Vue {
       this.response = e.message;
     }
     this.loading = false;
-  }  
+  }
 }
 </script>

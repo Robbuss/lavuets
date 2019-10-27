@@ -141,18 +141,13 @@ class ContractController extends Controller
 
     public function getPdf(Contract $contract)
     {
-        $file = storage_path('app/' . $contract->tenant_id . '/') . 'huurcontract-opslagmagazijn.pdf';
-        if (!file_exists($file)){
-            (new PdfGenerator($contract));
-            $file = storage_path('app/' . $contract->tenant_id . '/') . 'huurcontract-opslagmagazijn.pdf';
+        $media = $contract->getFirstMedia('pdf');
+        if (!$media) {
+            $media = (new PdfGenerator($contract))->generateContract();
         }
 
-        // return ["success" => false, "message" => "Er is geen huurcontract gevonden..."];
-    
-        $content = file_get_contents($file);
-
         return [
-            'content' => base64_encode($content),
+            'content' => base64_encode(file_get_contents($media->getPath())),
             'mime' => 'application/pdf',
             'extension' => 'pdf'
         ];

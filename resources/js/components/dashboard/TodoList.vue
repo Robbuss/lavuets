@@ -27,8 +27,6 @@ export default class TodoList extends Vue {
   todos: any = [
     "Aanpasbare verhuur tijd van producten",
     "Media library toevoegen",
-    "Locaties toevoegen",
-    "Tentant scope maken",
     "Mollie mislukte betalingen afhandelen (redirect nog naar succes page)",
     "Mollie first payment save mandate_id to db",
     "Add Settings",
@@ -40,7 +38,6 @@ export default class TodoList extends Vue {
     "Consistentie van invoice numbers controleren",
     "Write a test for the MolliePaymentClass",
     "Make sure invoices and contract files are not public",
-    "Be sure to remove all default values on customer_id fields in db"
   ];
 
   mounted(){

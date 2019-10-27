@@ -220,7 +220,7 @@
               >
                 <h3 class="subheading grey--text">
                   U huurt een box in
-                  <span class="primary--text">Breukelen</span>
+                  <span class="primary--text">{{ location.facility_name }}</span>
                 </h3>
                 <h3 class="subheading grey--text">
                   Opslagruimte
@@ -294,6 +294,9 @@ export default class StepTenant extends Vue {
 
   @Prop()
   working: boolean;
+
+  @Prop()
+  location: any;
 
   @Watch("contract.start_date")
   onStartDateChanged(newval: any, oldval: any) {
