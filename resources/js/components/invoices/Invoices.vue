@@ -12,7 +12,7 @@
           single-line
           hide-details
         ></v-text-field>
-        <v-tooltip bottom>
+        <v-tooltip bottom v-if="contract && contract.tenant_id">
           <v-btn icon slot="activator" @click="$router.push('/invoices')">
             <v-icon>info</v-icon>
           </v-btn>

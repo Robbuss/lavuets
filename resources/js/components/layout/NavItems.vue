@@ -33,7 +33,7 @@ export default class NavItems extends Vue {
       text: "Locaties"
     },    
     {
-      icon: "store",
+      icon: "view_quilt",
       link: "/units",
       text: "Boxen / producten"
     },
