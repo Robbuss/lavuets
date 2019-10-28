@@ -8,6 +8,7 @@ use App\Utils\PdfGenerator;
 use Illuminate\Http\Request;
 use App\Mail\BookingComplete;
 use Mollie\Laravel\Facades\Mollie;
+use Illuminate\Support\Facades\Mail;
 
 class MollieWebhookController extends Controller
 {

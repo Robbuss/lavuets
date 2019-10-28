@@ -165,7 +165,7 @@
                 Deze huurovereenkomst heeft betrekking op de huur van een opslagruimte per {{ \Carbon\Carbon::parse($contract->start_date)->isoFormat('LL') }} op de Keulschevaart 15 B te Breukelen, bekend als<br>
                 UNIT NUMMER(s):
                 @foreach($contract->units as $unit)
-                {{ $unit->id }},
+                {{ $unit->id }} : {{ $unit->name }},
                 @endforeach
                 <br>
                 Het gehuurde mag uitsluitend worden gebruikt als ruimte voor opslag.<br>Er mogen geen werkplaats activiteiten plaats vinden.
@@ -185,7 +185,7 @@
             </p>
             <ul>
                 <li>Huurder {{ $tenant->name }}</li>
-                <li>Adres: {{ $tenant->postal_code }} {{ $tenant->city }}</li>
+                <li>Adres: {{$tentant->street_addr}} {{ $tenant->street_number }}, {{ $tenant->postal_code }} te {{ $tenant->city }}</li>
                 <li>Telefoonnummer: {{ $tenant->phone }}</li>
                 <li>Bankrekeningnummer: {{ $tenant->iban }}</li>
                 <li>Heeft digitaal ondertekend op {{ $contract->created_at->isoFormat('LL') }} via www.opslagmazijn.nl</li>
