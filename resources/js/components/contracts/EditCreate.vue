@@ -1,43 +1,63 @@
 <template>
   <v-dialog :value="dialog" max-width="80%" persistent>
-    <v-stepper v-model="step">
-      <v-stepper-header>
-        <v-stepper-step :complete="step > 1" step="1" @click="navigate(1)">
-          <span v-if="step == 1">Kies een box</span>
-          <span v-if="step > 1">Check</span>
-        </v-stepper-step>
-        <v-divider></v-divider>
-        <v-stepper-step :complete="step > 2" step="2" @click="navigate(2)">
-          <span v-if="step <= 2">Kies een klant</span>
-          <span v-if="step > 2">Gekozen: {{ chosenTenantName }}</span>
-        </v-stepper-step>
-        <v-divider></v-divider>
-        <v-stepper-step step="3" @click="navigate(3)">Prijs</v-stepper-step>
-        <v-divider></v-divider>
-        <v-stepper-step step="4" @click="navigate(4)">Data & Duur</v-stepper-step>
-      </v-stepper-header>
-
-      <v-stepper-items>
-        <v-stepper-content step="1">
-          <v-form ref="form1" v-model="valid" lazy-validation>
-            Welke producten wil je verhuren?
+    <v-card class="pa-3">
+      <v-form ref="form" v-model="valid" lazy-validation>
+        <v-layout row wrap>
+          <v-flex xs12>
+            <h6 class="caption">
+              Welke
+              <span class="font-weight-black">producten</span>
+              komen in dit contract?
+            </h6>
+            <v-autocomplete :items="mergedUnits" v-model="contract.units" multiple chips>
+              <template v-slot:item="data">
+                {{ data.item.display_name }}
+                <span v-if="!data.item.active">- Non actief</span>
+              </template>
+              <template v-slot:selection="data">
+                <v-chip close @input="remove(data.item)">
+                  {{ data.item.display_name }}
+                  <span v-if="!data.item.active">- Non actief!</span>
+                </v-chip>
+              </template>
+            </v-autocomplete>
+          </v-flex>
+          <v-flex xs12>
+            <v-checkbox v-model="defaultPrices" label="Standaard prijzen gebruiken"></v-checkbox>
+          </v-flex>
+          <v-flex xs12 v-if="contract.units.length > 0 && !defaultPrices">
+            Wat is de overeengekomen prijs in € per maand per box (deze kan afwijken van de standaard prijs)
+            <v-text-field
+              v-for="(c, i) in contract.units"
+              :key="i"
+              v-model.number="c.price"
+              :label="c.display_name"
+              placeholder="Overeengekomen prijs"
+              :rules="[v => (v.length !== 0) || 'Dit veld mag niet leeg zijn']"
+              required
+            ></v-text-field>
+          </v-flex>
+        </v-layout>
+        <v-layout row wrap>
+          <v-flex xs12 sm12 md4>
+            <h6 class="caption">
+              Kies een
+              <span class="font-weight-black">betalingsmethode</span>?
+            </h6>
             <v-autocomplete
-              :items="mergeUnits"
-              v-model="contract.units"
-              item-value="id"
-              item-text="display_name"
-              multiple
-              chips
-              @input="unitsChanged"
+              :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
+              required
+              :items="['factuur', 'incasso']"
+              v-model="contract.payment_method"
             ></v-autocomplete>
-            <v-btn color="primary" @click="navigate(2)">Verder</v-btn>
-            <v-btn flat @click="$emit('input')">Annuleren</v-btn>
-          </v-form>
-        </v-stepper-content>
-
-        <v-stepper-content step="2">
-          <v-form ref="form2" v-model="valid" lazy-validation>
-            Aan welke klant verhuur je die?
+          </v-flex>
+        </v-layout>
+        <v-layout row wrap>
+          <v-flex xs12 sm12 md4 v-if="!contract.id">
+            <h6 class="caption">
+              Kies een
+              <span class="font-weight-black">huurder</span>
+            </h6>
             <v-autocomplete
               :items="tenants"
               item-value="id"
@@ -46,76 +66,58 @@
               :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
               required
               color="blue-grey lighten-2"
-              label="Select"
             ></v-autocomplete>
+          </v-flex>
+        </v-layout>
 
+        <v-layout row wrap>
+          <v-flex xs12>
+            <h6 class="caption">
+              Moet de klant automatisch facturen
+              <span class="font-weight-black">per mail</span> ontvangen
+            </h6>
+            <span></span>
             <v-checkbox v-model="contract.auto_invoice" label="Automagische facturatie" />
-            <v-btn color="primary" @click="navigate(3)">Verder</v-btn>
+          </v-flex>
+        </v-layout>
 
-            <v-btn flat @click="$emit('input')">Annuleren</v-btn>
-          </v-form>
-        </v-stepper-content>
-
-        <v-stepper-content step="3">
-          <v-form ref="form3" v-model="valid" lazy-validation v-if="step == 3">
-            <v-layout wrap>
-              <v-flex xs12 sm6 md4>
-                Wat is de overeengekomen prijs in € per maand per box
+        <v-layout wrap>
+          <v-flex xs12>
+            <h6 class="caption">
+              Kies een
+              <span class="font-weight-black">startdatum</span>
+              van het contract
+            </h6>
+            <v-menu
+              ref="menu"
+              v-model="menu"
+              :close-on-content-click="false"
+              :return-value.sync="contract.start_date"
+              transition="scale-transition"
+              offset-y
+              min-width="290px"
+            >
+              <template v-slot:activator="{ on }">
                 <v-text-field
-                  v-for="(price, i) in contract.units"
-                  :key="i"
-                  v-model.number="contract.units[i].price"
-                  :label="contract.units[i].display_name"
-                  placeholder="Overeengekomen prijs"
-                  :rules="[v => (v.length !== 0) || 'Dit veld mag niet leeg zijn']"
-                  required
-                ></v-text-field>
-              </v-flex>
-              <v-flex xs12 sm6 md4>
-                Betalingsmethode
-                <v-autocomplete
-                  :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
-                  required
-                  :items="['factuur', 'incasso']"
-                  v-model="contract.payment_method"
-                ></v-autocomplete>
-              </v-flex>
-              <v-flex xs12>
-                Standaard notitie / instructie voor alle facturen
-                <v-textarea v-model="contract.default_note"></v-textarea>
-              </v-flex>
-            </v-layout>
-            <v-btn color="primary" @click="navigate(4)">Verder</v-btn>
-            <v-btn flat @click="$emit('input')">Annuleren</v-btn>
-          </v-form>
-        </v-stepper-content>
-        <v-stepper-content step="4">
-          <v-form ref="form4" v-model="valid" lazy-validation>
-            <v-layout wrap>
-              <v-flex xs12 sm6>
-                <h6 class="headline">
-                  Kies een
-                  <span class="font-weight-black">startdatum</span>
-                </h6>
-              </v-flex>
-              <v-flex xs12 sm6>
-                <v-date-picker
+                  :value="formatDate"
+                  prepend-icon="event"
                   :rules="[v => !!v || 'Je moet een startdatum kiezen']"
-                  required
-                  landscape
-                  v-model="contract.start_date"
-                  label="Ingangsdatum"
-                ></v-date-picker>
-                <p>Gekozen datum: {{ contract.start_date }}</p>
-              </v-flex>
-            </v-layout>
+                  readonly
+                  v-on="on"
+                ></v-text-field>
+              </template>
+              <v-date-picker locale="nl" v-model="contract.start_date" no-title scrollable>
+                <v-spacer></v-spacer>
+                <v-btn text color="primary" @click="$refs.menu.save(contract.start_date)">OK</v-btn>
+              </v-date-picker>
+            </v-menu>
+          </v-flex>
+        </v-layout>
 
-            <v-btn color="primary" @click="save">Opslaan</v-btn>
-            <v-btn flat @click="$emit('input')">Annuleren</v-btn>
-          </v-form>
-        </v-stepper-content>
-      </v-stepper-items>
-    </v-stepper>
+        <v-btn color="primary" @click="save">Opslaan</v-btn>
+        <v-btn flat @click="$emit('input')">Annuleren</v-btn>
+      </v-form>
+    </v-card>
   </v-dialog>
 </template>
 
@@ -124,6 +126,7 @@ import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
 import axios from "js/axios";
 import store from "js/store";
+import * as moment from "moment";
 
 @Component({})
 export default class EditCreateContract extends Vue {
@@ -136,34 +139,32 @@ export default class EditCreateContract extends Vue {
   private response = "";
   private tenants: any = [];
   private units: any = [];
+  private mergedUnits: any = [];
   private loading: boolean = true;
   private valid: boolean = true;
-  private step: number = 0;
+  private menu: boolean = false;
+  private defaultPrices: boolean = true;
 
-  // this is trouble because of the getter.
-  unitsChanged() {
-    const temp = [];
-    for (let c in this.contract.units) {
-      let u = this.units.free.find((x: any) => x.id === this.contract.units[c]);
-      if (u) temp.push(u);
-    }
-    this.contract.units = temp;
+  get formatDate() {
+    return this.contract.start_date
+      ? moment(this.contract.start_date).format("DD-MM-YYYY")
+      : "";
   }
 
   get formTitle() {
     return this.contract.id ? "Contract aanmaken" : "Contract bewerken";
   }
 
-  get chosenTenantName() {
-    let tenant = this.tenants.find(
-      (x: any) => x.id === this.contract.tenant_id
-    );
-    return tenant && tenant.name ? tenant.name : null;
+  remove(data: any) {
+    this.contract.units.splice(data, 1);
+    this.mergeUnits();
   }
 
-  get mergeUnits() {
-    if (this.contract.id) return this.contract.units.concat(this.units.free);
-    return this.units.free;
+  mergeUnits() {
+    this.mergedUnits = this.units.free;
+    if (this.contract.id) {
+      this.mergedUnits = this.contract.units.concat(this.units.free);
+    }
   }
 
   async mounted() {
@@ -176,27 +177,28 @@ export default class EditCreateContract extends Vue {
     } catch (e) {
       this.response = e.message;
     }
+    this.mergeUnits();
     this.loading = false;
   }
 
-  navigate(step: number) {
-    if (this.validate()) {
-      this.step = step;
-    }
-  }
-
   validate() {
-    return (<any>this.$refs["form" + this.step]).validate() ? true : false;
+    return (<any>this.$refs.form).validate() ? true : false;
   }
 
   async save() {
     if (!this.validate()) return;
     if (this.contract.id) {
       axios.post("/api/contracts/" + this.contract.id, this.contract);
-      store.commit("snackbar", { type: "success", message: "Contract aangepast!" });
+      store.commit("snackbar", {
+        type: "success",
+        message: "Contract aangepast!"
+      });
     } else {
       axios.post("/api/contracts/create", this.contract);
-      store.commit("snackbar", { type: "success", message: "Contract aangemaakt!" });
+      store.commit("snackbar", {
+        type: "success",
+        message: "Contract aangemaakt!"
+      });
     }
     this.$emit("input");
   }

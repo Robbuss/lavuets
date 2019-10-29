@@ -1,7 +1,7 @@
 <template>
   <v-flex sm12>
     <div>
-      <v-toolbar flat color="primary" dark>
+      <v-toolbar flat color="primary" dark v-if="!hidetoolbar">
         <v-toolbar-title>Facturen</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-text-field
@@ -24,29 +24,6 @@
           </v-btn>
           <span>Nieuwe factuur maken</span>
         </v-tooltip>
-        <v-dialog v-model="dialog" max-width="80%" persistent>
-          <edit-create-invoice
-            v-if="dialog"
-            @saved="createdItem"
-            @canceled="close"
-            :creating="createMode"
-            :contract="contract"
-            :units="units"
-            :invoice="editedItem"
-          ></edit-create-invoice>
-        </v-dialog>
-        <v-dialog v-model="confirmSend" max-width="80%" persistent v-if="contract">
-          <v-toolbar class="primary white--text">
-            <v-toolbar-title>Factuur handmatig versturen</v-toolbar-title>
-          </v-toolbar>
-          <v-card>
-            Wil je de factuur versturen naar {{ contract.tenant.email }}?
-            <v-btn color="primary" dark @click="sendInvoice">
-              <v-icon left>mail</v-icon>Ja, versturen
-            </v-btn>
-            <v-btn @click="close">Nee, laat maar</v-btn>
-          </v-card>
-        </v-dialog>
       </v-toolbar>
       <v-data-table
         :search="search"
@@ -57,6 +34,11 @@
         rows-per-page-text="Facturen per pagina"
         :pagination.sync="pagination"
       >
+        <template v-slot:actions-prepend v-if="contract && contract.tenant_id">
+          <div style="position:absolute; left:0px; bottom:7px;">
+            <v-btn small flat class="primary" @click="dialog = true">Nieuwe factuur</v-btn>
+          </div>
+        </template>
         <template v-slot:items="props">
           <tr @mouseover="showQuickEdit = props.item.id" @mouseleave="showQuickEdit = null">
             <td>
@@ -86,7 +68,11 @@
               <PaymentStatusChip :payment="props.item.payments[0]" />
             </td>
             <td>{{ props.item.tenant.name }}</td>
-            <td v-if="!contract" @click="$router.push('/contracts/' + props.item.contract.id)" class="pointer">{{ getUnits(props.item.contract.units) }}</td>
+            <td
+              v-if="!contract"
+              @click="$router.push('/contracts/' + props.item.contract.id)"
+              class="pointer"
+            >{{ getUnits(props.item.contract.units) }}</td>
             <td v-else>{{ getUnits(props.item.contract.units) }}</td>
             <td>€{{ props.item.contract.price }}</td>
             <td>{{ formatDate(props.item.start_date, 'LL') }}</td>
@@ -123,6 +109,30 @@
         </template>
       </v-data-table>
     </div>
+
+    <v-dialog v-model="dialog" max-width="80%" persistent>
+      <edit-create-invoice
+        v-if="dialog"
+        @saved="createdItem"
+        @canceled="close"
+        :creating="createMode"
+        :contract="contract"
+        :units="units"
+        :invoice="editedItem"
+      ></edit-create-invoice>
+    </v-dialog>
+    <v-dialog v-model="confirmSend" max-width="80%" persistent v-if="contract">
+      <v-toolbar class="primary white--text">
+        <v-toolbar-title>Factuur handmatig versturen</v-toolbar-title>
+      </v-toolbar>
+      <v-card>
+        Wil je de factuur versturen naar {{ contract.tenant.email }}?
+        <v-btn color="primary" dark @click="sendInvoice">
+          <v-icon left>mail</v-icon>Ja, versturen
+        </v-btn>
+        <v-btn @click="close">Nee, laat maar</v-btn>
+      </v-card>
+    </v-dialog>
   </v-flex>
 </template>
 
@@ -146,6 +156,9 @@ import store from "js/store";
 export default class Invoices extends Vue {
   @Prop()
   contract: any;
+
+  @Prop({ default: false })
+  hidetoolbar: boolean;
 
   @Prop()
   units: any;
@@ -246,8 +259,11 @@ export default class Invoices extends Vue {
     confirm("Are you sure you want to delete this item?") &&
       this.invoices.splice(index, 1) &&
       axios.post("/api/invoices/" + item.id + "/delete");
-     
-    store.commit("snackbar", { type: "success", message: "Invoice verwijderd!" });
+
+    store.commit("snackbar", {
+      type: "success",
+      message: "Invoice verwijderd!"
+    });
   }
 
   createItem() {

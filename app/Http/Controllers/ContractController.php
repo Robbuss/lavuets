@@ -37,6 +37,7 @@ class ContractController extends Controller
                                 'name' => $q->name,
                                 'price' => $q->pivot->price,
                                 'display_name' => $q->display_name,
+                                'active' => $q->active,
                             ];
                         }),
                         'price' => $q->price,
@@ -51,6 +52,7 @@ class ContractController extends Controller
                         'name' => $q->name,
                         'display_name' => $q->display_name,
                         'price' => $q->price,
+                        'active' => $q->active,
                     ];
                 }),
                 'free' => Unit::doesntHave('contracts')->get()->map(function ($q) {
@@ -58,7 +60,8 @@ class ContractController extends Controller
                         'id' => $q->id,
                         'name' => $q->name,
                         'display_name' => $q->display_name,
-                        'price' => $q->price
+                        'price' => $q->price,
+                        'active' => $q->active,
                     ];
                 }),
             ],
@@ -89,11 +92,21 @@ class ContractController extends Controller
                 'id' => $q->id,
                 'name' => $q->name,
                 'display_name' => $q->display_name,
-                'price' => $q->pivot->price
+                'price' => $q->pivot->price,
+                'active' => $q->active,
+            ];
+        });
+        $units = Unit::doesntHave('contracts')->get()->map(function ($q) {
+            return [
+                'id' => $q->id,
+                'name' => $q->name,
+                'display_name' => $q->display_name,
+                'price' => $q->price,
+                'active' => $q->active,
             ];
         });
 
-        return $contract;
+        return ['contract' => $contract, 'free_units' => $units];
     }
 
     /**
@@ -106,9 +119,9 @@ class ContractController extends Controller
     public function update(Request $request, Contract $contract)
     {
         $contract->update($request->except(['units', 'freeUnits']));
-        if($request->free_units){
+        if ($request->free_units) {
             $contract->units()->detach();
-        }else{
+        } else {
             $contract->units()->sync($this->getSyncArray($request->units));
         }
 

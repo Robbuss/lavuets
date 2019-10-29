@@ -19,9 +19,16 @@ class BookingController extends Controller
      */
     public function stepLocation()
     {
-        return Location::whereHas('units', function ($q) {
-            return $q->where('active', 1)->where('size', '>', 0)->doesntHave('contracts');
-        })->withCount('units')->get();
+        return Unit::where('active', 1)->where('size', '>', 0)
+            ->doesntHave('contracts')
+            ->with('location')
+            ->get()->groupBy('location_id')->map(function ($q) {
+                return [
+                    'units_count' => $q->count(),
+                    'facility_name' => $q->first()->location->facility_name,
+                    'id' => $q->first()->location->id,
+                ];
+            });
     }
 
     public function stepUnits(Request $request)

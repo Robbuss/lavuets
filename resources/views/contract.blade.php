@@ -185,7 +185,7 @@
             </p>
             <ul>
                 <li>Huurder {{ $tenant->name }}</li>
-                <li>Adres: {{$tentant->street_addr}} {{ $tenant->street_number }}, {{ $tenant->postal_code }} te {{ $tenant->city }}</li>
+                <li>Adres: {{$tenant->street_addr}} {{ $tenant->street_number }}, {{ $tenant->postal_code }} te {{ $tenant->city }}</li>
                 <li>Telefoonnummer: {{ $tenant->phone }}</li>
                 <li>Bankrekeningnummer: {{ $tenant->iban }}</li>
                 <li>Heeft digitaal ondertekend op {{ $contract->created_at->isoFormat('LL') }} via www.opslagmazijn.nl</li>

@@ -18,6 +18,6 @@ class CustomerScope implements Scope
      */
     public function apply(Builder $builder, Model $model)
     {
-        $builder->where('customer_id', Customer::current()->id);
+        $builder->where($model->getTable().'.customer_id', Customer::current()->id);
     }
 }

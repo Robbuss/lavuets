@@ -25,6 +25,7 @@ import store from "js/store";
 @Component({})
 export default class TodoList extends Vue {
   todos: any = [
+    "Producten en Prijs opslaan op Invoices",
     "Aanpasbare verhuur tijd van producten",
     "Media library toevoegen",
     "Mollie mislukte betalingen afhandelen (redirect nog naar succes page)",
@@ -32,7 +33,6 @@ export default class TodoList extends Vue {
     "Add Settings",
     "Creditfacturen",
     "On Payments, add invoice information card on hover (id, ref_number, start and end date)",
-    "Producten in Contract aanpassen",
     "Betalingsherinneringen",
     "Relatienummers op facturen",
     "Consistentie van invoice numbers controleren",

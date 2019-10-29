@@ -24,7 +24,7 @@ class Location extends Model implements HasMedia
             $model->customer_id = Customer::current()->id;
         });
     }
-    
+
     public function getDescriptionForEvent(string $eventName): string
     {
         return "Locatie {$eventName}";

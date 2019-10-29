@@ -32,22 +32,22 @@
         </v-card>
         <span class="font-italic blue-text" style="font-size: 0.8em">Mogelijke totale omzet</span>
       </v-flex>
-      <v-layout row justify-center>
-        <v-flex shrink>
-          <v-switch class="pa-0 ma-0" v-model="monthly">
-            <span
-              class="grey--text text-lighten-1"
-              style="font-size:0.7em; line-height: 2em;"
-              slot="prepend"
-            >jaarlijks</span>
-            <span
-              class="grey--text text-lighten-1"
-              style="font-size:0.7em; line-height: 2em;"
-              slot="append"
-            >maandelijks</span>
-          </v-switch>
-        </v-flex>
-      </v-layout>
+    </v-layout>
+    <v-layout row justify-center>
+      <v-flex shrink>
+        <v-switch class="pa-0 ma-0" v-model="monthly">
+          <span
+            class="grey--text text-lighten-1"
+            style="font-size:0.7em; line-height: 2em;"
+            slot="prepend"
+          >jaarlijks</span>
+          <span
+            class="grey--text text-lighten-1"
+            style="font-size:0.7em; line-height: 2em;"
+            slot="append"
+          >maandelijks</span>
+        </v-switch>
+      </v-flex>
     </v-layout>
   </v-card>
 </template>
