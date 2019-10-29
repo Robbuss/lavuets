@@ -28,7 +28,7 @@
 
             <v-tabs-items v-model="tab">
               <v-tab-item v-for="(item, index) in items" :key="index">
-                <component :units="units" :contract="contract" :hidetoolbar="true" v-bind:is="item.component" @renew="getData"/>
+                <component :units="units" :contract="contract" :hidetoolbar="true" v-bind:is="item.component"/>
               </v-tab-item>
             </v-tabs-items>
           </v-flex>

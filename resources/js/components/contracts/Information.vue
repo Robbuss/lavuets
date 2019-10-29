@@ -84,6 +84,7 @@
         </v-list>
       </v-flex>
     </v-layout>
+    <v-divider></v-divider>
     <v-card-actions>
       <v-btn class="primary" flat dark @click="dialog= !dialog">Aanpassen</v-btn>
       <v-spacer></v-spacer>
@@ -226,7 +227,6 @@ export default class SingleContractInformation extends Vue {
   }
 
   finished() {
-    this.$emit('renew')
     this.dialog = !this.dialog;
   }
 

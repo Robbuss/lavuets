@@ -9,10 +9,21 @@
               <span class="font-weight-black">producten</span>
               komen in dit contract?
             </h6>
-            <v-autocomplete :items="mergedUnits" v-model="contract.units" multiple chips>
+            <v-select :items="mergedUnits" v-model="contract.units" multiple chips>
               <template v-slot:item="data">
-                {{ data.item.display_name }}
-                <span v-if="!data.item.active">- Non actief</span>
+                <v-flex
+                  class="align-center grey--text"
+                  style="display:flex"
+                  :class="{'primary--text' : contract.units.indexOf(data.item) > -1}"
+                >
+                  <v-icon
+                    :class="{'primary--text' : contract.units.indexOf(data.item) > -1}"
+                    v-if="contract.units.indexOf(data.item) > -1"
+                  >check_box</v-icon>
+                  <v-icon v-else>check_box_outline_blank</v-icon>
+                  <span class="pl-3">{{ data.item.display_name }}</span>
+                  <span v-if="!data.item.active">- Non actief!</span>
+                </v-flex>
               </template>
               <template v-slot:selection="data">
                 <v-chip close @input="remove(data.item)">
@@ -20,23 +31,26 @@
                   <span v-if="!data.item.active">- Non actief!</span>
                 </v-chip>
               </template>
-            </v-autocomplete>
+            </v-select>
           </v-flex>
           <v-flex xs12>
             <v-checkbox v-model="defaultPrices" label="Standaard prijzen gebruiken"></v-checkbox>
           </v-flex>
-          <v-flex xs12 v-if="contract.units.length > 0 && !defaultPrices">
-            Wat is de overeengekomen prijs in € per maand per box (deze kan afwijken van de standaard prijs)
-            <v-text-field
-              v-for="(c, i) in contract.units"
-              :key="i"
-              v-model.number="c.price"
-              :label="c.display_name"
-              placeholder="Overeengekomen prijs"
-              :rules="[v => (v.length !== 0) || 'Dit veld mag niet leeg zijn']"
-              required
-            ></v-text-field>
-          </v-flex>
+          <v-expand-transition>
+            <v-flex xs12 v-if="contract.units.length > 0 && !defaultPrices">
+              Wat is de overeengekomen prijs in € per maand per box (deze kan afwijken van de standaard prijs)
+              <v-text-field
+                v-for="(c, i) in contract.units"
+                :key="i"
+                v-model.number="c.price"
+                type="number"
+                :label="c.display_name"
+                placeholder="Overeengekomen prijs"
+                :rules="[v => (v.length !== 0) || 'Dit veld mag niet leeg zijn']"
+                required
+              ></v-text-field>
+            </v-flex>
+          </v-expand-transition>
         </v-layout>
         <v-layout row wrap>
           <v-flex xs12 sm12 md4>
@@ -156,7 +170,8 @@ export default class EditCreateContract extends Vue {
   }
 
   remove(data: any) {
-    this.contract.units.splice(data, 1);
+    console.log(data);
+    this.contract.units.splice(this.contract.units.indexOf(data), 1);
     this.mergeUnits();
   }
 
