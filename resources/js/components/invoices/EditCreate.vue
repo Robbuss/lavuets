@@ -4,113 +4,172 @@
       <v-toolbar-title>{{ formTitle }}</v-toolbar-title>
     </v-toolbar>
 
-    <v-stepper v-model="step">
-      <v-stepper-header>
-        <v-stepper-step :complete="step > 1" step="1" @click="navigate(1)">Factuur informatie</v-stepper-step>
-        <v-divider></v-divider>
-        <v-stepper-step step="2" @click="navigate(2)">Data & Duur</v-stepper-step>
-      </v-stepper-header>
-
-      <v-stepper-items>
-        <v-stepper-content step="1">
-          <v-form ref="form1" v-model="valid" lazy-validation>
-            <v-layout wrap>
-              <v-flex xs12 sm6 md6>
-                <v-text-field
-                  :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
-                  required
-                  v-model="editedItem.ref"
-                  label="Referentie (bestandsnaam)"
-                ></v-text-field>
-              </v-flex>
-              <v-flex xs12 sm6 md6  v-if="!creating">
-                <v-text-field
-                  :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
-                  required
-                  v-model="editedItem.ref_number"
-                  label="Referentie nummer administratie"
-                ></v-text-field>
-              </v-flex>              
-            </v-layout>
-
-            <v-layout wrap>
-              <v-flex xs12>
-                <v-textarea v-model="editedItem.note" label="Notitie toevoegen"></v-textarea>
-              </v-flex>
-            </v-layout>
-
-            <v-layout wrap>
-              <v-flex xs12 v-if="showSentDate">
-                Deze factuur is verzonden op:
-                <v-menu
-                  ref="datePicker"
-                  v-model="datePicker"
-                  :close-on-content-click="false"
-                  :nudge-right="40"
-                  lazy
-                  transition="scale-transition"
-                  offset-y
-                  full-width
-                  max-width="290px"
-                  min-width="290px"
-                >
-                  <template v-slot:activator="{ on }">
-                    <v-text-field
-                      box
-                      v-model="formattedDate"
-                      :rules="[
+    <v-form ref="form" v-model="valid" lazy-validation class="pa-3">
+      <v-layout wrap>
+        <v-flex xs12 sm6 md6 lg5>
+          <v-text-field
+            :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
+            required
+            v-model="editedItem.ref"
+            label="Referentie (bestandsnaam)"
+          ></v-text-field>
+        </v-flex>
+        <v-flex xs12 sm6 md6 v-if="!creating">
+          <v-text-field
+            :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
+            required
+            v-model="editedItem.ref_number"
+            label="Referentie nummer administratie"
+          ></v-text-field>
+        </v-flex>
+      </v-layout>
+      <v-layout wrap>
+        <v-flex xs12 md6 lg5>
+          <h6 class="caption">
+            Kies een
+            <span class="font-weight-black">startdatum</span>
+            van de factuur
+          </h6>
+          <v-menu
+            ref="datePicker"
+            v-model="datePicker1"
+            :close-on-content-click="false"
+            :nudge-right="40"
+            lazy
+            transition="scale-transition"
+            offset-y
+            full-width
+            max-width="290px"
+            min-width="290px"
+          >
+            <template v-slot:activator="{ on }">
+              <v-text-field
+                box
+                v-model="startDate"
+                prepend-icon="event"
+                :rules="[
                         v => !!v || 'Dit veld mag niet leeg zijn',
-                        v => isInPast || 'Datum moet in het verleden liggen!'
                         ]"
-                      required
-                      label="Verzenddatum factuur"
-                      @blur="$emit('formatDate')"
-                      v-on="on"
-                    ></v-text-field>
-                  </template>
-                  <v-date-picker v-model="editedItem.sent" no-title @input="datePicker = false"></v-date-picker>
-                </v-menu>
-              </v-flex>
-              <v-flex xs12>
-                <v-checkbox v-model="showSentDate" label="Deze factuur is al verzonden"></v-checkbox>
-              </v-flex>
-            </v-layout>
+                required
+                label="Verzenddatum factuur"
+                @blur="$emit('formatDate')"
+                v-on="on"
+              ></v-text-field>
+            </template>
+            <v-date-picker
+              locale="nl"
+              v-model="editedItem.start_date"
+              no-title
+              @input="datePicker1 = false"
+            ></v-date-picker>
+          </v-menu>
+        </v-flex>
+      </v-layout>
+      <v-layout row wrap>
+        <v-flex xs12 md6 lg5>
+          <h6 class="caption">
+            Kies een
+            <span class="font-weight-black">einddatum</span>
+            van de factuur
+          </h6>
+          <v-menu
+            ref="datePicker"
+            v-model="datePicker2"
+            :close-on-content-click="false"
+            :nudge-right="40"
+            lazy
+            transition="scale-transition"
+            offset-y
+            full-width
+            max-width="290px"
+            min-width="290px"
+          >
+            <template v-slot:activator="{ on }">
+              <v-text-field
+                box
+                v-model="endDate"
+                prepend-icon="event"
+                :rules="[
+                        v => !!v || 'Dit veld mag niet leeg zijn',
+                        ]"
+                required
+                label="Verzenddatum factuur"
+                @blur="$emit('formatDate')"
+                v-on="on"
+              ></v-text-field>
+            </template>
+            <v-date-picker
+              locale="nl"
+              v-model="editedItem.end_date"
+              no-title
+              @input="datePicker2 = false"
+            ></v-date-picker>
+          </v-menu>
+        </v-flex>
+      </v-layout>
+      <v-layout wrap>
+        <v-flex xs12 md6 lg5>
+          <v-textarea v-model="editedItem.note" label="Notitie toevoegen"></v-textarea>
+        </v-flex>
+      </v-layout>
 
-            <v-btn color="primary" @click="navigate(2)">Verder</v-btn>
-            <v-btn flat @click="cancel">Annuleren</v-btn>
-          </v-form>
-        </v-stepper-content>
+      <v-layout wrap>
+        <v-flex xs12>
+          <v-checkbox v-model="showSentDate" label="Deze factuur is al verzonden"></v-checkbox>
+        </v-flex>
+        <v-expand-transition>
+          <v-flex xs12 md6 lg5 v-if="showSentDate">
+            <h6 class="caption">
+              Deze factuur is
+              <span class="font-weight-black">verzonden</span>
+              op
+            </h6>
+            <v-menu
+              ref="datePicker"
+              v-model="datePicker"
+              :close-on-content-click="false"
+              :nudge-right="40"
+              lazy
+              transition="scale-transition"
+              offset-y
+              full-width
+              max-width="290px"
+              min-width="290px"
+            >
+              <template v-slot:activator="{ on }">
+                <v-text-field
+                  box
+                  v-model="sent"
+                  prepend-icon="event"
+                  :rules="[
+                        v => !!v || 'Dit veld mag niet leeg zijn',
+                        ]"
+                  required
+                  label="Verzenddatum factuur"
+                  @blur="$emit('formatDate')"
+                  v-on="on"
+                ></v-text-field>
+              </template>
+              <v-date-picker
+                locale="nl"
+                v-model="editedItem.sent"
+                no-title
+                @input="datePicker = false"
+              ></v-date-picker>
+            </v-menu>
+          </v-flex>
+        </v-expand-transition>
+      </v-layout>
 
-        <v-stepper-content step="2">
-          <v-form ref="form2" v-model="valid" lazy-validation>
-            <v-layout row wrap>
-              <v-flex xs12 sm6>
-                <h6 class="headline">
-                  Kies een
-                  <span class="font-weight-black">startdatum</span>
-                </h6>
-                <v-date-picker landscape v-model="editedItem.start_date" label="Startdatum factuur"></v-date-picker>
-              </v-flex>
-              <v-flex xs12 sm6>
-                <h6 class="headline">
-                  Kies een
-                  <span class="font-weight-black">einddatum</span>
-                </h6>
-                <v-date-picker landscape v-model="editedItem.end_date" label="Einddatum factuur"></v-date-picker>
-              </v-flex>
-            </v-layout>
-            <v-btn
-              :dark="!working"
-              color="primary darken-1"
-              :loading="working"
-              :disabled="working"
-              @click="save"
-            >Opslaan</v-btn>
-            <v-btn flat color="primary darken-1" @click="cancel">Annuleren</v-btn>
-          </v-form>
-        </v-stepper-content>
-      </v-stepper-items>
-    </v-stepper>
+      <v-btn
+        :dark="!working"
+        color="primary darken-1"
+        :loading="working"
+        :disabled="working"
+        @click="save"
+      >Opslaan</v-btn>
+      <v-btn flat color="primary darken-1" @click="cancel">Annuleren</v-btn>
+    </v-form>
   </v-card>
 </template>
 
@@ -133,8 +192,9 @@ export default class EditInvoice extends Vue {
   contract: any;
 
   private valid: boolean = true;
-  private step: number = 0;
   private datePicker: boolean = false;
+  private datePicker1: boolean = false;
+  private datePicker2: boolean = false;
   private showSentDate: boolean = false;
   private working: boolean = false;
   private tenant: any;
@@ -166,11 +226,13 @@ export default class EditInvoice extends Vue {
   };
   private response = "";
 
-  @Watch('showSentDate')
-  onShowSentDateChanged(newval: boolean, oldval: boolean){
-    if(!newval && oldval){
+  @Watch("showSentDate")
+  onShowSentDateChanged(newval: boolean, oldval: boolean) {
+    if (!newval && oldval) {
       this.editedItem.sent = null;
     }
+    if (oldval !== undefined && newval)
+      this.editedItem.sent = moment().format("YYYY-MM-DD");
   }
 
   get formTitle() {
@@ -179,21 +241,25 @@ export default class EditInvoice extends Vue {
       : "Nieuwe factuur maken";
   }
 
-  get isInPast() {
-    return moment().format("LL") >= this.formattedDate;
+  get sent() {
+    if (!this.editedItem.sent) return moment().format("LL");
+    return moment(this.editedItem.sent).format("LL");
   }
 
-  get formattedDate() {
-    if(!this.editedItem.sent)
-      return moment().format("LL")
-    return moment(this.editedItem.sent).format("LL");
+  get startDate() {
+    if (!this.editedItem.start_date) return moment().format("LL");
+    return moment(this.editedItem.start_date).format("LL");
+  }
+
+  get endDate() {
+    if (!this.editedItem.end_date) return moment().format("LL");
+    return moment(this.editedItem.end_date).format("LL");
   }
 
   mounted() {
     if (this.invoice) {
       this.editedItem = Object.assign({}, this.invoice);
-      if(this.invoice.sent)
-        this.showSentDate = true;
+      if (this.invoice.sent) this.showSentDate = true;
     }
     this.editedItem.contract_id = this.contract.id;
     this.editedItem.tenant_id = this.contract.tenant_id;
@@ -207,14 +273,8 @@ export default class EditInvoice extends Vue {
     this.$emit("canceled");
   }
 
-  navigate(step: number) {
-    if (this.validate()) {
-      this.step = step;
-    }
-  }
-
   validate() {
-    return (<any>this.$refs["form" + this.step]).validate() ? true : false;
+    return (<any>this.$refs.form).validate() ? true : false;
   }
 
   async save() {
@@ -222,10 +282,16 @@ export default class EditInvoice extends Vue {
     this.working = true;
     if (!this.creating) {
       await axios.post("/api/invoices/" + this.editedItem.id, this.editedItem);
-      store.commit("snackbar", { type: "success", message: "Factuur aangepast!" });
+      store.commit("snackbar", {
+        type: "success",
+        message: "Factuur aangepast!"
+      });
     } else {
       await axios.post("/api/invoices/create", this.editedItem);
-      store.commit("snackbar", { type: "success", message: "Factuur aangemaakt!" });
+      store.commit("snackbar", {
+        type: "success",
+        message: "Factuur aangemaakt!"
+      });
     }
     this.$emit("saved");
     this.working = false;
