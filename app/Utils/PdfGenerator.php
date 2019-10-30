@@ -35,7 +35,6 @@ class PdfGenerator
 
         // save to the media library
         $this->model->addMedia($this->filepath . $this->filename)->toMediaCollection('pdf');
-
         activity('pdf')->log('Invoice PDF gemaakt');
     }
 

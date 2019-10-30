@@ -160,7 +160,7 @@ class ContractController extends Controller
         }
 
         return [
-            'content' => base64_encode(file_get_contents($media->getPath())),
+            'content' => base64_encode(file_get_contents($contract->media()->first()->getPath())),
             'mime' => 'application/pdf',
             'extension' => 'pdf'
         ];

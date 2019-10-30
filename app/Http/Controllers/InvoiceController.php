@@ -113,6 +113,8 @@ class InvoiceController extends Controller
 
     public function send(Invoice $invoice)
     {
+        // check if the file is there or create it
+        $this->getPdf($invoice);
         // send invoice to the tenant
         try {
             Mail::to($invoice->contract->tenant->email)
@@ -132,13 +134,12 @@ class InvoiceController extends Controller
 
     public function getPdf(Invoice $invoice)
     {
-        $media = $invoice->getFirstMedia('pdf');
+        $media = $invoice->getFirstmedia('pdf');
         if (!$media) {
             (new PdfGenerator($invoice))->generateInvoice();
         }
-
         return [
-            'content' => base64_encode(file_get_contents($media->getPath())),
+            'content' => base64_encode(file_get_contents($invoice->media()->first()->getPath())),
             'mime' => 'application/pdf',
             'extension' => 'pdf'
         ];
