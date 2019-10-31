@@ -25,19 +25,19 @@ import store from "js/store";
 @Component({})
 export default class TodoList extends Vue {
   todos: any = [
+    "CreatePayment component refactor",
+    "Product component redesign",
+    "Add contracts to customer view",
     "Producten en Prijs opslaan op Invoices",
     "Aanpasbare verhuur tijd van producten",
-    "Media library toevoegen",
     "Mollie mislukte betalingen afhandelen (redirect nog naar succes page)",
-    "Mollie first payment save mandate_id to db",
-    "Add Settings",
     "Creditfacturen",
     "On Payments, add invoice information card on hover (id, ref_number, start and end date)",
     "Betalingsherinneringen",
+    "Add Settings",
     "Relatienummers op facturen",
     "Consistentie van invoice numbers controleren",
     "Write a test for the MolliePaymentClass",
-    "Make sure invoices and contract files are not public",
   ];
 
   mounted(){
