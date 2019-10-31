@@ -2,10 +2,11 @@
 
 namespace App\Utils;
 
+use App\Models\Tenant;
 use App\Models\Invoice;
 use App\Models\Payment;
 use App\Models\Contract;
-use App\Models\Tenant;
+use App\Models\Customer;
 use Mollie\Laravel\Facades\Mollie;
 
 class MolliePayment
@@ -46,6 +47,20 @@ class MolliePayment
         return number_format($price, 2);
     }
 
+    private function createMandate($mollieCustomer)
+    {
+        // create a mandate  
+        $mandate = $mollieCustomer->createMandate([
+            "method" => \Mollie\Api\Types\MandateMethod::DIRECTDEBIT,
+            "consumerName" => $this->tenant->name,
+            "consumerAccount" => str_replace(' ', '', $this->tenant->iban), // make sure there are no spaces in the iban
+            "signatureDate" => \Carbon\Carbon::now()->format('Y-m-d'),
+            "mandateReference" => "OPSLAGMAG-" . $this->tenant->id,
+        ]);
+        // save it to the tenant. The next time recurring will be used. 
+        $this->tenant->update(['mandate_id' => $mandate->id]);
+    }
+
     public function payment()
     {
         if ($this->type === 'first') {
@@ -55,32 +70,25 @@ class MolliePayment
                 "email"  => $this->tenant->email,
             ]);
 
-            // i believe we need to get the mollie model again, for security's sake (something in their api docs about this)
-            $mollieCustomer = Mollie::api()->customers()->get($mollieCustomer->id);
+            $this->tenant->update(['mollie_id' => $mollieCustomer->id]);
 
-            // create a mandate  
-            $mandate = $mollieCustomer->createMandate([
-                "method" => \Mollie\Api\Types\MandateMethod::DIRECTDEBIT,
-                "consumerName" => $this->tenant->name,
-                "consumerAccount" => str_replace(' ', '', $this->tenant->iban), // make sure there are no spaces in the iban
-                "signatureDate" => \Carbon\Carbon::now()->format('Y-m-d'),
-                "mandateReference" => "OPSLAGMAG-" . $this->tenant->id,
-            ]);
-            // save it to the tenant. The next time recurring will be used. 
-            $this->tenant->update(['mollie_id' => $mollieCustomer->id, 'mandate_id' => $mandate->id]);
+            // there is no mandate yet, lets create one
+            $this->createMandate($mollieCustomer);
         }
+
+        // It's either just created or already existing. In either case we need to get them again. Mollie api doesnt return customer on creating
+        $mollieCustomer = Mollie::api()->customers()->get($this->tenant->mollie_id);
 
         // if its a recurring payment, there must a valid mandate in mollie.
         if ($this->type === 'recurring') {
-            $mollieCustomer = Mollie::api()->customers()->get($this->tenant->mollie_id);
             $mandates = Mollie::api()->mandates()->listFor($mollieCustomer);
             if ($mandates->count === 0) {
-                activity('mollie')->log('Geen geldige mandaat gevonden in Mollie voor ' . $this->tenant->name);
-                return;
+                activity('mollie')->log('Geen geldige mandaat gevonden in Mollie voor ' . $this->tenant->name . ', nieuwe aanmaken...');
+                $this->createMandate($mollieCustomer);
             }
         }
 
-        // create the mollie payment, if sequenceType is first; this also generates a mandate for the customer.
+        // create the mollie payment, if sequenceType is first; this also generates a mandate for the customer (but only on checkout urls).
         try {
             $molliePayment = Mollie::api()->payments()->create([
                 'amount' => [
@@ -102,6 +110,7 @@ class MolliePayment
 
         // save the payment to our database
         $payment = Payment::create([
+            'customer_id' => Customer::current()->id,
             'contract_id' => $this->contract->id,
             'tenant_id' => $this->tenant->id,
             'invoice_id' => $this->invoice->id,

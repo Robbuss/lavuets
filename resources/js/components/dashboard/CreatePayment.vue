@@ -156,7 +156,7 @@ export default class CreatePayment extends Vue {
   }
 
   async createPayment() {
-    if (!(this.$refs.form as any).validate()) return;
+    if (this.invoice.payment_method === 'factuur' && !(this.$refs.form as any).validate()) return;
     this.createdPayment = (await axios.post(
       "/api/payments/" +
         this.invoice.contract_id +

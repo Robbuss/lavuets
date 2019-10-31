@@ -40,30 +40,8 @@
           </div>
         </template>
         <template v-slot:items="props">
-          <tr @mouseover="showQuickEdit = props.item.id" @mouseleave="showQuickEdit = null">
-            <td>
-              <v-layout row justify-center align-center>
-                <v-text-field
-                  v-model="props.item.ref_number"
-                  :disabled="props.item.id !== quickEdit"
-                >
-                  <template v-slot:append v-if="props.item.id === quickEdit">
-                    <v-btn icon @click="saveInvoice(props.item)">
-                      <v-icon>save</v-icon>
-                    </v-btn>
-                  </template>
-                </v-text-field>
-                <v-btn
-                  icon
-                  small
-                  class="grey--text"
-                  @click="quickEdit = props.item.id"
-                  v-if="props.item.id !== quickEdit && showQuickEdit === props.item.id"
-                >
-                  <v-icon small>edit</v-icon>
-                </v-btn>
-              </v-layout>
-            </td>
+          <tr>
+            <td>{{ props.item.ref_number }}</td>
             <td>
               <PaymentStatusChip :payment="props.item.payments[0]" />
             </td>
@@ -77,7 +55,7 @@
             <td>€{{ props.item.contract.price }}</td>
             <td>{{ formatDate(props.item.start_date, 'LL') }}</td>
             <td>{{ formatDate(props.item.end_date, 'LL') }}</td>
-            <td v-if="props.item.sent">{{ formatDate(props.item.sent, 'LLL') }}</td>
+            <td v-if="props.item.sent">{{ formatDate(props.item.sent, 'LL') }}</td>
             <td v-else>Niet verzonden</td>
             <td>
               <v-layout align-center>
@@ -168,8 +146,6 @@ export default class Invoices extends Vue {
   private invoices: any = [];
   private dialog: boolean = false;
   private loading: boolean = true;
-  private quickEdit: number | null = null;
-  private showQuickEdit: number | null = null;
 
   private createMode: boolean = true;
   private confirmSend: boolean = false;
@@ -214,7 +190,6 @@ export default class Invoices extends Vue {
   }
 
   async saveInvoice(invoice: any) {
-    this.quickEdit = null;
     await axios.post("/api/invoices/" + invoice.id, {
       ref_number: invoice.ref_number
     });

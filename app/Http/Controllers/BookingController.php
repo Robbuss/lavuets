@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Unit;
 use App\Models\Tenant;
 use App\Models\Contract;
+use App\Models\Customer;
 use App\Models\Location;
 use App\Utils\MolliePayment;
 use Illuminate\Http\Request;
@@ -47,10 +48,16 @@ class BookingController extends Controller
     public function create(Request $request)
     {
         // create a tenant
-        $tenant = Tenant::create($request->tenant);
+        $tenant = Tenant::create(
+            array_merge(
+                $request->tenant,
+                ['customer_id' => Customer::current()->id]
+            ),
+        );
 
         // create a contract that is inactive till after payment is received (activated in the webhook)
         $contract = Contract::create(array_merge($request->contract, [
+            'customer_id' => Customer::current()->id,
             'tenant_id' => $tenant->id,
             'auto_invoice' => true,
             'method' => 'addMonth',

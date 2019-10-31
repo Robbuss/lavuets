@@ -3,16 +3,15 @@
 namespace App\Models;
 
 use App\Scopes\CustomerScope;
-use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 
-class Invoice extends Model implements HasMedia
+class Invoice extends BaseModel implements HasMedia
 {
     use SoftDeletes, LogsActivity, HasMediaTrait;
-    protected $fillable = ['ref', 'ref_number', 'contract_id', 'payment_id', 'note', 'start_date', 'end_date', 'sent'];
+    protected $fillable = ['customer_id' ,'ref', 'ref_number', 'contract_id', 'payment_id', 'note', 'start_date', 'end_date', 'sent'];
     protected $dates = [
         'end_date',
         'start_date',
@@ -21,15 +20,6 @@ class Invoice extends Model implements HasMedia
 
     protected static $logName = 'systeem';
     
-    protected static function boot()
-    {
-        parent::boot();
-        static::addGlobalScope(new CustomerScope);
-        self::creating(function($model){
-            $model->customer_id = Customer::current()->id;
-        });
-    }
-
     public function getDescriptionForEvent(string $eventName): string
     {
         return "Factuur {$eventName}";

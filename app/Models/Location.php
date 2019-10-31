@@ -3,27 +3,17 @@
 namespace App\Models;
 
 use App\Scopes\CustomerScope;
-use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 
-class Location extends Model implements HasMedia
+class Location extends BaseModel implements HasMedia
 {
     use SoftDeletes, LogsActivity, HasMediaTrait;
-    protected $fillable = ['name', 'facility_name'];
+    protected $fillable = ['customer_id' ,'name', 'facility_name'];
 
     protected static $logName = 'systeem';
-
-    protected static function boot()
-    {
-        parent::boot();
-        static::addGlobalScope(new CustomerScope);
-        self::creating(function ($model) {
-            $model->customer_id = Customer::current()->id;
-        });
-    }
 
     public function getDescriptionForEvent(string $eventName): string
     {

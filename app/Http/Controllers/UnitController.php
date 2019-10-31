@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Unit;
+use App\Models\Customer;
 use Illuminate\Http\Request;
 
 class UnitController extends Controller
@@ -41,7 +42,13 @@ class UnitController extends Controller
      */
     public function create(Request $request)
     {
-        Unit::create($request->all());
+        Unit::create(
+            array_merge(
+                $request->all(),
+                ['customer_id' => Customer::current()->id]
+            ),
+
+        );
         return ["success" => true];
     }
 

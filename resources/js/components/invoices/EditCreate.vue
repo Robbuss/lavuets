@@ -232,7 +232,7 @@ export default class EditInvoice extends Vue {
       this.editedItem.sent = null;
     }
     if (oldval !== undefined && newval)
-      this.editedItem.sent = moment().format("YYYY-MM-DD");
+      this.editedItem.sent = moment(this.invoice.sent).format("YYYY-MM-DD");
   }
 
   get formTitle() {
@@ -261,8 +261,12 @@ export default class EditInvoice extends Vue {
       this.editedItem = Object.assign({}, this.invoice);
       if (this.invoice.sent) this.showSentDate = true;
     }
-    this.editedItem.contract_id = this.contract.id;
-    this.editedItem.tenant_id = this.contract.tenant_id;
+    this.editedItem.start_date = moment(this.invoice.start_date).format(
+      "YYYY-MM-DD"
+    );
+    this.editedItem.end_date = moment(this.invoice.end_date).format(
+      "YYYY-MM-DD"
+    );
   }
 
   editItem(item: any) {

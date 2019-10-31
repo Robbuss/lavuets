@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
 use App\Models\Location;
 use Illuminate\Http\Request;
 
@@ -25,6 +26,7 @@ class LocationController extends Controller
     public function create(Request $request)
     {
         $location = Location::create([
+            'customer_id'=> Customer::current()->id,
             'name' => $request->name,
             'facility_name' => $request->facility_name,
         ]);

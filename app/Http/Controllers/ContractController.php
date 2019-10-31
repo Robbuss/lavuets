@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Unit;
-use App\Models\Contract;
 use App\Models\Tenant;
+use App\Models\Contract;
+use App\Models\Customer;
+use App\Utils\PdfGenerator;
 use Illuminate\Http\Request;
 use App\Utils\InvoiceGenerator;
-use App\Utils\PdfGenerator;
 
 class ContractController extends Controller
 {
@@ -76,7 +77,12 @@ class ContractController extends Controller
      */
     public function create(Request $request)
     {
-        $contract = Contract::create($request->except(['units']));
+        $contract = Contract::create(
+            array_merge(
+                $request->except(['units']),
+                ['customer_id' => Customer::current()->id]
+            )
+        );
         $contract->units()->sync($this->getSyncArray($request->units));
         // create the first invoice
         new InvoiceGenerator($contract);

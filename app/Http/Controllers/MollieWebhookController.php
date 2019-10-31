@@ -23,7 +23,7 @@ class MollieWebhookController extends Controller
     }
 
     /* this method is called from the BookingController, and it sends the booking complete mail */
-    public function firstOrderWebhook(Request $request) 
+    public function firstOrderWebhook(Request $request)
     {
         $payment = Payment::where('payment_id', $request->id)->with(['tenant', 'contract'])->firstOrFail();
         $molliePayment =  Mollie::api()->payments()->get($payment->payment_id);
@@ -43,8 +43,6 @@ class MollieWebhookController extends Controller
             Mail::to($payment->tenant->email)
                 ->queue(new BookingComplete(
                     $payment->load(['tenant', 'contract']),
-                    storage_path('app/' . $payment->contract->tenant_id . '/') . 'huurcontract-opslagmagazijn.pdf',
-                    storage_path('app/' . $payment->contract->tenant_id . '/') . $payment->invoice->ref . '.pdf',
                 ));
             $payment->invoice->update([
                 'sent' => Carbon::now(),

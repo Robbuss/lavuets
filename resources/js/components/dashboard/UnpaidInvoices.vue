@@ -94,7 +94,7 @@ export default class UnsedInvoice extends Vue {
   private pagination: any = {
     rowsPerPage: 10,
     descending: true,
-    sortBy: "price"
+    sortBy: "ref_number"
   };
   private headers: any = [
     { text: "Factuur nr", value: "ref_number" },

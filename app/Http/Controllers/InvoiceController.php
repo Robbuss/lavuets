@@ -136,10 +136,10 @@ class InvoiceController extends Controller
     {
         $media = $invoice->getFirstmedia('pdf');
         if (!$media) {
-            (new PdfGenerator($invoice))->generateInvoice();
+            return ["success" => false, "message" => "Er ging iets mis met het ophalen van het bestand."];
         }
         return [
-            'content' => base64_encode(file_get_contents($invoice->media()->first()->getPath())),
+            'content' => base64_encode(file_get_contents($media->getPath())),
             'mime' => 'application/pdf',
             'extension' => 'pdf'
         ];

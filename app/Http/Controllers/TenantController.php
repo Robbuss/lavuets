@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use App\Models\Tenant;
+use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -28,6 +29,7 @@ class TenantController extends Controller
     public function create(Request $request)
     {
         $tenant = Tenant::create([
+            'customer_id'=> Customer::current()->id,
             'company_name' => $request->company_name,
             'name' => $request->name,
             'email' => $request->email,

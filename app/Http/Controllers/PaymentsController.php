@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\Invoice;
 use App\Models\Payment;
 use App\Models\Contract;
+use App\Models\Customer;
 use App\Utils\MolliePayment;
 use Illuminate\Http\Request;
 
@@ -40,6 +41,7 @@ class PaymentsController extends Controller
         if ($request->payment_method === 'factuur') {
             // save the payment to our database
             $payment = Payment::create([
+                'customer_id'=> Customer::current()->id,
                 'contract_id' => $contract->id,
                 'tenant_id' => $contract->tenant->id,
                 'invoice_id' => $invoice->id,
