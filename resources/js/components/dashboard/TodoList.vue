@@ -25,7 +25,6 @@ import store from "js/store";
 @Component({})
 export default class TodoList extends Vue {
   todos: any = [
-    "CreatePayment component refactor",
     "Product component redesign",
     "Add contracts to customer view",
     "Producten en Prijs opslaan op Invoices",
