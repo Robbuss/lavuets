@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use App\Models\Invoice;
+use App\Models\Contract;
+use App\Models\Customer;
 use App\Mail\SendInvoice;
 use App\Utils\PdfGenerator;
 use Illuminate\Http\Request;
@@ -70,7 +72,15 @@ class InvoiceController extends Controller
      */
     public function create(Request $request)
     {
-        $invoice = Invoice::create($request->all());
+        $contract = Contract::findOrFail($request->contract_id);
+        $invoice = Invoice::create([
+            'customer_id' => Customer::current()->id,
+            'ref' => 'Factuur-' . Carbon::parse($request->start_date)->format('m-Y'),
+            'contract_id' => $contract->id,
+            'note' => $request->note,
+            'start_date' => $request->start_date,
+            'end_date' => Carbon::parse($request->start_date)->{$contract->method}($contract->period)
+        ]);
         (new PdfGenerator($invoice))->generateInvoice();
         return ['id' => $invoice->id];
     }
