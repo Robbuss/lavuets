@@ -11,7 +11,7 @@ use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 class Invoice extends BaseModel implements HasMedia
 {
     use SoftDeletes, LogsActivity, HasMediaTrait;
-    protected $fillable = ['customer_id' ,'ref', 'ref_number', 'contract_id', 'payment_id', 'note', 'start_date', 'end_date', 'sent'];
+    protected $fillable = ['customer_id' ,'ref','credit_invoice', 'ref_number', 'contract_id', 'payment_id', 'note', 'start_date', 'end_date', 'sent'];
     protected $dates = [
         'end_date',
         'start_date',
@@ -33,6 +33,11 @@ class Invoice extends BaseModel implements HasMedia
     public function payments()
     {
         return $this->hasMany(Payment::class);
+    }
+
+    public function credit()
+    {
+        return $this->hasOne(Invoice::class);
     }
 
     /* Gets the invoices from an active contract, but without a payment with status pending or paid */

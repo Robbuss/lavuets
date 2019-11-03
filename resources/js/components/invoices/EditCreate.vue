@@ -201,7 +201,6 @@ export default class EditInvoice extends Vue {
   private editedItem: any = {
     id: null,
     contract_id: null,
-    payment_id: null,
     ref: "",
     ref_number: "",
     sent: null,
@@ -260,13 +259,13 @@ export default class EditInvoice extends Vue {
     if (this.invoice) {
       this.editedItem = Object.assign({}, this.invoice);
       if (this.invoice.sent) this.showSentDate = true;
+      this.editedItem.start_date = moment(this.invoice.start_date).format(
+        "YYYY-MM-DD"
+      );
+      this.editedItem.end_date = moment(this.invoice.end_date).format(
+        "YYYY-MM-DD"
+      );
     }
-    this.editedItem.start_date = moment(this.invoice.start_date).format(
-      "YYYY-MM-DD"
-    );
-    this.editedItem.end_date = moment(this.invoice.end_date).format(
-      "YYYY-MM-DD"
-    );
   }
 
   editItem(item: any) {
@@ -291,6 +290,7 @@ export default class EditInvoice extends Vue {
         message: "Factuur aangepast!"
       });
     } else {
+      this.editedItem.contract_id = this.contract.id;
       await axios.post("/api/invoices/create", this.editedItem);
       store.commit("snackbar", {
         type: "success",
