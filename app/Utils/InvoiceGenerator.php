@@ -15,7 +15,7 @@ class InvoiceGenerator
 
     public function __construct(Contract $contract, Invoice $lastInvoice = null, $note = null)
     {
-        if(!$contract->method) $contract->method = 'addMonth'; // set a default when nothing is set (its the database default; but doesnt get returned on create())
+        if (!$contract->method) $contract->method = 'addMonth'; // set a default when nothing is set (its the database default; but doesnt get returned on create())
         $this->contract = $contract;
         $this->lastInvoice = $lastInvoice;
         $this->generate();
@@ -33,9 +33,19 @@ class InvoiceGenerator
             'start_date' => $date,
             'end_date' => Carbon::parse($date)->{$this->contract->method}($this->contract->period)
         ]);
+        $newInvoice->units()->sync($this->getSyncArray($this->contract->units));
 
         // generate a PDF for the invoice
         (new PdfGenerator($newInvoice))->generateInvoice();
         $this->lastInvoice = $newInvoice;
+    }
+
+    public function getSyncArray($priceArray = [])
+    {
+        $invoiceUnitPrice = [];
+        foreach ($priceArray as $pu) {
+            $invoiceUnitPrice[$pu['id']] = ['price' => $pu['price']];
+        };
+        return $invoiceUnitPrice;
     }
 }

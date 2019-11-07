@@ -14,7 +14,9 @@
             label="Referentie (bestandsnaam)"
           ></v-text-field>
         </v-flex>
-        <v-flex xs12 sm6 md6 v-if="!creating">
+      </v-layout>
+      <v-layout row wrap>
+        <v-flex xs12 sm6 md6 lg5 v-if="!creating">
           <v-text-field
             :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
             required
@@ -160,15 +162,18 @@
           </v-flex>
         </v-expand-transition>
       </v-layout>
-
-      <v-btn
-        :dark="!working"
-        color="primary darken-1"
-        :loading="working"
-        :disabled="working"
-        @click="save"
-      >Opslaan</v-btn>
-      <v-btn flat color="primary darken-1" @click="cancel">Annuleren</v-btn>
+      <v-card-actions>
+        <v-btn
+          :dark="!working"
+          class="primary darken-1"
+          :loading="working"
+          :disabled="working"
+          @click="save"
+        >Opslaan</v-btn>
+        <v-btn @click="cancel" flat color="primary darken-1">Annuleren</v-btn>
+        <v-spacer></v-spacer>
+        <v-btn v-if="(invoice && !invoice.credit_invoice) && !this.creating" @click="createCredit" flat color="primary">Creditfactuur maken</v-btn>
+      </v-card-actions>
     </v-form>
   </v-card>
 </template>
@@ -203,6 +208,8 @@ export default class EditInvoice extends Vue {
     contract_id: null,
     ref: "",
     ref_number: "",
+    credit_invoice: null,
+    units: [],
     sent: null,
     note: "",
     start_date: moment()
@@ -216,7 +223,9 @@ export default class EditInvoice extends Vue {
     payment_status: "unpaid",
     ref: "",
     ref_number: "",
+    units: [],
     note: "",
+    credit_invoice: null,
     sent: null,
     start_date: moment()
       .subtract(1, "months")
@@ -278,6 +287,13 @@ export default class EditInvoice extends Vue {
 
   validate() {
     return (<any>this.$refs.form).validate() ? true : false;
+  }
+
+  async createCredit() {
+    this.creating = true;
+    this.editedItem.credit_invoice = this.invoice.id;
+    await this.save();
+    this.creating = false; // probably not needed
   }
 
   async save() {

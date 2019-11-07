@@ -6,10 +6,14 @@
           <v-flex xs12>
             <v-toolbar color="primary" dark tabs>
               <BackButton />
+              <v-tooltip bottom>
               <v-toolbar-title
+                slot="activator"
                 style="cursor:pointer;"
                 @click="$router.push('/tenants/' + contract.tenant.id)"
               >{{ contract.tenant.name }}</v-toolbar-title>
+              <span>Naar klant informatie</span>
+              </v-tooltip>
               <v-spacer></v-spacer>
               <v-tooltip bottom>
                 <v-btn icon slot="activator" @click="download">

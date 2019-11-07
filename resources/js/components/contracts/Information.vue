@@ -39,7 +39,7 @@
             <v-list-tile :key="i">
               <v-list-tile-avatar>
                 <v-avatar>
-                  <v-img src="/open_box.png" />
+                  <v-img src="/garage-door.svg" />
                 </v-avatar>
               </v-list-tile-avatar>
               <v-list-tile-content>
@@ -164,17 +164,17 @@ export default class SingleContractInformation extends Vue {
       {
         field: this.contract.tenant.name,
         icon: "person",
-        tooltip: "Klantnaam"
+        tooltip: "Naam"
       },
       {
         field: this.contract.tenant.email,
         icon: "mail",
-        tooltip: "Klant e-mailadres"
+        tooltip: "E-mailadres"
       },
       {
         field: this.contract.tenant.phone,
         icon: "phone",
-        tooltip: "Klant telefoonnummer"
+        tooltip: "Telefoonnummer"
       },
       {
         field: this.contract.payment_method,
@@ -200,11 +200,6 @@ export default class SingleContractInformation extends Vue {
         icon: "store",
         tooltip: "Bedrijf of particulier"
       },
-      {
-        field: this.contract.tenant.id,
-        icon: "android",
-        tooltip: "Klant ID"
-      }
     ];
   }
 

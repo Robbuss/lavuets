@@ -1,6 +1,6 @@
 <template>
   <v-dialog :value="dialog" max-width="80%" persistent>
-    <v-card class="pa-3">
+    <v-card class="pa-3" v-if="!loading">
       <v-form ref="form" v-model="valid" lazy-validation>
         <v-layout row wrap>
           <v-flex xs12>
@@ -9,16 +9,16 @@
               <span class="font-weight-black">producten</span>
               komen in dit contract?
             </h6>
-            <v-select :items="mergedUnits" v-model="contract.units" multiple chips>
+            <v-select :items="mergedUnits" v-model="editedItem.units" multiple chips>
               <template v-slot:item="data">
                 <v-flex
                   class="align-center grey--text"
                   style="display:flex"
-                  :class="{'primary--text' : contract.units.indexOf(data.item) > -1}"
+                  :class="{'primary--text' : editedItem.units.indexOf(data.item) > -1}"
                 >
                   <v-icon
-                    :class="{'primary--text' : contract.units.indexOf(data.item) > -1}"
-                    v-if="contract.units.indexOf(data.item) > -1"
+                    :class="{'primary--text' : editedItem.units.indexOf(data.item) > -1}"
+                    v-if="editedItem.units.indexOf(data.item) > -1"
                   >check_box</v-icon>
                   <v-icon v-else>check_box_outline_blank</v-icon>
                   <span class="pl-3">{{ data.item.display_name }}</span>
@@ -37,10 +37,10 @@
             <v-checkbox v-model="defaultPrices" label="Standaard prijzen gebruiken"></v-checkbox>
           </v-flex>
           <v-expand-transition>
-            <v-flex xs12 v-if="contract.units.length > 0 && !defaultPrices">
+            <v-flex xs12 v-if="editedItem.units.length > 0 && !defaultPrices">
               Wat is de overeengekomen prijs in € per maand per box (deze kan afwijken van de standaard prijs)
               <v-text-field
-                v-for="(c, i) in contract.units"
+                v-for="(c, i) in editedItem.units"
                 :key="i"
                 v-model.number="c.price"
                 type="number"
@@ -62,12 +62,12 @@
               :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
               required
               :items="['factuur', 'incasso']"
-              v-model="contract.payment_method"
+              v-model="editedItem.payment_method"
             ></v-autocomplete>
           </v-flex>
         </v-layout>
         <v-layout row wrap>
-          <v-flex xs12 sm12 md4 v-if="!contract.id">
+          <v-flex xs12 sm12 md4 v-if="!editedItem.id">
             <h6 class="caption">
               Kies een
               <span class="font-weight-black">huurder</span>
@@ -76,7 +76,7 @@
               :items="tenants"
               item-value="id"
               item-text="name"
-              v-model="contract.tenant_id"
+              v-model="editedItem.tenant_id"
               :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
               required
               color="blue-grey lighten-2"
@@ -91,7 +91,7 @@
               <span class="font-weight-black">per mail</span> ontvangen
             </h6>
             <span></span>
-            <v-checkbox v-model="contract.auto_invoice" label="Automagische facturatie" />
+            <v-checkbox v-model="editedItem.auto_invoice" label="Automagische facturatie" />
           </v-flex>
         </v-layout>
 
@@ -106,7 +106,7 @@
               ref="menu"
               v-model="menu"
               :close-on-content-click="false"
-              :return-value.sync="contract.start_date"
+              :return-value.sync="editedItem.start_date"
               transition="scale-transition"
               offset-y
               min-width="290px"
@@ -120,9 +120,9 @@
                   v-on="on"
                 ></v-text-field>
               </template>
-              <v-date-picker locale="nl" v-model="contract.start_date" no-title scrollable>
+              <v-date-picker locale="nl" v-model="editedItem.start_date" no-title scrollable>
                 <v-spacer></v-spacer>
-                <v-btn text color="primary" @click="$refs.menu.save(contract.start_date)">OK</v-btn>
+                <v-btn text color="primary" @click="$refs.menu.save(editedItem.start_date)">OK</v-btn>
               </v-date-picker>
             </v-menu>
           </v-flex>
@@ -158,32 +158,41 @@ export default class EditCreateContract extends Vue {
   private valid: boolean = true;
   private menu: boolean = false;
   private defaultPrices: boolean = true;
+  private editedItem: any = {
+    tenant_id: null,
+    auto_invoice: true,
+    method: "addMonth",
+    payment_method: "incasso",
+    period: 1,
+    start_date: null,
+    units: []
+  };
 
   get formatDate() {
-    return this.contract.start_date
-      ? moment(this.contract.start_date).format("DD-MM-YYYY")
+    return this.editedItem.start_date
+      ? moment(this.editedItem.start_date).format("DD-MM-YYYY")
       : "";
   }
 
   get formTitle() {
-    return this.contract.id ? "Contract aanmaken" : "Contract bewerken";
+    return this.editedItem.id ? "Contract aanmaken" : "Contract bewerken";
   }
 
   remove(data: any) {
-    console.log(data);
-    this.contract.units.splice(this.contract.units.indexOf(data), 1);
+    this.editedItem.units.splice(this.editedItem.units.indexOf(data), 1);
     this.mergeUnits();
   }
 
   mergeUnits() {
     this.mergedUnits = this.units.free;
-    if (this.contract.id) {
-      this.mergedUnits = this.contract.units.concat(this.units.free);
+    if (this.editedItem.id) {
+      this.mergedUnits = this.editedItem.units.concat(this.units.free);
     }
   }
 
   async mounted() {
-    if (!this.contract.payment_method) this.contract.payment_method = "incasso";
+    // use an exisiting contract when editing
+    if (this.contract && this.contract.id) this.editedItem = this.contract; //Object.assign(this.editedItem, this.contract);
     try {
       // refactor this to an api call that gets the units in {free: [], occupied: []} and tenants
       const r = (await axios.get("/api/contracts")).data;
@@ -202,14 +211,14 @@ export default class EditCreateContract extends Vue {
 
   async save() {
     if (!this.validate()) return;
-    if (this.contract.id) {
-      axios.post("/api/contracts/" + this.contract.id, this.contract);
+    if (this.editedItem.id) {
+      axios.post("/api/contracts/" + this.editedItem.id, this.editedItem);
       store.commit("snackbar", {
         type: "success",
         message: "Contract aangepast!"
       });
     } else {
-      axios.post("/api/contracts/create", this.contract);
+      axios.post("/api/contracts/create", this.editedItem);
       store.commit("snackbar", {
         type: "success",
         message: "Contract aangemaakt!"

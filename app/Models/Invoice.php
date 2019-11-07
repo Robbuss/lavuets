@@ -11,7 +11,7 @@ use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 class Invoice extends BaseModel implements HasMedia
 {
     use SoftDeletes, LogsActivity, HasMediaTrait;
-    protected $fillable = ['customer_id' ,'ref','credit_invoice', 'ref_number', 'contract_id', 'payment_id', 'note', 'start_date', 'end_date', 'sent'];
+    protected $fillable = ['customer_id', 'ref', 'credit_invoice', 'ref_number', 'contract_id', 'payment_id', 'note', 'start_date', 'end_date', 'sent'];
     protected $dates = [
         'end_date',
         'start_date',
@@ -19,7 +19,7 @@ class Invoice extends BaseModel implements HasMedia
     ];
 
     protected static $logName = 'systeem';
-    
+
     public function getDescriptionForEvent(string $eventName): string
     {
         return "Factuur {$eventName}";
@@ -37,7 +37,12 @@ class Invoice extends BaseModel implements HasMedia
 
     public function credit()
     {
-        return $this->hasOne(Invoice::class);
+        return $this->belongsTo(Invoice::class, 'credit_invoice');
+    }
+
+    public function units()
+    {
+        return $this->belongsToMany(Unit::class)->withPivot('price')->withTimestamps();
     }
 
     /* Gets the invoices from an active contract, but without a payment with status pending or paid */
@@ -53,7 +58,7 @@ class Invoice extends BaseModel implements HasMedia
             });
     }
 
-    /* 
+    /*
     * Gets the invoice without a payment
     * this result could be merged with scopeNotPaid
     */

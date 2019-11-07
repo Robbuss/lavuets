@@ -20,7 +20,7 @@ class InvoiceController extends Controller
      */
     public function index(Request $request)
     {
-        return Invoice::with(['contract', 'contract.units', 'contract.tenant', 'payments'])
+        return Invoice::with(['credit', 'contract', 'units', 'contract.tenant', 'payments'])
             ->where(function ($q) use ($request) {
                 if ($request->contract_id)
                     return $q->where('contract_id', $request->contract_id);
@@ -36,6 +36,7 @@ class InvoiceController extends Controller
                     'start_date' => $q->start_date,
                     'end_date' => $q->end_date,
                     'sent' => $q->sent,
+                    'credit_invoice' => $q->credit,
                     'tenant' => [
                         'id' => $q->contract->tenant->id,
                         'name' => $q->contract->tenant->name,
@@ -48,11 +49,9 @@ class InvoiceController extends Controller
                         'btw' => $q->contract->tenant->btw,
                         'kvk' => $q->contract->tenant->kvk
                     ],
-                    'contract' => [
-                        'id' => $q->contract->id,
-                        'price' => $this->createDisplayPrice($q->contract->units),
-                        'units' => $q->contract->units
-                    ]
+                    'price' => $this->createDisplayPrice($q->units),
+                    'units' => $q->units,
+                    'contract_id' => $q->contract->id,
                 ];
             });
     }
@@ -62,7 +61,7 @@ class InvoiceController extends Controller
         $priceArray = $unitArray->map(function ($q) {
             return $q->pivot->price;
         })->toArray();
-        return implode(', €', $priceArray) . ' Totaal €' . array_sum($priceArray);
+        return array_sum($priceArray);
     }
 
     /**
@@ -75,12 +74,22 @@ class InvoiceController extends Controller
         $contract = Contract::findOrFail($request->contract_id);
         $invoice = Invoice::create([
             'customer_id' => Customer::current()->id,
-            'ref' => 'Factuur-' . Carbon::parse($request->start_date)->format('m-Y'),
+            'ref' => $request->ref,
             'contract_id' => $contract->id,
+            'credit_invoice' => $request->credit_invoice,
             'note' => $request->note,
             'start_date' => $request->start_date,
-            'end_date' => Carbon::parse($request->start_date)->{$contract->method}($contract->period)
+            'end_date' => $request->end_date
         ]);
+
+
+        if ($request->credit_invoice) {
+            $invoiceToCredit = Invoice::findOrFail($request->credit_invoice);
+            $invoice->units()->sync($this->getSyncArray($invoiceToCredit->units, -1)); // send -1 value as price multiplier when credit_invoice
+        } else {
+            $invoice->units()->sync($this->getSyncArray($contract->units));
+        }
+
         (new PdfGenerator($invoice))->generateInvoice();
         return ['id' => $invoice->id];
     }
@@ -95,11 +104,8 @@ class InvoiceController extends Controller
      */
     public function update(Request $request, Invoice $invoice)
     {
-        $invoice->update($request->all());
-        $file = storage_path('app/' . $invoice->contract->tenant_id . '/') . $invoice->ref . '.pdf';
-        if (file_exists($file)) {
-            rename($file, storage_path('app/' . $invoice->contract->tenant_id . '/') . $invoice->ref . '-' . substr(md5(microtime()), -5) . '-edited.pdf');
-        }
+        $invoice->update($request->except(['units']));
+        $invoice->units()->sync($this->getSyncArray($request->units));
         (new PdfGenerator($invoice))->generateInvoice();
 
         return ['success' => true];
@@ -113,9 +119,6 @@ class InvoiceController extends Controller
      */
     public function delete(Invoice $invoice)
     {
-        $file = storage_path('app/' . $invoice->contract->tenant_id . '/') . $invoice->ref . '.pdf';
-        if (file_exists($file))
-            rename($file, storage_path('app/' . $invoice->contract->tenant_id . '/') . $invoice->ref . '-' . substr(md5(microtime()), -5) . '-deleted.pdf');
         $invoice->delete();
 
         return ['success' => true];
@@ -144,7 +147,7 @@ class InvoiceController extends Controller
 
     public function getPdf(Invoice $invoice)
     {
-        $media = $invoice->getFirstmedia('pdf');
+        $media = $invoice->getMedia('pdf')->sortByDesc('created_at')->first();
         if (!$media) {
             return ["success" => false, "message" => "Er ging iets mis met het ophalen van het bestand."];
         }
@@ -153,5 +156,14 @@ class InvoiceController extends Controller
             'mime' => 'application/pdf',
             'extension' => 'pdf'
         ];
+    }
+
+    public function getSyncArray($priceArray, $credit = 1)
+    {
+        $unitPrice = [];
+        foreach ($priceArray as $pu) {
+            $unitPrice[$pu['id']] = ['price' => ($pu->pivot->price * $credit)];
+        };
+        return $unitPrice;
     }
 }

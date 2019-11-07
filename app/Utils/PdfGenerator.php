@@ -25,7 +25,7 @@ class PdfGenerator
 
         // view variables
         $this->model->load(['contract.tenant', 'contract']);
-        $totalPrice = $this->totalPrice($this->model->contract);
+        $totalPrice = $this->totalPrice($this->model);
 
         $pdf = PDF::loadView('invoice', ['invoice' => $this->model, 'total' => $totalPrice])
             ->setOptions(['defaultFont' => 'sans-serif']);
@@ -61,10 +61,10 @@ class PdfGenerator
         activity('pdf')->log('Contract PDF gemaakt');
     }
 
-    public function totalPrice(Contract $contract)
+    public function totalPrice(Invoice $invoice)
     {
         $total = 0;
-        foreach ($contract->units as $unitPrice) {
+        foreach ($invoice->units as $unitPrice) {
             $total += $unitPrice->pivot->price;
         }
         return [

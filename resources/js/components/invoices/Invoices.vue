@@ -48,11 +48,11 @@
             <td>{{ props.item.tenant.name }}</td>
             <td
               v-if="!contract"
-              @click="$router.push('/contracts/' + props.item.contract.id)"
+              @click="$router.push('/contracts/' + props.item.contract_id)"
               class="pointer"
-            >{{ getUnits(props.item.contract.units) }}</td>
-            <td v-else>{{ getUnits(props.item.contract.units) }}</td>
-            <td>€{{ props.item.contract.price }}</td>
+            >{{ getUnits(props.item.units) }}</td>
+            <td v-else>{{ getUnits(props.item.units) }}</td>
+            <td>€{{ props.item.price }}</td>
             <td>{{ formatDate(props.item.start_date, 'LL') }}</td>
             <td>{{ formatDate(props.item.end_date, 'LL') }}</td>
             <td v-if="props.item.sent">{{ formatDate(props.item.sent, 'LL') }}</td>
@@ -62,8 +62,8 @@
                 <v-btn class="primary--text" small icon @click="editItem(props.item)">
                   <v-icon small>edit</v-icon>
                 </v-btn>
-                <v-btn class="primary--text" small icon @click="editItem(props.item)">
-                  <v-icon small @click="deleteItem(props.item)">delete</v-icon>
+                <v-btn class="primary--text" small icon @click="deleteItem(props.item)">
+                  <v-icon small>delete</v-icon>
                 </v-btn>
                 <v-btn class="primary--text" small icon @click="download(props.item)">
                   <v-icon small>attach_file</v-icon>
@@ -159,8 +159,8 @@ export default class Invoices extends Vue {
     { text: "Factuur nr", value: "invoice.ref_number" },
     { text: "Betaling", value: "payment.payment_id" },
     { text: "Naam", value: "invoice.name" },
-    { text: "Producten", value: "contract.units" },
-    { text: "Prijs", value: "contract.price" },
+    { text: "Producten", value: "units" },
+    { text: "Bedrag", value: "price" },
     { text: "Van", value: "start_date" },
     { text: "Tot", value: "end_date" },
     { text: "Verzonden", value: "sent" },

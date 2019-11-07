@@ -26,21 +26,12 @@ import store from "js/store";
 export default class TodoList extends Vue {
   todos: any = [
     "Product component redesign",
-    "Add contracts to customer view",
-    "Producten en Prijs opslaan op Invoices",
     "Aanpasbare verhuur tijd van producten",
     "Mollie mislukte betalingen afhandelen (redirect nog naar succes page)",
-    "Creditfacturen",
-    "On Payments, add invoice information card on hover (id, ref_number, start and end date)",
     "Betalingsherinneringen",
     "Add Settings",
     "Relatienummers op facturen",
-    "Consistentie van invoice numbers controleren",
     "Write a test for the MolliePaymentClass",
   ];
-
-  mounted(){
-    // store.commit('snackbar', { show: true, message: "aaaa", type: "info"})
-  }
 }
 </script>

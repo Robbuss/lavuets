@@ -45,8 +45,8 @@ class InvoicesDue extends Command
         $contracts = Contract::whereNull('deactivated_at')->with(['invoices', 'tenant'])->get();
         $count = 0;
         foreach ($contracts as $contract) {
-            // get the last invoice on the contract
-            $lastInvoice = $contract->invoices()->orderBy('end_date', 'DESC')->first();
+            // get the last invoice on the contract, that is not a credit invoice
+            $lastInvoice = $contract->invoices()->whereNull('credit_invoice')->orderBy('end_date', 'DESC')->first();
             // if there is a last invoice and its end_date is in the past
             if (!$lastInvoice || ($lastInvoice->end_date < Carbon::now())) {
                 // create a new invoice

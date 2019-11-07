@@ -44,12 +44,12 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/invoices/create', 'InvoiceController@create');
     Route::get('/invoices/{invoice}/pdf', 'InvoiceController@getPdf');
     Route::post('/invoices/{invoice}', 'InvoiceController@update');
-    Route::post('/invoices/{invoice}/delete', 'InvoiceController@delete');    
-    Route::post('/invoices/{invoice}/send', 'InvoiceController@send');    
+    Route::post('/invoices/{invoice}/delete', 'InvoiceController@delete');
+    Route::post('/invoices/{invoice}/send', 'InvoiceController@send');
 
     Route::get('/logs', 'LogController@index');
-    Route::get('/payments', 'PaymentsController@index');    
-    Route::post('/payments/{contract}/{invoice}/create', 'PaymentsController@create');    
+    Route::get('/payments', 'PaymentsController@index');
+    Route::post('/payments/{contract}/{invoice}/create', 'PaymentsController@create');
     Route::post('/payments/{payment}/related', 'PaymentsController@relatedPayments');
 
     Route::get('/dashboard', 'DashboardController@index');

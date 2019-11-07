@@ -199,6 +199,9 @@ export default class EditTenant extends Vue {
     if (this.enableFields) this.editFields = true;
     if (this.tenant) {
       this.editedItem = Object.assign({}, this.tenant);
+      if(this.tenant.kvk || this.tenant.btw || this.tenant.company_name){
+        this.isCompany = true;
+      }
     }
   }
 

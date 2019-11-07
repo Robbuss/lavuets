@@ -45,7 +45,7 @@ class SendInvoices extends Command
     {
         // Get all the invoices that are not sent and belong to an active contract that allows auto_invoicing
         $invoicesDue = Invoice::whereNull('sent')->with('contract')->whereHas('contract', function ($q) {
-            $q->where('auto_invoice', 1)->whereNull('deactivated_at');
+            $q->where('auto_invoice', 1)->whereNull('deactivated_at')->where('start_date', '<', Carbon::now()); // with a contract start_date later than today
         })->get();
         // send invoices to mail 
         $count = 0;

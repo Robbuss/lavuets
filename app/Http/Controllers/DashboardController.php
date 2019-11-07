@@ -75,8 +75,8 @@ class DashboardController extends Controller
                 'sent' => $q->sent,
                 'start_date' => $q->start_date,
                 'end_date' => $q->end_date,
-                'units' => $q->contract->units,
-                'price' => $q->contract->units->sum('pivot.price'),
+                'units' => $q->units,
+                'price' => $q->units->sum('pivot.price'),
                 'payments' => $q->payments ? $q->payments : ['payment_id' => false, 'status' => 'Geen id'],
             ];
         });

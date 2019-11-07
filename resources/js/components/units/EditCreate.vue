@@ -99,7 +99,7 @@ export default class Editunit extends Vue {
     name: "",
     location_id: null,
     size: "",
-    active: null,
+    active: true,
     price: null
   };
   private defaultItem: any = {
@@ -113,14 +113,14 @@ export default class Editunit extends Vue {
   private response = "";
 
   get formTitle() {
-    return this.creating
-      ? "Product of unit aanmaken"
+    return this.creating && !this.unit
+      ? "Product aanmaken"
       : "De gegevens van " + this.unit.name + " bewerken";
   }
 
   async mounted() {
     if (this.unit) {
-      this.editedItem = Object.assign({}, this.unit);
+      this.editedItem = this.unit;
     }
     this.locations = (await axios.get("/api/locations")).data;
     this.loading = false;

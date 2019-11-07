@@ -168,7 +168,7 @@
             <div class="col3">Prijs per eenheid</div>
             <div class="col4">Totaal</div>
         </div>
-        @foreach($invoice->contract->units as $unit)
+        @foreach($invoice->units as $unit)
         <div class="item-bar default-padding">
             <div class="col1">1</div>
             <div class="col2">{{ $unit->name }} ({{ $unit->size }}m3)</div>

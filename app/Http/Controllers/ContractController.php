@@ -160,7 +160,7 @@ class ContractController extends Controller
 
     public function getPdf(Contract $contract)
     {
-        $media = $contract->getFirstMedia('pdf');
+        $media = $contract->getMedia('pdf')->sortByDesc('created_at')->first();
         if (!$media) {
             $media = (new PdfGenerator($contract))->generateContract();
         }

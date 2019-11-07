@@ -20,7 +20,8 @@ class UnitController extends Controller
         return Unit::with('location')->get()->map(function ($q) use ($occupied) {
             return [
                 "id" => $q->id,
-                "location" => $q->location,
+                "facility_name" => $q->location->facility_name,
+                "location_id" => $q->location->id,
                 "name" => $q->name,
                 "size" => $q->size,
                 "active" => $q->active,
@@ -47,7 +48,6 @@ class UnitController extends Controller
                 $request->all(),
                 ['customer_id' => Customer::current()->id]
             ),
-
         );
         return ["success" => true];
     }

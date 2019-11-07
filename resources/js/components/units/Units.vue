@@ -13,7 +13,7 @@
           hide-details
         ></v-text-field>
         <v-tooltip bottom>
-          <v-btn icon slot="activator" @click="dialog = true">
+          <v-btn icon slot="activator" @click="createItem">
             <v-icon>add</v-icon>
           </v-btn>
           <span>Box toevoegen</span>
@@ -39,7 +39,7 @@
       >
         <template v-slot:items="props">
           <td>{{ props.item.id }}</td>
-          <td>{{ props.item.location.facility_name }}</td>
+          <td>{{ props.item.facility_name }}</td>
           <td
             style="cursor: pointer"
             @click="$router.push('/units/' + props.item.id)"
@@ -53,10 +53,11 @@
               dark
               :class="{'green' : props.item.active, 'orange' : !props.item.active }"
               v-if="props.item.free"
-            >Beschikbaar</v-chip>
+            >
+            Beschikbaar<span v-if="!props.item.active">, niet verhuurbaar</span> 
+            </v-chip>
             <v-chip class="ml-0" flat v-else>Verhuurd</v-chip>
           </td>
-          <td>{{ props.item.active ? 'Ja' : 'Nee' }}</td>
           <td class="layout justify-end">
             <v-icon small class="mr-2" @click="editItem(props.item)">edit</v-icon>
             <v-icon small @click="deleteItem(props.item)">delete</v-icon>
@@ -94,12 +95,11 @@ export default class Units extends Vue {
 
   private headers: any = [
     { text: "id", value: "id" },
-    { text: "Locatie", value: "location.facility_name" },
+    { text: "Locatie", value: "facility_name" },
     { text: "Naam", value: "name" },
     { text: "Grootte (m3)", value: "size" },
     { text: "Prijs (p/m)", value: "price" },
     { text: "Status", value: "status" },
-    { text: "Verhuurbaar", value: "active" },
     { text: "Acties", align: "right", sortable: false }
   ];
   private pagination: any = {
