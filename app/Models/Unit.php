@@ -10,7 +10,7 @@ use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 class Unit extends BaseModel implements HasMedia
 {
     use SoftDeletes, HasMediaTrait;
-    protected $fillable = ['customer_id','location_id', 'name', 'price', 'size', 'active', 'x', 'y'];
+    protected $fillable = ['customer_id','location_id', 'name', 'price', 'vat_percentage', 'size', 'active', 'x', 'y'];
     protected $appends = ['display_name'];
     protected $casts = [
         'active' => 'boolean'

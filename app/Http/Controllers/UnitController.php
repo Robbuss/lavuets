@@ -26,6 +26,7 @@ class UnitController extends Controller
                 "size" => $q->size,
                 "active" => $q->active,
                 "price" => $q->price,
+                "vat_percentage" => $q->vat_percentage,
                 "free" => $occupied->contains($q) ? false : true,
             ];
         });

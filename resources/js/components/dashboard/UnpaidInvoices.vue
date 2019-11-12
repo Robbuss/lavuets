@@ -98,7 +98,7 @@ export default class UnsedInvoice extends Vue {
   };
   private headers: any = [
     { text: "Factuur nr", value: "ref_number" },
-    { text: "Prijs", value: "price" },
+    { text: "Bedrag", value: "price" },
     { text: "Betaling", value: "payment.payment_id" },
     { text: "Naam", value: "tenant.name" },
     { text: "Betaalmethode", value: "payment_method" },

@@ -37,6 +37,7 @@ class TenantController extends Controller
             'street_addr' => $request->street_addr,
             'street_number' => $request->street_number,
             'postal_code' => $request->postal_code,
+            'is_company' => $request->is_company,
             'btw' => $request->btw,
             'kvk' => $request->kvk,
             'iban' => $request->iban,

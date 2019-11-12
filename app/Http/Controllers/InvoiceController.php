@@ -49,19 +49,11 @@ class InvoiceController extends Controller
                         'btw' => $q->contract->tenant->btw,
                         'kvk' => $q->contract->tenant->kvk
                     ],
-                    'price' => $this->createDisplayPrice($q->units),
+                    'price' => $q->units->sum('pivot.price'),
                     'units' => $q->units,
                     'contract_id' => $q->contract->id,
                 ];
             });
-    }
-
-    private function createDisplayPrice($unitArray = [])
-    {
-        $priceArray = $unitArray->map(function ($q) {
-            return $q->pivot->price;
-        })->toArray();
-        return array_sum($priceArray);
     }
 
     /**

@@ -12,8 +12,11 @@ class Tenant extends BaseModel implements HasMedia
 {
     use SoftDeletes, LogsActivity, HasMediaTrait;
 
-    protected $fillable = ['customer_id' ,'mollie_id', 'mandate_id', 'company_name', 'name', 'email', 'city', 'street_addr', 'street_number', 'postal_code', 'phone', 'iban', 'btw', 'kvk'];
+    protected $fillable = ['customer_id', 'mollie_id', 'mandate_id', 'company_name', 'name', 'email', 'city', 'street_addr', 'street_number', 'postal_code', 'phone', 'iban', 'is_company', 'btw', 'kvk'];
     protected static $logName = 'systeem';
+    protected $casts = [
+        'is_company' => 'boolean'
+    ];
 
     public function getDescriptionForEvent(string $eventName): string
     {

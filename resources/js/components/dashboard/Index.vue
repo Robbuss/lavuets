@@ -1,11 +1,15 @@
 <template>
   <v-flex v-if="!loading">
-    <v-layout row wrap>
-      <v-flex sm12>
+    <v-layout row wrap justify-space-between align-center>
+      <v-flex px-3>
+        <v-btn outline small class="primary primary--text" @click="manualTenant">Klant toevoegen</v-btn>
+      </v-flex>
+      <v-flex>
         <h1
-          class="subheading primary--text text-xs-center font-weight-bold"
+          class="subheading primary--text font-weight-bold"
         >{{ user.name }}, you magnificent bastard!</h1>
       </v-flex>
+      <v-flex></v-flex>
     </v-layout>
     <v-container fluid grid-list-xl>
       <v-layout row wrap>
@@ -32,6 +36,7 @@
         </v-flex>
       </v-layout>
     </v-container>
+    <ManualTenant v-model="dialog" />
   </v-flex>
 </template>
 
@@ -44,6 +49,8 @@ import TodoList from "./TodoList.vue";
 import UnpaidInvoices from "./UnpaidInvoices.vue";
 import Revenue from "./RevenueTiles.vue";
 import OccupationRate from "./OccupationRate.vue";
+import ManualTenant from "js/components/tenants/ManualTenant.vue";
+
 @Component({
   components: {
     PaymentChart,
@@ -51,6 +58,7 @@ import OccupationRate from "./OccupationRate.vue";
     Revenue,
     OccupationRate,
     UnpaidInvoices,
+    ManualTenant
   }
 })
 export default class Index extends Vue {
@@ -60,6 +68,7 @@ export default class Index extends Vue {
   private payments: any = [];
   private user: any = {};
   private tenants: any = [];
+  private dialog: boolean = false;
 
   async mounted() {
     const r = (await axios.get("/api/dashboard")).data;
@@ -69,6 +78,10 @@ export default class Index extends Vue {
     this.payments = r.payments;
     this.user = r.user;
     this.loading = false;
+  }
+
+  manualTenant() {
+    this.dialog = true;
   }
 }
 </script>

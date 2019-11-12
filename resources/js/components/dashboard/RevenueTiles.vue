@@ -96,13 +96,13 @@ export default class RevenueTiles extends Vue {
 
   get realizedProfit() {
     let p = 0;
-    this.contracts.map((x: any) => x.units.map((x: any) => (p += x.price)));
+    this.contracts.map((x: any) => x.units.map((x: any) => (p += Number(x.price))));
     return this.monthly ? p : p * 12;
   }
 
   get potentialExtraProfit() {
     let p = 0;
-    this.units.free.map((x: any) => (p += x.price));
+    this.units.free.map((x: any) => (p += Number(x.price)));
     return this.monthly ? p : p * 12;
   }
 

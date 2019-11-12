@@ -44,7 +44,7 @@ class InvoiceGenerator
     {
         $invoiceUnitPrice = [];
         foreach ($priceArray as $pu) {
-            $invoiceUnitPrice[$pu['id']] = ['price' => $pu['price']];
+            $invoiceUnitPrice[$pu['id']] = ['price' => $pu->pivot->price];
         };
         return $invoiceUnitPrice;
     }

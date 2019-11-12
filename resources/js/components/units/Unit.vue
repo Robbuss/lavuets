@@ -1,40 +1,40 @@
 <template>
   <v-flex v-if="!loading" fill-height>
     <v-layout row wrap>
-      <v-flex xs12 sm6 md4>
+      <v-flex xs12 md4>
         <edit-create-unit :unit="unit" :creating="false"></edit-create-unit>
-    </v-flex>
-      <v-flex xs12 sm6 md8>
-      <v-toolbar class="primary" dark>
-        <v-toolbar-title>Contracten op dit product</v-toolbar-title>
-      </v-toolbar>
-      <v-list>
-        <v-list-tile
-          v-for="(contract, i ) in contracts"
-          :key="i"
-          @click="$router.push('/contracts/' + contract.id)"
-        >
-          <v-list-tile-content>
-            <v-list-tile-title>Klant: {{ contract.tenant.name }}</v-list-tile-title>
-            <v-list-tile-sub-title>Prijs: €{{ contract.price }}</v-list-tile-sub-title>
-          </v-list-tile-content>
-          <v-list-tile-action v-if="contract.active">
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on }">
-              <v-icon color="success--text" dark v-on="on">check</v-icon>
-            </template>
-            <span>Dit contract loopt nog</span>
-          </v-tooltip>
-          </v-list-tile-action>
-        </v-list-tile>
-        <v-list-tile v-if="contracts.length === 0">
-          <v-list-tile-content>
-            Nog niet verhuurd.
-          </v-list-tile-content>
-        </v-list-tile>
-      </v-list>
-    </v-flex>
-  </v-layout>
+      </v-flex>
+      <v-flex xs12 md4 pl-4>
+        <v-card>
+          <v-toolbar class="primary" dark>
+            <v-toolbar-title>Contracten op dit product</v-toolbar-title>
+          </v-toolbar>
+          <v-list>
+            <v-list-tile
+              v-for="(contract, i ) in contracts"
+              :key="i"
+              @click="$router.push('/contracts/' + contract.id)"
+            >
+              <v-list-tile-content>
+                <v-list-tile-title>Verhuurd aan {{ contract.tenant.name }}</v-list-tile-title>
+                <v-list-tile-sub-title>Sinds {{formatDate(contract.start_date) }}</v-list-tile-sub-title>
+              </v-list-tile-content>
+              <v-list-tile-action v-if="contract.active">
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on }">
+                    <v-icon color="success--text" dark v-on="on">check</v-icon>
+                  </template>
+                  <span>Dit contract loopt nog</span>
+                </v-tooltip>
+              </v-list-tile-action>
+            </v-list-tile>
+            <v-list-tile v-if="contracts.length === 0">
+              <v-list-tile-content>Nog niet verhuurd.</v-list-tile-content>
+            </v-list-tile>
+          </v-list>
+        </v-card>
+      </v-flex>
+    </v-layout>
   </v-flex>
 </template>
 
@@ -42,6 +42,7 @@
 import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
 import axios from "js/axios";
+import * as moment from "moment";
 import EditCreateUnit from "./EditCreate.vue";
 
 @Component({
@@ -54,7 +55,11 @@ export default class SingleUnit extends Vue {
   private dialog: boolean = false;
   private loading: boolean = true;
   private contracts: any = null;
-  private unit: any = {}
+  private unit: any = {};
+
+  formatDate(date: any){
+    return moment(date).format('LL');
+  }
 
   async mounted() {
     try {

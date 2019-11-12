@@ -1,4 +1,4 @@
-<template>
+\<template>
   <v-app>
     <v-navigation-drawer v-model="drawer" clipped fixed app v-if="authenticated">
       <nav-items :authenticated="authenticated" class="pt-4"></nav-items>
@@ -123,13 +123,13 @@ const router = new Router({
       path: "/login",
       component: Login,
       beforeEnter: (to: any, from: any, next: any) =>
-        Store.getters.authenticated ? next("/u") : next()
+        Store.getters.authenticated ? next("/") : next()
     },
     {
       path: "/register",
       component: Register,
       beforeEnter: (to: any, from: any, next: any) =>
-        Store.getters.authenticated ? next("/u") : next()
+        Store.getters.authenticated ? next("/") : next()
     },
     {
       path: "/tenants",

@@ -12,6 +12,7 @@
             placeholder="Waar de unit zich bevindt"
             v-model="editedItem.location_id"
             required
+            box
             item-text="facility_name"
             item-value="id"
             :items="locations"
@@ -21,25 +22,30 @@
         <v-flex sm12>
           <v-text-field
             label="Product naam"
+            box
             placeholder="Komt op de factuur"
             v-model="editedItem.name"
             required
             :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
           />
         </v-flex>
-        <v-flex sm12 md6>
+        <v-flex sm12>
           <v-text-field
             type="number"
+            box
             label="Grootte in m3"
+            suffix="m3"
             placeholder="Gebruik alleen getallen"
             v-model="editedItem.size"
             required
             :rules="[v => (v.length !== 0) || 'Dit veld mag niet leeg zijn']"
           />
         </v-flex>
-        <v-flex sm12 md6>
+        <v-flex sm12>
           <v-text-field
             type="number"
+            box
+            prefix="€"
             label="Prijs in euro's"
             placeholder="Gebruik alleen getallen"
             v-model="editedItem.price"
@@ -48,7 +54,19 @@
           />
         </v-flex>
         <v-flex sm12>
-          <v-select :items="activeBox" v-model="editedItem.active" label="Box is verhuurbaar" />
+          <v-text-field
+            type="number"
+            box
+            label="BTW percentage"
+            suffix="%"
+            placeholder="Gebruik alleen een getal"
+            v-model="editedItem.vat_percentage"
+            required
+            :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
+          />
+        </v-flex>
+        <v-flex sm12>
+          <v-select box :items="activeBox" v-model="editedItem.active" label="Box is verhuurbaar" />
         </v-flex>
       </v-layout>
     </v-form>
@@ -100,7 +118,8 @@ export default class Editunit extends Vue {
     location_id: null,
     size: "",
     active: true,
-    price: null
+    price: null,
+    vat_percentage: 21
   };
   private defaultItem: any = {
     id: null,
@@ -108,7 +127,8 @@ export default class Editunit extends Vue {
     name: "",
     size: "",
     active: null,
-    price: null
+    price: null,
+    vat_percentage: 21
   };
   private response = "";
 

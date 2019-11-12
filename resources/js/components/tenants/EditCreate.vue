@@ -91,13 +91,14 @@
             </v-flex>
             <v-flex xs12>
               <v-checkbox
-                v-model="isCompany"
+                :disabled="!editFields"
+                v-model="editedItem.is_company"
                 label="Deze klant is een bedrijf"
                 hide-details
                 class="mt-0"
               />
             </v-flex>
-            <v-layout row wrap v-if="isCompany">
+            <v-layout row wrap v-if="editedItem.is_company">
               <v-flex xs12 sm6 md4>
                 <v-text-field
                   box
@@ -155,7 +156,6 @@ export default class EditTenant extends Vue {
     (v: string) => !!v || "Dit veld mag niet leeg zijn",
     (v: string) => !!iban.isValid(v) || "Dit is geen geldig IBAN nummer"
   ];
-  private isCompany: boolean = false;
   private editFields: boolean = false;
   private valid: boolean = null;
   private working: boolean = false;
@@ -169,6 +169,7 @@ export default class EditTenant extends Vue {
     street_addr: "",
     street_number: null,
     postal_code: "",
+    is_company: false,
     btw: "",
     kvk: "",
     iban: ""
@@ -183,6 +184,7 @@ export default class EditTenant extends Vue {
     street_addr: "",
     street_number: null,
     postal_code: "",
+    is_company: false,
     btw: "",
     kvk: "",
     iban: ""
@@ -199,9 +201,6 @@ export default class EditTenant extends Vue {
     if (this.enableFields) this.editFields = true;
     if (this.tenant) {
       this.editedItem = Object.assign({}, this.tenant);
-      if(this.tenant.kvk || this.tenant.btw || this.tenant.company_name){
-        this.isCompany = true;
-      }
     }
   }
 
@@ -219,10 +218,16 @@ export default class EditTenant extends Vue {
     this.working = true;
     if (!this.creating) {
       await axios.post("/api/tenants/" + this.editedItem.id, this.editedItem);
-      store.commit("snackbar", { type: "success", message: "Klant aangepast!" });
+      store.commit("snackbar", {
+        type: "success",
+        message: "Klant aangepast!"
+      });
     } else {
       await axios.post("/api/tenants/create", this.editedItem);
-      store.commit("snackbar", { type: "success", message: "Klant aangemaakt!" });
+      store.commit("snackbar", {
+        type: "success",
+        message: "Klant aangemaakt!"
+      });
     }
     this.$emit("saved");
     this.working = false;

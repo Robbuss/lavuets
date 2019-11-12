@@ -4,11 +4,14 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use App\Models\Unit;
+use App\Models\Tenant;
 use App\Models\Invoice;
 use App\Models\Payment;
 use App\Models\Contract;
-use App\Models\Tenant;
+use App\Models\Customer;
+use App\Utils\MolliePayment;
 use Illuminate\Http\Request;
+use App\Utils\InvoiceGenerator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
@@ -80,5 +83,59 @@ class DashboardController extends Controller
                 'payments' => $q->payments ? $q->payments : ['payment_id' => false, 'status' => 'Geen id'],
             ];
         });
+    }
+
+    public function manualTenant(Request $request)
+    {
+        // create a tenant
+        $tenant = Tenant::create(
+            array_merge(
+                $request->tenant,
+                ['customer_id' => Customer::current()->id]
+            ),
+        );
+
+        // create a contract that is inactive till after payment is received (activated in the webhook)
+        $contract = Contract::create(array_merge($request->contract, [
+            'customer_id' => Customer::current()->id,
+            'tenant_id' => $tenant->id,
+            'auto_invoice' => true,
+            'method' => 'addMonth',
+            'payment_method' => 'incasso',
+        ]));
+        $contract->units()->sync($this->getSyncArray($request->units));
+
+        // generate an invoice
+        $invoice = new InvoiceGenerator($contract);
+
+        // create a mollie customer, create a mollie payment and store the payment in our database. 
+        if ($request->ideal) {
+            $payments = (new MolliePayment($tenant, $contract, $invoice->lastInvoice))->payment();
+            return ['success' => true, 'payment_url' => $payments['molliepayment']->getCheckoutUrl()];
+        } else {
+            // save the payment to our database
+            Payment::create([
+                'customer_id' => Customer::current()->id,
+                'contract_id' => $contract->id,
+                'tenant_id' => $tenant->id,
+                'invoice_id' => $invoice->lastInvoice->id,
+                'payment_id' => $request->payment['payment_id'],
+                'status' => $request->payment['status'],
+                'amount' => (string) $request->payment['price']
+            ]);
+        }
+
+        // redirect tenant to Mollie checkout page
+        return ['success' => true];
+    }
+
+    public function getSyncArray($priceArray = [])
+    {
+        $contractUnitPrice = [];
+        foreach ($priceArray as $pu) {
+            $contractUnitPrice[$pu['id']] = ['price' => $pu['price']];
+        };
+
+        return $contractUnitPrice;
     }
 }

@@ -52,7 +52,7 @@
               class="pointer"
             >{{ getUnits(props.item.units) }}</td>
             <td v-else>{{ getUnits(props.item.units) }}</td>
-            <td>€{{ props.item.price }}</td>
+            <td>€{{ formatMoney(props.item.price) }}</td>
             <td>{{ formatDate(props.item.start_date, 'LL') }}</td>
             <td>{{ formatDate(props.item.end_date, 'LL') }}</td>
             <td v-if="props.item.sent">{{ formatDate(props.item.sent, 'LL') }}</td>
@@ -178,6 +178,10 @@ export default class Invoices extends Vue {
 
   formatDate(date: any, format: string) {
     return moment(date).format(format);
+  }
+
+  formatMoney(number: any) {
+    return number.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&,");
   }
 
   getUnits(unit: any) {

@@ -38,9 +38,16 @@
             <v-divider :key="i + 'd'" v-if="i >0 && contract.units.length > 1"></v-divider>
             <v-list-tile :key="i">
               <v-list-tile-avatar>
-                <v-avatar>
-                  <v-img src="/garage-door.svg" />
-                </v-avatar>
+                <v-tooltip bottom>
+                  <v-avatar
+                    slot="activator"
+                    class="hover"
+                    @click="$router.push('/units/' + u.id)"
+                  >
+                    <v-img src="/garage-door.svg" />
+                  </v-avatar>
+                  <span>Naar de unit</span>
+                </v-tooltip>
               </v-list-tile-avatar>
               <v-list-tile-content>
                 <v-list-tile-title>
@@ -48,7 +55,10 @@
                   <span v-if="u.pivot">{{ u.pivot.price }}</span>
                   <span v-else>{{ u.price}}</span> per maand
                 </v-list-tile-title>
-                <v-list-tile-sub-title>(standaard prijs: €{{ u.price }})</v-list-tile-sub-title>
+                <v-list-tile-sub-title
+                  v-if="contract.tenant.is_company"
+                >+ {{ u.vat_percentage *100 }}% btw a €{{ u.pivot.price * u.vat_percentage }}</v-list-tile-sub-title>
+                <v-list-tile-sub-title v-else>Vrij van btw</v-list-tile-sub-title>
               </v-list-tile-content>
             </v-list-tile>
           </template>
@@ -199,7 +209,7 @@ export default class SingleContractInformation extends Vue {
         field: this.contract.tenant.company_name || "Particulier",
         icon: "store",
         tooltip: "Bedrijf of particulier"
-      },
+      }
     ];
   }
 
