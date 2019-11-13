@@ -29,7 +29,7 @@ class TenantController extends Controller
     public function create(Request $request)
     {
         $tenant = Tenant::create([
-            'customer_id'=> Customer::current()->id,
+            'customer_id' => Customer::current()->id,
             'company_name' => $request->company_name,
             'name' => $request->name,
             'email' => $request->email,
@@ -48,7 +48,7 @@ class TenantController extends Controller
 
     public function read(Tenant $tenant)
     {
-        return $tenant;
+        return $tenant->load('contracts.units');
     }
 
     /**
