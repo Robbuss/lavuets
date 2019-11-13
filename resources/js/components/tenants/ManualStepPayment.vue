@@ -79,8 +79,6 @@ export default class StepPayment extends Vue {
     this.$emit("done");
   }
 
-
-
   mounted() {
     this.payment.payment_id = "mt_" + Date.now();
   }

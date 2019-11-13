@@ -4,7 +4,7 @@
       <BackButton />
       <v-toolbar-title>{{ formTitle }}</v-toolbar-title>
     </v-toolbar>
-    <v-form v-model="valid" lazy-validation ref="form">
+    <v-form lazy-validation ref="form">
       <v-layout row wrap class="pa-3">
         <v-flex sm12>
           <v-select
@@ -38,22 +38,29 @@
             placeholder="Gebruik alleen getallen"
             v-model="editedItem.size"
             required
-            :rules="[v => (v.length !== 0) || 'Dit veld mag niet leeg zijn']"
+            :rules="[
+              v => (v.length !== 0) || 'Dit veld mag niet leeg zijn',
+              v => v >= 0 || 'Waarde moet positief zijn'
+            ]"
           />
         </v-flex>
         <v-flex sm12>
           <v-text-field
             type="number"
             box
+            min="0"
             prefix="€"
             label="Prijs in euro's"
             placeholder="Gebruik alleen getallen"
             v-model="editedItem.price"
             required
-            :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
+            :rules="[
+              v => (v.length !== 0) || 'Dit veld mag niet leeg zijn',
+              v => v >= 0 || 'Waarde moet positief zijn'
+            ]"
           />
         </v-flex>
-        <v-flex sm12>
+        <v-flex sm12 md6>
           <v-text-field
             type="number"
             box
@@ -63,10 +70,44 @@
             v-model="editedItem.vat_percentage"
             required
             :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
+            :class="{'pr-3' : $vuetify.breakpoint.mdAndUp}"
           />
         </v-flex>
-        <v-flex sm12>
-          <v-select box :items="activeBox" v-model="editedItem.active" label="Box is verhuurbaar" />
+        <v-flex sm12 md6>
+          <v-select
+            box
+            label="BTW rekenen voor"
+            placeholder="Kies wat voor klanten btw betalen"
+            v-model="editedItem.should_tax"
+            required
+            item-text="key"
+            item-value="value"
+            :items="shouldTaxOptions"
+            :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
+          />
+        </v-flex>
+        <v-flex sm12 md6>
+          <v-select
+            box
+            :class="{'pr-3' : $vuetify.breakpoint.mdAndUp}"
+            :items="activeBox"
+            v-model="editedItem.active"
+            label="Product is verhuurbaar"
+          />
+        </v-flex>
+        <v-flex sm12 md6>
+          <v-select
+            box
+            :items="activeBox"
+            v-model="editedItem.show_frontend"
+            label="Product tonen in boekingsformulier"
+          />
+        </v-flex>
+        <v-flex xs12>
+          <v-alert
+            :value="(editedItem.show_frontend && !editedItem.active) || (!editedItem.show_frontend && editedItem.active)"
+            type="info"
+          >Wanneer het product niet verhuurbaar is óf wanneer product tonen in het boekingsformulier uit staat, zal het niet worden getoond.</v-alert>
         </v-flex>
       </v-layout>
     </v-form>
@@ -100,8 +141,12 @@ export default class Editunit extends Vue {
 
   private loading: boolean = true;
   private working: boolean = false;
-  private valid: boolean = true;
   private locations: any = [];
+  private shouldTaxOptions: any = [
+    { value: "companies", key: "Alleen bedrijven" },
+    { value: "all", key: "Iedereen" },
+    { value: "none", key: "Niemand" }
+  ];
   private activeBox: any = [
     {
       text: "Ja",
@@ -118,8 +163,10 @@ export default class Editunit extends Vue {
     location_id: null,
     size: "",
     active: true,
-    price: null,
-    vat_percentage: 21
+    price: 0,
+    vat_percentage: 0.21,
+    should_tax: [],
+    show_frontend: true
   };
   private defaultItem: any = {
     id: null,
@@ -127,8 +174,10 @@ export default class Editunit extends Vue {
     name: "",
     size: "",
     active: null,
-    price: null,
-    vat_percentage: 21
+    price: 0,
+    vat_percentage: 0.21,
+    should_tax: [],
+    show_frontend: true
   };
   private response = "";
 

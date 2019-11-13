@@ -38,30 +38,30 @@
         :pagination.sync="pagination"
       >
         <template v-slot:items="props">
-          <td>{{ props.item.id }}</td>
-          <td>{{ props.item.facility_name }}</td>
-          <td
-            style="cursor: pointer"
-            @click="$router.push('/units/' + props.item.id)"
-          >{{ props.item.name }}</td>
-          <td>{{ props.item.size }}</td>
-          <td>€{{ props.item.price }}</td>
-          <td>
-            <v-chip
-              class="ml-0"
-              flat
-              dark
-              :class="{'green' : props.item.active, 'orange' : !props.item.active }"
-              v-if="props.item.free"
-            >
-            Beschikbaar<span v-if="!props.item.active">, niet verhuurbaar</span> 
-            </v-chip>
-            <v-chip class="ml-0" flat v-else>Verhuurd</v-chip>
-          </td>
-          <td class="layout justify-end">
-            <v-icon small class="mr-2" @click="editItem(props.item)">edit</v-icon>
-            <v-icon small @click="deleteItem(props.item)">delete</v-icon>
-          </td>
+          <tr @click="$router.push('/units/' + props.item.id)" style="cursor: pointer">
+            <td>{{ props.item.id }}</td>
+            <td>{{ props.item.facility_name }}</td>
+            <td>{{ props.item.name }}</td>
+            <td>{{ props.item.size }}</td>
+            <td>€{{ props.item.price }}</td>
+            <td>
+              <v-chip
+                class="ml-0"
+                flat
+                dark
+                :class="{'green' : props.item.active, 'orange' : !props.item.active }"
+                v-if="props.item.free"
+              >
+                Beschikbaar
+                <span v-if="!props.item.active">, niet verhuurbaar</span>
+              </v-chip>
+              <v-chip class="ml-0" flat v-else>Verhuurd</v-chip>
+            </td>
+            <td class="layout justify-end">
+              <v-icon small class="mr-2" @click.stop="editItem(props.item)">edit</v-icon>
+              <v-icon small @click.stop="deleteItem(props.item)">delete</v-icon>
+            </td>
+          </tr>
         </template>
         <template v-slot:no-data>
           <td colspan="100%" v-if="loading">Boxen laden...</td>
@@ -127,11 +127,13 @@ export default class Units extends Vue {
 
   deleteItem(item: any) {
     const index = this.units.indexOf(item);
-    confirm("Are you sure you want to delete this item?") &&
+    confirm("Weet je zeker dat je dit product wil verwijderen? Als er contracten actief zijn op dit product gaat het mis!") &&
       this.units.splice(index, 1) &&
-      axios.post("/api/units/" + item.id + "/delete");
-      
-    store.commit("snackbar", { type: "success", message: "Product verwijderd!" });
+      axios.post("/api/units/" + item.id + "/delete") &&
+      store.commit("snackbar", {
+        type: "success",
+        message: "Product verwijderd!"
+      });
   }
 
   createItem() {

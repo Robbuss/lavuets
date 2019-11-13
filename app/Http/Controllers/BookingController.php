@@ -20,8 +20,7 @@ class BookingController extends Controller
      */
     public function stepLocation()
     {
-        return Unit::where('active', 1)->where('size', '>', 0)
-            ->doesntHave('contracts')
+        return Unit::bookableUnits()
             ->with('location')
             ->get()->groupBy('location_id')->map(function ($q) {
                 return [
@@ -34,7 +33,7 @@ class BookingController extends Controller
 
     public function stepUnits(Request $request)
     {
-        $free = Unit::doesntHave('contracts')->where('size', '>', 0)->where('active', 1)->where('location_id', $request->location_id)->get();
+        $free = Unit::bookableUnits()->where('location_id', $request->location_id)->get();
         return $free->mapToGroups(function ($item) {
             return [$item['size'] => $item];
         });

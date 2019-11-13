@@ -135,7 +135,7 @@
                     :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                     required
                     v-model="tenant.city"
-                    label="Stad"
+                    label="Woonplaats"
                     autocomplete="shipping locality"
                     name="ship-city"
                   ></v-text-field>
@@ -224,7 +224,7 @@
                 </h3>
                 <h3 class="subheading grey--text">
                   Opslagruimte
-                  <span class="primary--text">{{ calculateSize }} M2</span>
+                  <span class="primary--text">{{ calculateSize }} M3</span>
                 </h3>
                 <h3 class="subheading grey--text">
                   Prijs per maand

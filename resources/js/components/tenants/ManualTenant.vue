@@ -79,6 +79,7 @@ import StepLocation from "js/components/bookings/StepLocation.vue";
 import StepUnit from "js/components/bookings/StepUnit.vue";
 import ManualStepTenant from "./ManualStepTenant.vue";
 import ManualStepPayment from "./ManualStepPayment.vue";
+import store from "js/store";
 
 @Component({
   components: {
@@ -148,12 +149,17 @@ export default class ManualBooking extends Vue {
         contract: this.contract,
         units: this.contract.units
       });
-      if(r.data.payment_url && this.ideal) // set ideal to true, to enable an ideal checkout link for the customer
+      store.commit("snackbar", {
+        type: "success",
+        message: "Klant, contract en factuur aangemaakt!"
+      });
+      if (r.data.payment_url && this.ideal)
+        // set ideal to true, to enable an ideal checkout link for the customer
         window.location.href = r.data.payment_url;
     } catch (e) {
       console.log("something went wrong");
     }
-    this.$emit('input');
+    this.$emit("input");
     this.working = false;
   }
 }
