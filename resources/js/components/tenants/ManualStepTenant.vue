@@ -37,7 +37,6 @@
                         v-model="formattedDate"
                         :rules="[
                         v => !!v || 'Dit veld mag niet leeg zijn',
-                        v => isInFuture || 'Datum moet in de toekomst liggen!'
                         ]"
                         required
                         label="Startdatum huur"
@@ -248,10 +247,6 @@ export default class StepTenant extends Vue {
     moment().locale("nl");
     if (!this.contract.start_date)
       this.contract.start_date = moment().format("YYYY-MM-DD");
-  }
-
-  get isInFuture() {
-    return moment().format("LL") <= this.formattedDate;
   }
 
   get formattedDate() {
