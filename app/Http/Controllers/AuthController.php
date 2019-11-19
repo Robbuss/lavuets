@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use GuzzleHttp\Client;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use GuzzleHttp\Exception\BadResponseException;
@@ -34,8 +35,9 @@ class AuthController extends Controller
 
     public function register(Request $request)
     { 
-        if(!config('auth.enable_registration'))
-            return ['errors' => 'Registration is closed'];
+
+        if(!Setting::where('key', 'enable_registration')->first()->value)
+            return ['errors' => 'Registratie is gesloten'];
 
         $request->validate([
             'name' => ['required', 'string', 'max:255'],

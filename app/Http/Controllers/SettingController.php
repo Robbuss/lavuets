@@ -9,7 +9,7 @@ class SettingController extends Controller
 {
     public function index(Request $request)
     {
-        return Setting::all()->map(function($q){
+        return Setting::all()->map(function ($q) {
             return [
                 'key' => $q->key,
                 'value' => $q->value,
@@ -25,5 +25,12 @@ class SettingController extends Controller
             ]);
         }
         return ["success" => true];
+    }
+
+    public function layout()
+    {
+        return Setting::public()->get()->map(function ($q) {
+            return ['key' => $q->key, 'value' => $q->value];
+        });
     }
 }

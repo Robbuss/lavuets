@@ -1,5 +1,5 @@
 \<template>
-  <v-app>
+  <v-app v-if="!loading">
     <v-navigation-drawer v-model="drawer" clipped fixed app v-if="authenticated">
       <nav-items :authenticated="authenticated" class="pt-4"></nav-items>
     </v-navigation-drawer>
@@ -9,7 +9,7 @@
         @click.stop="drawer = !drawer"
         v-if="authenticated"
       ></v-toolbar-side-icon>
-      <v-toolbar-title style="cursor: pointer" @click="$router.push('/')">OPSLAGMAGAZIJN</v-toolbar-title>
+      <v-toolbar-title style="cursor: pointer" @click="$router.push('/')">{{ appName }}</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items v-if="authenticated">
         <v-menu offset-y bottom left open-on-hover>
@@ -48,7 +48,7 @@
                 <v-icon>description</v-icon>
               </v-list-tile-action>
               <v-list-tile-title>Systeemlog</v-list-tile-title>
-            </v-list-tile>            
+            </v-list-tile>
             <v-list-tile @click="$router.push('/logout')">
               <v-list-tile-action>
                 <v-icon>exit_to_app</v-icon>
@@ -60,18 +60,27 @@
       </v-toolbar-items>
     </v-toolbar>
     <v-content>
-      <v-container fluid fill-height :class="{'pa-0' : $vuetify.breakpoint.smAndDown}">
+      <v-container
+        fluid
+        fill-height
+        :class="{'pa-0' : $vuetify.breakpoint.smAndDown}"
+      >
         <v-layout justify-center :align-center="authRoutes">
           <router-view></router-view>
         </v-layout>
       </v-container>
-      <v-snackbar v-model="snackbar.show" :color="snackbar.type">
-        {{ snackbar.message }}
-      </v-snackbar>
+      <v-snackbar v-model="snackbar.show" :color="snackbar.type">{{ snackbar.message }}</v-snackbar>
     </v-content>
   </v-app>
 </template>
-
+<style scoped>
+.background {
+  background-color: #ff11fb;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25' viewBox='0 0 1600 800'%3E%3Cg stroke='%23000' stroke-width='100' stroke-opacity='0.05' %3E%3Ccircle fill='%23ff11fb' cx='0' cy='0' r='1800'/%3E%3Ccircle fill='%23fa00e1' cx='0' cy='0' r='1700'/%3E%3Ccircle fill='%23f200c9' cx='0' cy='0' r='1600'/%3E%3Ccircle fill='%23e900b2' cx='0' cy='0' r='1500'/%3E%3Ccircle fill='%23de009c' cx='0' cy='0' r='1400'/%3E%3Ccircle fill='%23d20088' cx='0' cy='0' r='1300'/%3E%3Ccircle fill='%23c40076' cx='0' cy='0' r='1200'/%3E%3Ccircle fill='%23b60065' cx='0' cy='0' r='1100'/%3E%3Ccircle fill='%23a70055' cx='0' cy='0' r='1000'/%3E%3Ccircle fill='%23980047' cx='0' cy='0' r='900'/%3E%3Ccircle fill='%2389003b' cx='0' cy='0' r='800'/%3E%3Ccircle fill='%23790030' cx='0' cy='0' r='700'/%3E%3Ccircle fill='%236a0626' cx='0' cy='0' r='600'/%3E%3Ccircle fill='%235a0b1e' cx='0' cy='0' r='500'/%3E%3Ccircle fill='%234c0d17' cx='0' cy='0' r='400'/%3E%3Ccircle fill='%233d0d10' cx='0' cy='0' r='300'/%3E%3Ccircle fill='%23300c07' cx='0' cy='0' r='200'/%3E%3Ccircle fill='%23240800' cx='0' cy='0' r='100'/%3E%3C/g%3E%3C/svg%3E");
+  background-attachment: fixed;
+  background-size: cover;
+}
+</style>
 <script lang="ts">
 // import "@babel/polyfill";
 import Vue from "vue";
@@ -118,7 +127,7 @@ const router = new Router({
     {
       path: "/registreer-verhuurder",
       component: NewCustomer
-    },    
+    },
     {
       path: "/login",
       component: Login,
@@ -196,7 +205,7 @@ const router = new Router({
       component: Locations,
       beforeEnter: (to: any, from: any, next: any) =>
         !Store.getters.authenticated ? next("/login") : next()
-    },    
+    },
     {
       path: "/u/profile",
       component: Dashboard,
@@ -232,10 +241,15 @@ const router = new Router({
 })
 export default class RouterComponent extends Vue {
   private drawer: boolean = true;
+  private loading: boolean = true;
 
-  async mounted() {
-    const r = (await axios.get("/api/settings")).data;
+  async created() {
+    const r = (await axios.get("/api/settings/layout")).data;
+    Store.commit("layout", r);
+    this.$vuetify.theme.primary = Store.state.layout.primary_color;
+    this.loading = false;
   }
+
   get authRoutes() {
     if (
       this.$route.fullPath.startsWith("/login") ||
@@ -250,13 +264,20 @@ export default class RouterComponent extends Vue {
   }
 
   get snackbar() {
-    return Store.getters.snackbarStatus
+    return Store.state.snackbar;
+  }
+
+  get appName() {
+    return Store.state.layout.app_name;
   }
 
   @Watch("snackbar.show")
   onSnackbarChanged(newval: boolean, oldval: boolean) {
     if (oldval !== undefined) {
-      let t = setTimeout(() => (Store.commit('snackbar', { show: false, message: ""})), 3500);
+      let t = setTimeout(
+        () => Store.commit("snackbar", { show: false, message: "" }),
+        3500
+      );
       clearTimeout(t);
     }
   }

@@ -1,5 +1,5 @@
 <template>
-  <v-flex sm12 md8 lg5>
+  <v-flex sm12 md7 lg4>
     <v-card>
       <v-toolbar color="primary white--text" class="mb-3">
         <v-toolbar-title>Login</v-toolbar-title>
@@ -28,13 +28,14 @@
           @keydown.native.enter="validate"
           prepend-icon="lock"
         />
-        <v-btn class="ml-0" color="primary" @click="validate" :disabled="working" :loading="working">Login</v-btn>
-        <v-alert
-          :value="message"
-          type="warning"
-        >
-          {{ message }}
-        </v-alert>
+        <v-btn
+          class="ml-0"
+          color="primary"
+          @click="validate"
+          :disabled="working"
+          :loading="working"
+        >Login</v-btn>
+        <v-alert :value="message" type="warning">{{ message }}</v-alert>
       </v-form>
     </v-card>
   </v-flex>
@@ -70,7 +71,7 @@ export default class Login extends Vue {
         this.message = r.data.message;
       }
       if (r.data.access_token) {
-        store.commit("updateToken", r.data.access_token)
+        store.commit("updateToken", r.data.access_token);
         this.$router.push("/");
       }
     } catch (e) {

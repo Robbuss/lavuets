@@ -10,17 +10,18 @@ let store = new Vuex.Store({
       show: false,
       message: "",
       type: "success"
-    }
+    },
+    layout: {} as any
   },
   getters: {
     authenticated: state => {
       return state.token !== null;
     },
-    snackbarStatus: state => {
-      return state.snackbar
-    }
   },
   mutations: {
+    layout: (state, layout: any) => {
+      layout.map((x:any) => state.layout[x.key] = x.value);
+    },
     snackbar: (state, snackbar: any) => {
       state.snackbar.message = snackbar.message
       state.snackbar.type = snackbar.type

@@ -8,6 +8,7 @@ Route::post('/register', 'AuthController@register');
 Route::get('/book-data/locations', 'BookingController@stepLocation');
 Route::post('/book-data/units', 'BookingController@stepUnits');
 Route::post('/booking/create', 'BookingController@create');
+Route::get('/settings/layout', 'SettingController@layout');
 
 Route::post('/customers/create', 'CustomerController@create');
 
