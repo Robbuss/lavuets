@@ -52,7 +52,7 @@ Route::middleware('auth:api')->group(function () {
 
     Route::get('/dashboard', 'DashboardController@index');
     Route::get('/dashboard/unpaid-invoices', 'DashboardController@unpaidInvoices');
-    Route::post('/dashboard/manual-tenant', 'Dashboardcontroller@manualTenant');
+    Route::post('/dashboard/manual-tenant', 'DashboardController@manualTenant');
 
     Route::get('/settings', 'SettingController@index');
     Route::post('/settings', 'SettingController@update');
