@@ -7,7 +7,7 @@
       <v-flex>
         <h1
           class="subheading primary--text font-weight-bold"
-        >{{ user.name }}, you magnificent bastard!</h1>
+        >{{ greeting }}</h1>
       </v-flex>
       <v-flex></v-flex>
     </v-layout>
@@ -69,6 +69,13 @@ export default class Index extends Vue {
   private user: any = {};
   private tenants: any = [];
   private dialog: boolean = false;
+  private greetings: any = [
+    ':name:, you magnificent bastard!',
+    'Welcome back, old chap',
+    'So good to see you again, :name:',
+    'Good dawning to thee, friend',
+    'Well be with you, :name:'
+  ];
 
   async mounted() {
     const r = (await axios.get("/api/dashboard")).data;
@@ -82,6 +89,10 @@ export default class Index extends Vue {
 
   manualTenant() {
     this.dialog = true;
+  }
+
+  get greeting (){
+    return this.greetings[Math.floor(Math.random() * Math.floor(this.greetings.length))].replace(':name:', this.user.name);
   }
 }
 </script>
