@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Models\Invoice;
+use App\Models\Setting;
+use App\Models\Customer;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -32,6 +34,12 @@ class EventServiceProvider extends ServiceProvider
         Invoice::creating(
             function ($contract) {
                 $contract->ref_number =  (Invoice::orderBy('id', 'DESC')->first()) ? Invoice::orderBy('id', 'DESC')->first()->ref_number + 1 : 1; // get the last invoice from the db and grab that number
+            }
+        );
+
+        Customer::created(
+            function($customer) {
+                Setting::createDefault($customer);
             }
         );
         //

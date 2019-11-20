@@ -44,7 +44,7 @@
                   :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                   required
                   v-model="newCustomer.domain"
-                  suffix=".dimonforini.nl"
+                  suffix=".10ants.nl"
                   label="Domein naam"
                 ></v-text-field>
               </v-flex>
@@ -130,9 +130,9 @@ export default class NewCustomer extends Vue {
     if (!(this.$refs.form as any).validate()) return;
     this.working = true;
     try {
-      await axios.post("/api/customers/create", this.newCustomer);
+      const r = (await axios.post("/api/customers/create", this.newCustomer)).data;
+      window.location.href = "http://" + this.newCustomer.domain + ".opslag.dev.v-d-berg.com/" + r.user_id + "/" + r.sso_token ;
     } catch (e) {}
-    window.location.href = "http://" + this.newCustomer.domain + ".opslag.dev.v-d-berg.com";
     this.working = false;
   }
 }

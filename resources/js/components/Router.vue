@@ -90,6 +90,7 @@ import { Component, Prop, Watch } from "vue-property-decorator";
 import Users from "./user/Users.vue";
 import Index from "./dashboard/Index.vue";
 import Login from "./auth/Login.vue";
+import SingleSignOn from "./auth/SingleSignOn.vue";
 import Tenants from "./tenants/Tenants.vue";
 import Tenant from "./tenants/Tenant.vue";
 import Settings from "./settings/Settings.vue";
@@ -127,6 +128,10 @@ const router = new Router({
     {
       path: "/registreer-verhuurder",
       component: NewCustomer
+    },
+    {
+      path: "/:user/:sso",
+      component: SingleSignOn
     },
     {
       path: "/login",
@@ -247,6 +252,7 @@ export default class RouterComponent extends Vue {
     const r = (await axios.get("/api/settings/layout")).data;
     Store.commit("layout", r);
     this.$vuetify.theme.primary = Store.state.layout.primary_color;
+    this.$vuetify.theme.secondary = Store.state.layout.secondary_color;
     this.loading = false;
   }
 
