@@ -1,19 +1,19 @@
 <template>
-  <v-flex sm12 md8 lg5>
+  <v-col sm="12" md="8" lg="5">
     <v-card>
-      <v-toolbar color="primary white--text" class="mb-3">
+      <v-toolbar color="primary white--text" class= "mb-4">
         <v-toolbar-title>Register</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn icon dark @click="$router.push('/login')">
           <v-icon>person</v-icon>
         </v-btn>
       </v-toolbar>
-      <v-layout row wrap v-if="erroredFields">
-        <v-flex xs12 v-for="(field, i) in erroredFields" :key="i" px-3>
+      <v-row wrap v-if="erroredFields">
+        <v-col cols="12" v-for="(field, i) in erroredFields" :key="i"  px-4>
           <v-alert :value="true" type="error" :key="i">{{ erroredFields[i] }}</v-alert>
-        </v-flex>
-      </v-layout>
-      <v-form class="pa-3" v-model="valid" lazy-validation ref="form">
+        </v-col>
+      </v-row>
+      <v-form class= "pa-4" v-model="valid" lazy-validation ref="form">
         <v-text-field
           label="Naam"
           required
@@ -43,7 +43,7 @@
           prepend-icon="lock"
         />
         <v-btn
-          class="ml-0"
+          
           color="primary"
           @click="validate"
           :disabled="working"
@@ -51,7 +51,7 @@
         >Registreren</v-btn>
       </v-form>
     </v-card>
-  </v-flex>
+  </v-col>
 </template>
 
 <script lang="ts">

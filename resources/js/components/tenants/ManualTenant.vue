@@ -1,7 +1,7 @@
 <template>
-  <v-dialog fullscreen lazy :value="value">
-    <v-layout row wrap fill-height>
-      <v-flex class="fill-height white">
+  <v-dialog fullscreen :value="value">
+    <v-row wrap fill-height>
+      <v-col class="fill-height white">
         <v-toolbar class="primary white--text">
           <v-toolbar-title>Nieuwe klant aanmaken</v-toolbar-title>
           <v-spacer />
@@ -30,15 +30,15 @@
           >Kies het te verhuren product</v-stepper-step>
 
           <v-stepper-content :class="{'ml-0' : $vuetify.breakpoint.smAndDown}" step="2">
-            <v-layout row wrap v-if="step == 2">
-              <v-flex xs12 pa-1>
+            <v-row wrap v-if="step == 2">
+              <v-col cols="12" pa-1>
                 <StepUnit
                   :location="selectedLocation"
                   :contract="contract"
                   @done="unitDone($event)"
                 ></StepUnit>
-              </v-flex>
-            </v-layout>
+              </v-col>
+            </v-row>
           </v-stepper-content>
 
           <v-stepper-step :complete="step > 3" step="3">Vul de gegevens van de huurder in</v-stepper-step>
@@ -66,8 +66,8 @@
             />
           </v-stepper-content>
         </v-stepper>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
   </v-dialog>
 </template>
 

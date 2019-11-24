@@ -1,12 +1,12 @@
 <template>
-  <v-flex v-if="!loading">
-    <v-layout row wrap>
-      <v-flex xs12 sm12>
+  <v-col v-if="!loading">
+    <v-row wrap>
+      <v-col cols="12" sm="12">
         <edit-create-tenant :tenant="tenant" :creating="false"></edit-create-tenant>
-      </v-flex>
-    </v-layout>
-    <v-layout row wrap pt-3>
-      <v-flex xs12 sm12>
+      </v-col>
+    </v-row>
+    <v-row wrap  pt-4>
+      <v-col cols="12" sm="12">
         <v-card>
           <v-toolbar dense flat class="primary" dark>
             <BackButton />
@@ -16,22 +16,22 @@
           <v-card-text>
             <v-list>
               <template v-for="contract in tenant.contracts">
-                <v-list-tile @click="$router.push('/contracts/' + contract.id)" :key="contract.id">
-                  <v-list-tile-content>
-                    <v-list-tile-title
+                <v-list-item @click="$router.push('/contracts/' + contract.id)" :key="contract.id">
+                  <v-list-item-content>
+                    <v-list-item-title
                       :key="i"
                       v-for="u, i in contract.units.map((v) => v.display_name)"
-                    >{{ u }}</v-list-tile-title>
-                    <v-list-tile-sub-title>{{ contract.start_date }}</v-list-tile-sub-title>
-                  </v-list-tile-content>
-                </v-list-tile>
+                    >{{ u }}</v-list-item-title>
+                    <v-list-item-subtitle>{{ contract.start_date }}</v-list-item-subtitle>
+                  </v-list-item-content>
+                </v-list-item>
               </template>
             </v-list>
           </v-card-text>
         </v-card>
-      </v-flex>
-    </v-layout>
-  </v-flex>
+      </v-col>
+    </v-row>
+  </v-col>
 </template> 
 
 <script lang="ts">

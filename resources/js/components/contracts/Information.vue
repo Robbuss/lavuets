@@ -1,33 +1,33 @@
 <template>
   <v-card>
-    <v-layout row wrap>
-      <v-flex xs12 md6>
+    <v-row wrap>
+      <v-col cols="12" md="6">
         <v-list dense>
           <v-subheader>Contract informatie</v-subheader>
           <v-tooltip bottom>
-            <v-list-tile slot="activator" @click>
-              <v-list-tile-action>
+            <v-list-item slot="activator" @click>
+              <v-list-item-action>
                 <v-icon color="primary">date_range</v-icon>
-              </v-list-tile-action>
-              <v-list-tile-content>
-                <v-list-tile-title
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title
                   v-if="contract.start_date"
-                >Vanaf {{ formatDate(contract.start_date) }}</v-list-tile-title>
-              </v-list-tile-content>
-            </v-list-tile>
+                >Vanaf {{ formatDate(contract.start_date) }}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
             <span>Startdatum van het contract</span>
           </v-tooltip>
           <v-divider></v-divider>
           <v-tooltip bottom>
-            <v-list-tile slot="activator" @click>
-              <v-list-tile-action>
+            <v-list-item slot="activator" @click>
+              <v-list-item-action>
                 <v-icon color="primary">edit</v-icon>
-              </v-list-tile-action>
-              <v-list-tile-content>
-                <v-list-tile-title v-if="contract.default_note">{{ contract.default_note }}</v-list-tile-title>
-                <v-list-tile-title v-else>Geen standaard notitie</v-list-tile-title>
-              </v-list-tile-content>
-            </v-list-tile>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title v-if="contract.default_note">{{ contract.default_note }}</v-list-item-title>
+                <v-list-item-title v-else>Geen standaard notitie</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
             <span>Standaard notitie op elke factuur</span>
           </v-tooltip>
         </v-list>
@@ -36,8 +36,8 @@
           <v-subheader>Producten in dit contract</v-subheader>
           <template v-for="(u, i) in contract.units">
             <v-divider :key="i + 'd'" v-if="i >0 && contract.units.length > 1"></v-divider>
-            <v-list-tile :key="i">
-              <v-list-tile-avatar>
+            <v-list-item :key="i">
+              <v-list-item-avatar>
                 <v-tooltip bottom>
                   <v-avatar
                     slot="activator"
@@ -48,64 +48,64 @@
                   </v-avatar>
                   <span>Naar de unit</span>
                 </v-tooltip>
-              </v-list-tile-avatar>
-              <v-list-tile-content>
-                <v-list-tile-title>
+              </v-list-item-avatar>
+              <v-list-item-content>
+                <v-list-item-title>
                   {{ u.name }} voor €
                   <span v-if="u.pivot">{{ u.pivot.price }}</span>
                   <span v-else>{{ u.price}}</span> per maand
-                </v-list-tile-title>
-                <v-list-tile-sub-title
+                </v-list-item-title>
+                <v-list-item-subtitle
                   v-if="contract.tenant.is_company"
-                >+ {{ u.vat_percentage *100 }}% btw a €{{ u.pivot.price * u.vat_percentage }}</v-list-tile-sub-title>
-                <v-list-tile-sub-title v-else>Vrij van btw</v-list-tile-sub-title>
-              </v-list-tile-content>
-            </v-list-tile>
+                >+ {{ u.vat_percentage *100 }}% btw a €{{ u.pivot.price * u.vat_percentage }}</v-list-item-subtitle>
+                <v-list-item-subtitle v-else>Vrij van btw</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
           </template>
-          <v-list-tile v-if="contract.units.length === 0">
-            <v-list-tile-avatar>
+          <v-list-item v-if="contract.units.length === 0">
+            <v-list-item-avatar>
               <v-avatar>
-                <v-img src="/closed_box.png" />
+                <v-img src="/closed_filled .png" />
               </v-avatar>
-            </v-list-tile-avatar>
-            <v-list-tile-content>
-              <v-list-tile-title>Geen Units in dit contract..</v-list-tile-title>
-            </v-list-tile-content>
-          </v-list-tile>
+            </v-list-item-avatar>
+            <v-list-item-content>
+              <v-list-item-title>Geen Units in dit contract..</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
         </v-list>
-      </v-flex>
-      <v-flex xs12 sm6 style="border-left: 1px solid #0000001f">
+      </v-col>
+      <v-col cols="12" sm="6" style="border-left: 1px solid #0000001f">
         <v-list dense>
           <v-subheader>Klant informatie</v-subheader>
           <template v-for="(f, i) in tenantFields">
             <v-tooltip bottom :key="i+'t'">
-              <v-list-tile :key="i" slot="activator" @click>
-                <v-list-tile-action>
+              <v-list-item :key="i" slot="activator" @click>
+                <v-list-item-action>
                   <v-icon color="primary">{{ f.icon }}</v-icon>
-                </v-list-tile-action>
-                <v-list-tile-content>
-                  <v-list-tile-title>{{ f.field }}</v-list-tile-title>
-                </v-list-tile-content>
-              </v-list-tile>
+                </v-list-item-action>
+                <v-list-item-content>
+                  <v-list-item-title>{{ f.field }}</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
               <span>{{ f.tooltip }}</span>
             </v-tooltip>
             <v-divider :key="i + 'd'" v-if="i !== tenantFields.length - 1"></v-divider>
           </template>
         </v-list>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
     <v-divider></v-divider>
     <v-card-actions>
       <v-btn class="primary" flat dark @click="dialog= !dialog">Aanpassen</v-btn>
       <v-spacer></v-spacer>
-      <v-flex shrink>
+      <v-col shrink>
         <span class="pl-0 grey--text" v-if="!contract.deactivated_at">Dit contract is actief</span>
         <span
           class="pl-0 grey--text"
           v-else
         >Gedeactiveerd op {{ formatDate(contract.deactivated_at)}}</span>
         <v-switch class="mt-0" hide-details :disabled="!isActive" v-model="isActive" color="green"></v-switch>
-      </v-flex>
+      </v-col>
     </v-card-actions>
     <edit-create :contract="contract" v-if="dialog" :dialog="dialog" @input="finished"></edit-create>
     <v-dialog v-model="showWarning" width="80%" persistent>
@@ -113,27 +113,27 @@
         <v-toolbar class="primary" dark>
           <v-toolbar-title>Contract deactiveren?</v-toolbar-title>
         </v-toolbar>
-        <v-layout row wrap>
-          <v-flex xs12 pa-3>
+        <v-row wrap>
+          <v-col cols="12"  pa-4>
             <h3 class="headline primary--text">Deactiveren contract</h3>
             <p>
               Weet je zeker dat je het contract wil deactiveren? Je kunt het contract daarna niet meer activeren!
               Je heft met deze actie namelijk de toestemming van de klant op. Je zult een nieuw contract moeten maken wanneer dit een fout is.
             </p>
             <p>Voor gedeactiveerde contract worden geen facturen meer gemaakt of verzonden.</p>
-            <p>Kies of de verhuurde boxen gelijk vrij komen of dat ze bezet blijven tot de opzegdatum van het contract (volgende termijn)</p>
+            <p>Kies of de verhuurde filled en gelijk vrij komen of dat ze bezet blijven tot de opzegdatum van het contract (volgende termijn)</p>
             <v-btn color="orange" dark @click="deactivate">Tot einddatum bezet houden</v-btn>
             <v-btn
               color="red"
               dark
               @click="freeUnits = !freeUnits; deactivate()"
-            >Boxen gelijk vrij geven voor verhuur</v-btn>
+            >filled en gelijk vrij geven voor verhuur</v-btn>
             <v-btn
               color="grey lighten-3"
               @click="showWarning = !showWarning; contract.deactivated_at = null"
             >Nee, laat maar</v-btn>
-          </v-flex>
-        </v-layout>
+          </v-col>
+        </v-row>
       </v-card>
     </v-dialog>
   </v-card>

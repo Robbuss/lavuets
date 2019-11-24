@@ -3,7 +3,7 @@
     <v-text-field
       :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
       required
-      box
+      filled 
       type="number"
       v-model.number="payment.price"
       label="Prijs"
@@ -22,18 +22,18 @@
         <PaymentStatusChip :payment="{status: data.item.value }" />
       </template>
     </v-select>
-    <v-checkbox label="Payment id aanpassen" v-model="manualPaymentId" />
+    <v-checkbox  label="Payment id aanpassen" v-model="manualPaymentId" />
     <v-expand-transition>
       <v-text-field
         v-if="manualPaymentId"
         :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
         required
-        box
+        filled 
         v-model="payment.payment_id"
         label="Payment_id"
       />
     </v-expand-transition>
-    <v-btn @click="validate" class="primary ml-0">Aanmaken</v-btn>
+    <v-btn @click="validate" class="primary ">Aanmaken</v-btn>
   </v-form>
 </template>
 

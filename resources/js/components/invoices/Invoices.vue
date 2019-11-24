@@ -1,5 +1,5 @@
 <template>
-  <v-flex sm12>
+  <v-col sm="12">
     <div>
       <v-toolbar flat color="primary" dark v-if="!hidetoolbar">
         <v-toolbar-title>Facturen</v-toolbar-title>
@@ -58,7 +58,7 @@
             <td v-if="props.item.sent">{{ formatDate(props.item.sent, 'LL') }}</td>
             <td v-else>Niet verzonden</td>
             <td>
-              <v-layout align-center>
+              <v-row align-center>
                 <v-btn class="primary--text" small icon @click="editItem(props.item)">
                   <v-icon small>edit</v-icon>
                 </v-btn>
@@ -77,7 +77,7 @@
                 >
                   <v-icon small>mail</v-icon>
                 </v-btn>
-              </v-layout>
+              </v-row>
             </td>
           </tr>
         </template>
@@ -111,7 +111,7 @@
         <v-btn @click="close">Nee, laat maar</v-btn>
       </v-card>
     </v-dialog>
-  </v-flex>
+  </v-col>
 </template>
 
 <script lang="ts">

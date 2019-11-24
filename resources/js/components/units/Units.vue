@@ -1,8 +1,8 @@
 <template>
-  <v-flex sm12>
+  <v-col sm="12">
     <div>
       <v-toolbar flat color="primary" dark>
-        <v-toolbar-title>Boxen</v-toolbar-title>
+        <v-toolbar-title>Boxen en Producten</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-text-field
           class="white--text"
@@ -13,10 +13,12 @@
           hide-details
         ></v-text-field>
         <v-tooltip bottom>
-          <v-btn icon slot="activator" @click="createItem">
-            <v-icon>add</v-icon>
-          </v-btn>
-          <span>Box toevoegen</span>
+          <template v-slot:activator="{ on }">
+            <v-btn icon v-on="on" @click="createItem">
+              <v-icon>add</v-icon>
+            </v-btn>
+          </template>
+          <span>filled toevoegen</span>
         </v-tooltip>
         <v-dialog v-model="dialog" max-width="80%" persistent>
           <edit-create-unit
@@ -34,19 +36,17 @@
         :items="units"
         class="elevation-1"
         :loading="loading"
-        rows-per-page-text="Boxen per pagina"
-        :pagination.sync="pagination"
+        :options="pagination"
+        multi-sort
       >
         <template v-slot:items="props">
           <tr @click="$router.push('/units/' + props.item.id)" style="cursor: pointer">
-            <td>{{ props.item.id }}</td>
             <td>{{ props.item.facility_name }}</td>
             <td>{{ props.item.name }}</td>
             <td>{{ props.item.size }}</td>
             <td>€{{ props.item.price }}</td>
             <td>
               <v-chip
-                class="ml-0"
                 flat
                 dark
                 :class="{'green' : props.item.active, 'orange' : !props.item.active }"
@@ -55,7 +55,7 @@
                 Beschikbaar
                 <span v-if="!props.item.active">, niet verhuurbaar</span>
               </v-chip>
-              <v-chip class="ml-0" flat v-else>Verhuurd</v-chip>
+              <v-chip flat v-else>Verhuurd</v-chip>
             </td>
             <td class="layout justify-end">
               <v-icon small class="mr-2" @click.stop="editItem(props.item)">edit</v-icon>
@@ -64,12 +64,12 @@
           </tr>
         </template>
         <template v-slot:no-data>
-          <td colspan="100%" v-if="loading">Boxen laden...</td>
-          <td colspan="100%" v-else>Geen boxen gevonden</td>
+          <td colspan="100%" v-if="loading">filled en laden...</td>
+          <td colspan="100%" v-else>Geen filled en gevonden</td>
         </template>
       </v-data-table>
     </div>
-  </v-flex>
+  </v-col>
 </template>
 
 <script lang="ts">
@@ -94,7 +94,6 @@ export default class Units extends Vue {
   private search: string = "";
 
   private headers: any = [
-    { text: "id", value: "id" },
     { text: "Locatie", value: "facility_name" },
     { text: "Naam", value: "name" },
     { text: "Grootte (m3)", value: "size" },
@@ -127,7 +126,9 @@ export default class Units extends Vue {
 
   deleteItem(item: any) {
     const index = this.units.indexOf(item);
-    confirm("Weet je zeker dat je dit product wil verwijderen? Als er contracten actief zijn op dit product gaat het mis!") &&
+    confirm(
+      "Weet je zeker dat je dit product wil verwijderen? Als er contracten actief zijn op dit product gaat het mis!"
+    ) &&
       this.units.splice(index, 1) &&
       axios.post("/api/units/" + item.id + "/delete") &&
       store.commit("snackbar", {

@@ -1,54 +1,54 @@
 <template>
-  <v-layout row wrap justify-center>
-    <v-flex xs12 sm8 md6 lg4>
-      <v-card class="pa-3">
-        <h3 class="text-xs-center">Welkom</h3>
-        <v-layout justify-center>
-          <v-flex shrink>
+  <v-row wrap justify-center>
+    <v-col cols="12" sm="8" md="6" lg="4">
+      <v-card class= "pa-4">
+        <h3 class="text-center">Welkom</h3>
+        <v-row justify-center>
+          <v-col shrink>
             <img width="125" src="/logo.png" />
-          </v-flex>
-        </v-layout>
+          </v-col>
+        </v-row>
         <v-form v-model="valid" lazy-validation ref="form">
           <v-container grid-list-md ma-0 pa-0>
-            <v-layout wrap justify-center>
-              <v-flex xs12>
+            <v-row wrap justify-center>
+              <v-col cols="12">
                 <v-text-field
-                  box
+                  filled 
                   :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                   required
                   v-model="newCustomer.name"
                   label="Naam"
                 ></v-text-field>
-              </v-flex>
-              <v-flex xs12>
+              </v-col>
+              <v-col cols="12">
                 <v-text-field
-                  box
+                  filled 
                   :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                   required
                   v-model="newCustomer.company_name"
                   label="Bedrijfsnaam"
                 ></v-text-field>
-              </v-flex>
-              <v-flex xs12>
+              </v-col>
+              <v-col cols="12">
                 <v-text-field
-                  box
+                  filled 
                   :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                   required
                   v-model="newCustomer.email"
                   label="E-mail"
                 ></v-text-field>
-              </v-flex>
-              <v-flex xs12>
+              </v-col>
+              <v-col cols="12">
                 <v-text-field
-                  box
+                  filled 
                   :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                   required
                   v-model="newCustomer.domain"
                   suffix=".dimonforini.nl"
                   label="Domein naam"
                 ></v-text-field>
-              </v-flex>
-              <v-flex xs12 text-xs-center>
+              </v-col>
+              <v-col cols="12" text-center>
                 <v-btn
                   :dark="!working"
                   color="primary darken-1"
@@ -63,13 +63,13 @@
                     </span>
                   </template>
                 </v-btn>
-              </v-flex>
-            </v-layout>
+              </v-col>
+            </v-row>
           </v-container>
         </v-form>
       </v-card>
-    </v-flex>
-  </v-layout>
+    </v-col>
+  </v-row>
 </template>
 <style>
 .custom-loader {

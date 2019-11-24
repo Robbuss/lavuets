@@ -1,13 +1,13 @@
 <template>
-  <v-list>
-    <v-list-tile @click="$router.push(item.link)" v-for="(item, key) in items" :key="key">
-      <v-list-tile-action>
+  <v-list nav>
+    <v-list-item @click="$router.push(item.link)" v-for="(item, key) in items" :key="key">
+      <v-list-item-action>
         <v-icon class="primary--text">{{ item.icon }}</v-icon>
-      </v-list-tile-action>
-      <v-list-tile-content>
-        <v-list-tile-title class="grey--text text--darken-2">{{ item.text }}</v-list-tile-title>
-      </v-list-tile-content>
-    </v-list-tile>
+      </v-list-item-action>
+      <v-list-item-content>
+        <v-list-item-title class="grey--text text--darken-2">{{ item.text }}</v-list-item-title>
+      </v-list-item-content>
+    </v-list-item>
   </v-list>
 </template>
     

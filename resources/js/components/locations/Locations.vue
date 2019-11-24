@@ -1,55 +1,60 @@
 <template>
-  <v-flex sm12>
-    <div>
-      <v-toolbar flat color="primary white--text">
-        <v-toolbar-title>Locaties</v-toolbar-title>
-        <v-spacer></v-spacer>
-        <v-dialog v-model="dialog" max-width="500px">
-          <template v-slot:activator="{ on }">
-            <v-btn color="primary" icon v-on="on">
-              <v-icon>add</v-icon>
-            </v-btn>
-          </template>
-          <v-card>
-            <v-form ref="form" v-model="valid">
-              <v-card-title>
-                <span class="primary--text headline">Locatie</span>
-              </v-card-title>
-
-              <v-card-text>
-                <v-container grid-list-md>
-                  <v-layout wrap>
-                    <v-flex xs12>
-                      <v-text-field v-model="editedItem.name" label="Internal name"></v-text-field>
-                    </v-flex>
-                    <v-flex xs12>
-                      <v-text-field v-model="editedItem.facility_name" label="Facility Name"></v-text-field>
-                    </v-flex>
-                  </v-layout>
-                </v-container>
-              </v-card-text>
-
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="primary" flat @click="close">Annuleren</v-btn>
-                <v-btn class="primary" flat @click="save">Opslaan</v-btn>
-              </v-card-actions>
-            </v-form>
-          </v-card>
-        </v-dialog>
-      </v-toolbar>
-      <v-data-table :headers="headers" :items="locations" class="elevation-1">
-        <template v-slot:items="props">
-          <td>{{ props.item.name }}</td>
-          <td>{{ props.item.facility_name }}</td>
-          <td class="justify-end layout">
-            <v-icon small class="mr-2" @click="editItem(props.item)">edit</v-icon>
-            <v-icon small @click="deleteItem(props.item)">delete</v-icon>
-          </td>
+  <v-col sm="12">
+    <v-toolbar flat color="primary white--text">
+      <v-toolbar-title>Locaties</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-dialog v-model="dialog" max-width="500px">
+        <template v-slot:activator="{ on }">
+          <v-btn color="primary" icon v-on="on">
+            <v-icon>add</v-icon>
+          </v-btn>
         </template>
-      </v-data-table>
-    </div>
-  </v-flex>
+        <v-card>
+          <v-form ref="form" v-model="valid">
+            <v-card-title>
+              <span class="primary--text headline">Locatie</span>
+            </v-card-title>
+
+            <v-card-text>
+              <v-container grid-list-md>
+                <v-row wrap>
+                  <v-col cols="12">
+                    <v-text-field v-model="editedItem.name" label="Internal name"></v-text-field>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-text-field v-model="editedItem.facility_name" label="Facility Name"></v-text-field>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card-text>
+
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="primary" flat @click="close">Annuleren</v-btn>
+              <v-btn class="primary" flat @click="save">Opslaan</v-btn>
+            </v-card-actions>
+          </v-form>
+        </v-card>
+      </v-dialog>
+    </v-toolbar>
+    <v-data-table
+      :headers="headers"
+      :items="locations"
+      class="elevation-1"
+      :sort-by="['name', 'facility_name']"
+      :sort-desc="[false, true]"
+      multi-sort
+    >
+      <template v-slot:items="props">
+        <td>{{ props.item.name }}</td>
+        <td>{{ props.item.facility_name }}</td>
+        <td class="justify-end layout">
+          <v-icon small class="mr-2" @click="editItem(props.item)">edit</v-icon>
+          <v-icon small @click="deleteItem(props.item)">delete</v-icon>
+        </td>
+      </template>
+    </v-data-table>
+  </v-col>
 </template>
 
 <script lang="ts">

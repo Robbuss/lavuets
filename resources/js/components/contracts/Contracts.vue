@@ -1,5 +1,5 @@
 <template>
-  <v-flex sm12>
+  <v-col sm="12">
     <div>
       <v-toolbar flat color="primary" dark>
         <v-toolbar-title>Contracten</v-toolbar-title>
@@ -36,24 +36,24 @@
           >{{ props.item.tenant_name }}</td>
           <td>{{ formatDate(props.item.start_date) }}</td>
           <td v-if="!props.item.deactivated_at">
-            <v-chip class="ml-0" flat dark color="green">Actief</v-chip>
+            <v-chip  flat dark color="green">Actief</v-chip>
           </td>
           <td v-if="props.item.deactivated_at">
-            <v-chip class="ml-0" flat>{{ props.item.deactivated_at }}</v-chip>
+            <v-chip  flat>{{ props.item.deactivated_at }}</v-chip>
           </td>
           <td>
             <v-chip
               :class="{'info' : props.item.payment_method === 'incasso', 'grey' : props.item.payment_method === 'factuur'}"
-              class="ml-0"
+              
               flat
               dark
             >{{ props.item.payment_method }}</v-chip>
           </td>
           <td v-if="props.item.auto_invoice">
-            <v-chip class="ml-0 green lighten-3" flat dark>Aan</v-chip>
+            <v-chip class=" green lighten-3" flat dark>Aan</v-chip>
           </td>
           <td v-if="!props.item.auto_invoice">
-            <v-chip class="ml-0 red lighten-3" flat dark>Uit</v-chip>
+            <v-chip class=" red lighten-3" flat dark>Uit</v-chip>
           </td>
           <td>{{ props.item.company_name }}</td>
           <td class="justify-center layout px-0">
@@ -67,7 +67,7 @@
         </template>
       </v-data-table>
     </div>
-  </v-flex>
+  </v-col>
 </template>
 
 <script lang="ts">

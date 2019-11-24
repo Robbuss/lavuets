@@ -1,5 +1,5 @@
 <template>
-  <v-flex sm12 md8 lg5>
+  <v-col sm="12" md="8" lg="5">
     <v-card color="primary"> 
       <v-card-title>
         <v-btn dark icon>
@@ -8,7 +8,7 @@
 
         <v-spacer></v-spacer>
 
-        <v-btn dark icon class="mr-3">
+        <v-btn dark icon class= "mr-4">
           <v-icon>edit</v-icon>
         </v-btn>
 
@@ -24,28 +24,28 @@
       </v-card-title>
 
       <v-list two-line>
-        <v-list-tile @click>
-          <v-list-tile-action>
+        <v-list-item @click>
+          <v-list-item-action>
             <v-icon color="indigo">phone</v-icon>
-          </v-list-tile-action>
+          </v-list-item-action>
 
-          <v-list-tile-content>
-            <v-list-tile-title>(650) 555-1234</v-list-tile-title>
-            <v-list-tile-sub-title>Mobile</v-list-tile-sub-title>
-          </v-list-tile-content>
-        </v-list-tile>
+          <v-list-item-content>
+            <v-list-item-title>(650) 555-1234</v-list-item-title>
+            <v-list-item-subtitle>Mobile</v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
 
-        <v-list-tile @click>
-          <v-list-tile-action></v-list-tile-action>
+        <v-list-item @click>
+          <v-list-item-action></v-list-item-action>
 
-          <v-list-tile-content>
-            <v-list-tile-title>{{ user.email }}</v-list-tile-title>
-            <v-list-tile-sub-title>Work</v-list-tile-sub-title>
-          </v-list-tile-content>
-        </v-list-tile>
+          <v-list-item-content>
+            <v-list-item-title>{{ user.email }}</v-list-item-title>
+            <v-list-item-subtitle>Work</v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
     </v-card>
-  </v-flex>
+  </v-col>
 </template>
 
 <script lang="ts">

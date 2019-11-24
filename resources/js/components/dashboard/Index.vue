@@ -1,43 +1,43 @@
 <template>
-  <v-flex v-if="!loading">
-    <v-layout row wrap justify-space-between align-center>
-      <v-flex px-3>
-        <v-btn outline small class="primary primary--text" @click="manualTenant">Klant toevoegen</v-btn>
-      </v-flex>
-      <v-flex>
+  <v-col v-if="!loading">
+    <v-row wrap justify-space-between align-center>
+      <v-col  px-4>
+        <v-btn outlined small class="primary--text" @click="manualTenant">Klant toevoegen</v-btn>
+      </v-col>
+      <v-col>
         <h1
-          class="subheading primary--text font-weight-bold"
+          class="subtitle-1 primary--text font-weight-bold"
         >{{ user.name }}, you magnificent bastard!</h1>
-      </v-flex>
-      <v-flex></v-flex>
-    </v-layout>
+      </v-col>
+      <v-col></v-col>
+    </v-row>
     <v-container fluid grid-list-xl>
-      <v-layout row wrap>
-        <v-flex d-flex xs12 sm6 md5>
+      <v-row wrap>
+        <v-col d-flex cols="12" sm="6" md="5">
           <PaymentChart :payments="payments" />
-        </v-flex>
-        <v-flex d-flex xs12 sm6 md4>
+        </v-col>
+        <v-col d-flex cols="12" sm="6" md="4">
           <OccupationRate :units="units" />
-        </v-flex>
-        <v-flex d-flex xs12 sm6 md3>
-          <v-layout row wrap>
-            <v-flex d-flex>
+        </v-col>
+        <v-col d-flex cols="12" sm="6" md="3">
+          <v-row wrap>
+            <v-col d-flex>
               <Revenue :contracts="contracts" :units="units" />
-            </v-flex>
-          </v-layout>
-        </v-flex>
+            </v-col>
+          </v-row>
+        </v-col>
 
-        <v-flex d-flex xs12>
+        <v-col d-flex cols="12">
           <UnpaidInvoices />
-        </v-flex>
+        </v-col>
 
-        <v-flex d-flex xs12 sm6>
+        <v-col d-flex cols="12" sm="6">
           <TodoList />
-        </v-flex>
-      </v-layout>
+        </v-col>
+      </v-row>
     </v-container>
     <ManualTenant v-model="dialog" />
-  </v-flex>
+  </v-col>
 </template>
 
 <script lang="ts">

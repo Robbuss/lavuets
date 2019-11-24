@@ -4,29 +4,29 @@
       <v-toolbar-title>{{ formTitle }}</v-toolbar-title>
     </v-toolbar>
 
-    <v-form ref="form" v-model="valid" lazy-validation class="pa-3">
-      <v-layout wrap>
-        <v-flex xs12 sm6 md6 lg5>
+    <v-form ref="form" v-model="valid" lazy-validation class= "pa-4">
+      <v-row wrap>
+        <v-col cols="12" sm="6" md="6" lg="5">
           <v-text-field
             :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
             required
             v-model="editedItem.ref"
             label="Referentie (bestandsnaam)"
           ></v-text-field>
-        </v-flex>
-      </v-layout>
-      <v-layout row wrap>
-        <v-flex xs12 sm6 md6 lg5 v-if="!creating">
+        </v-col>
+      </v-row>
+      <v-row wrap>
+        <v-col cols="12" sm="6" md="6" lg="5" v-if="!creating">
           <v-text-field
             :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
             required
             v-model="editedItem.ref_number"
             label="Referentie nummer administratie"
           ></v-text-field>
-        </v-flex>
-      </v-layout>
-      <v-layout wrap>
-        <v-flex xs12 md6 lg5>
+        </v-col>
+      </v-row>
+      <v-row wrap>
+        <v-col cols="12" md="6" lg="5">
           <h6 class="caption">
             Kies een
             <span class="font-weight-black">startdatum</span>
@@ -40,13 +40,13 @@
             lazy
             transition="scale-transition"
             offset-y
-            full-width
+            
             max-width="290px"
             min-width="290px"
           >
             <template v-slot:activator="{ on }">
               <v-text-field
-                box
+                filled 
                 v-model="startDate"
                 prepend-icon="event"
                 :rules="[
@@ -65,10 +65,10 @@
               @input="datePicker1 = false"
             ></v-date-picker>
           </v-menu>
-        </v-flex>
-      </v-layout>
-      <v-layout row wrap>
-        <v-flex xs12 md6 lg5>
+        </v-col>
+      </v-row>
+      <v-row wrap>
+        <v-col cols="12" md="6" lg="5">
           <h6 class="caption">
             Kies een
             <span class="font-weight-black">einddatum</span>
@@ -82,13 +82,13 @@
             lazy
             transition="scale-transition"
             offset-y
-            full-width
+            
             max-width="290px"
             min-width="290px"
           >
             <template v-slot:activator="{ on }">
               <v-text-field
-                box
+                filled 
                 v-model="endDate"
                 prepend-icon="event"
                 :rules="[
@@ -107,20 +107,20 @@
               @input="datePicker2 = false"
             ></v-date-picker>
           </v-menu>
-        </v-flex>
-      </v-layout>
-      <v-layout wrap>
-        <v-flex xs12 md6 lg5>
+        </v-col>
+      </v-row>
+      <v-row wrap>
+        <v-col cols="12" md="6" lg="5">
           <v-textarea v-model="editedItem.note" label="Notitie toevoegen"></v-textarea>
-        </v-flex>
-      </v-layout>
+        </v-col>
+      </v-row>
 
-      <v-layout wrap>
-        <v-flex xs12>
-          <v-checkbox v-model="showSentDate" label="Deze factuur is al verzonden"></v-checkbox>
-        </v-flex>
+      <v-row wrap>
+        <v-col cols="12">
+          <v-checkbox  v-model="showSentDate" label="Deze factuur is al verzonden"></v-checkbox >
+        </v-col>
         <v-expand-transition>
-          <v-flex xs12 md6 lg5 v-if="showSentDate">
+          <v-col cols="12" md="6" lg="5" v-if="showSentDate">
             <h6 class="caption">
               Deze factuur is
               <span class="font-weight-black">verzonden</span>
@@ -134,13 +134,13 @@
               lazy
               transition="scale-transition"
               offset-y
-              full-width
+              
               max-width="290px"
               min-width="290px"
             >
               <template v-slot:activator="{ on }">
                 <v-text-field
-                  box
+                  filled 
                   v-model="sent"
                   prepend-icon="event"
                   :rules="[
@@ -159,9 +159,9 @@
                 @input="datePicker = false"
               ></v-date-picker>
             </v-menu>
-          </v-flex>
+          </v-col>
         </v-expand-transition>
-      </v-layout>
+      </v-row>
       <v-card-actions>
         <v-btn
           :dark="!working"

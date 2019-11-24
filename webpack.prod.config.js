@@ -3,8 +3,6 @@ const {
     VueLoaderPlugin
 } = require("vue-loader");
 const VuetifyLoaderPlugin = require("vuetify-loader/lib/plugin")
-    // const fs = require('fs')
-    // const dotenv = require('dotenv').config();
 
 let path = require("path");
 const utils = {
@@ -30,11 +28,10 @@ module.exports = {
         }
     },
     module: {
-        rules: [{
+        rules: [
+            {
                 test: /\.tsx?$/,
-                exclude: [
-                    /node_modules/
-                ],
+                exclude: [/node_modules/],
                 use: {
                     loader: "ts-loader",
                     options: {
@@ -45,27 +42,28 @@ module.exports = {
             {
                 test: /\.vue$/,
                 use: {
-                    loader: "vue-loader",
+                    loader: "vue-loader"
                 }
             },
             {
-                test: /\.styl(us)?$/,
-                use: [
-                    "vue-style-loader",
-                    "css-loader",
-                    "stylus-loader"
-                ]
+                test: /\.css$/,
+                use: ["vue-style-loader", "css-loader"]
             },
             {
-                test: /\.(scss|sass|css)$/,
+                test: /\.styl(us)?$/,
+                use: ["vue-style-loader", "css-loader", "stylus-loader"]
+            },
+            {
+                test: /\.(scss)|(sass)$/,
                 use: [
                     "vue-style-loader",
-                    "style-loader", // creates style nodes from JS strings
+                    //"style-loader", // creates style nodes from JS strings
                     "css-loader", // translates CSS into CommonJS
                     "sass-loader" // compiles Sass to CSS, using Node Sass by default
                 ],
-                // enforce: "pre"
-            }, {
+                enforce: "pre"
+            },
+            {
                 test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
                 use: {
                     loader: "url-loader",
@@ -74,7 +72,8 @@ module.exports = {
                         name: utils.assetsPath("img/[name].[hash:7].[ext]")
                     }
                 }
-            }, {
+            },
+            {
                 test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
                 use: {
                     loader: "url-loader",
@@ -83,7 +82,8 @@ module.exports = {
                         name: utils.assetsPath("media/[name].[hash:7].[ext]")
                     }
                 }
-            }, {
+            },
+            {
                 test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
                 use: {
                     loader: "url-loader",

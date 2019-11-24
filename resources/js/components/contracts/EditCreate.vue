@@ -1,9 +1,9 @@
 <template>
   <v-dialog :value="dialog" max-width="80%" persistent>
-    <v-card class="pa-3" v-if="!loading">
+    <v-card class= "pa-4" v-if="!loading">
       <v-form ref="form" v-model="valid" lazy-validation>
-        <v-layout row wrap>
-          <v-flex xs12>
+        <v-row wrap>
+          <v-col cols="12">
             <h6 class="caption">
               Welke
               <span class="font-weight-black">producten</span>
@@ -11,7 +11,7 @@
             </h6>
             <v-select :items="mergedUnits" v-model="editedItem.units" multiple chips>
               <template v-slot:item="data">
-                <v-flex
+                <v-col
                   class="align-center grey--text"
                   style="display:flex"
                   :class="{'primary--text' : editedItem.units.indexOf(data.item) > -1}"
@@ -19,11 +19,11 @@
                   <v-icon
                     :class="{'primary--text' : editedItem.units.indexOf(data.item) > -1}"
                     v-if="editedItem.units.indexOf(data.item) > -1"
-                  >check_box</v-icon>
-                  <v-icon v-else>check_box_outline_blank</v-icon>
-                  <span class="pl-3">{{ data.item.display_name }}</span>
+                  >check_filled </v-icon>
+                  <v-icon v-else>check_filled _outline_blank</v-icon>
+                  <span class= "pl-4">{{ data.item.display_name }}</span>
                   <span v-if="!data.item.active">- Non actief!</span>
-                </v-flex>
+                </v-col>
               </template>
               <template v-slot:selection="data">
                 <v-chip close @input="remove(data.item)">
@@ -32,13 +32,13 @@
                 </v-chip>
               </template>
             </v-select>
-          </v-flex>
-          <v-flex xs12>
-            <v-checkbox v-model="defaultPrices" label="Standaard prijzen gebruiken"></v-checkbox>
-          </v-flex>
+          </v-col>
+          <v-col cols="12">
+            <v-checkbox  v-model="defaultPrices" label="Standaard prijzen gebruiken"></v-checkbox >
+          </v-col>
           <v-expand-transition>
-            <v-flex xs12 v-if="editedItem.units.length > 0 && !defaultPrices">
-              Wat is de overeengekomen prijs in € per maand per box (deze kan afwijken van de standaard prijs)
+            <v-col cols="12" v-if="editedItem.units.length > 0 && !defaultPrices">
+              Wat is de overeengekomen prijs in € per maand per filled (deze kan afwijken van de standaard prijs)
               <v-text-field
                 v-for="(c, i) in editedItem.units"
                 :key="i"
@@ -49,11 +49,11 @@
                 :rules="[v => (v.length !== 0) || 'Dit veld mag niet leeg zijn']"
                 required
               ></v-text-field>
-            </v-flex>
+            </v-col>
           </v-expand-transition>
-        </v-layout>
-        <v-layout row wrap>
-          <v-flex xs12 sm12 md4>
+        </v-row>
+        <v-row wrap>
+          <v-col cols="12" sm="12" md="4">
             <h6 class="caption">
               Kies een
               <span class="font-weight-black">betalingsmethode</span>?
@@ -64,10 +64,10 @@
               :items="['factuur', 'incasso']"
               v-model="editedItem.payment_method"
             ></v-autocomplete>
-          </v-flex>
-        </v-layout>
-        <v-layout row wrap>
-          <v-flex xs12 sm12 md4 v-if="!editedItem.id">
+          </v-col>
+        </v-row>
+        <v-row wrap>
+          <v-col cols="12" sm="12" md="4" v-if="!editedItem.id">
             <h6 class="caption">
               Kies een
               <span class="font-weight-black">huurder</span>
@@ -81,22 +81,22 @@
               required
               color="blue-grey lighten-2"
             ></v-autocomplete>
-          </v-flex>
-        </v-layout>
+          </v-col>
+        </v-row>
 
-        <v-layout row wrap>
-          <v-flex xs12>
+        <v-row wrap>
+          <v-col cols="12">
             <h6 class="caption">
               Moet de klant automatisch facturen
               <span class="font-weight-black">per mail</span> ontvangen
             </h6>
             <span></span>
-            <v-checkbox v-model="editedItem.auto_invoice" label="Automagische facturatie" />
-          </v-flex>
-        </v-layout>
+            <v-checkbox  v-model="editedItem.auto_invoice" label="Automagische facturatie" />
+          </v-col>
+        </v-row>
 
-        <v-layout wrap>
-          <v-flex xs12>
+        <v-row wrap>
+          <v-col cols="12">
             <h6 class="caption">
               Kies een
               <span class="font-weight-black">startdatum</span>
@@ -125,11 +125,11 @@
                 <v-btn text color="primary" @click="$refs.menu.save(editedItem.start_date)">OK</v-btn>
               </v-date-picker>
             </v-menu>
-          </v-flex>
-        </v-layout>
+          </v-col>
+        </v-row>
 
         <v-btn color="primary" @click="save">Opslaan</v-btn>
-        <v-btn flat @click="$emit('input')">Annuleren</v-btn>
+        <v-btn text @click="$emit('input')">Annuleren</v-btn>
       </v-form>
     </v-card>
   </v-dialog>

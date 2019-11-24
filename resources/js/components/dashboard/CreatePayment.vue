@@ -4,8 +4,8 @@
       <v-card-title class="primary white--text">
         <h3 class="card-title">Betaling voor factuur nr: {{ invoice.ref_number }}</h3>
       </v-card-title>
-      <v-layout row wrap pl-3>
-        <v-flex xs12 md8>
+      <v-row wrap  pl-4>
+        <v-col cols="12" md="8">
           <v-radio-group v-model="createdPayment.payment_method">
             <v-radio
               color="primary"
@@ -15,8 +15,8 @@
             />
             <v-radio color="primary" value="factuur" label="Handmatig een betaling invoeren" />
           </v-radio-group>
-          <v-layout row wrap>
-            <v-flex v-if="createdPayment.payment_method === 'factuur'">
+          <v-row wrap>
+            <v-col v-if="createdPayment.payment_method === 'factuur'">
               <v-alert
                 type="info"
                 :value="true"
@@ -25,7 +25,7 @@
                 <v-text-field
                   :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                   required
-                  box
+                  filled 
                   v-model="createdPayment.price"
                   label="Prijs"
                 />
@@ -43,20 +43,20 @@
                     <PaymentStatusChip :payment="{status: data.item.value }" />
                   </template>
                 </v-select>
-                <v-checkbox label="Payment id aanpassen" v-model="manualPaymentId" />
+                <v-checkbox  label="Payment id aanpassen" v-model="manualPaymentId" />
                 <v-expand-transition>
                   <v-text-field
                     v-if="manualPaymentId"
                     :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                     required
-                    box
+                    filled 
                     v-model="createdPayment.payment_id"
                     label="Payment_id"
                   />
                 </v-expand-transition>
               </v-form>
-            </v-flex>
-            <v-flex v-else>
+            </v-col>
+            <v-col v-else>
               <v-alert
                 type="info"
                 :value="true"
@@ -65,48 +65,48 @@
                 type="error"
                 :value="true"
               >Een bedrag van € {{ invoice.price }} afschrijven van de rekening van de klant</v-alert>
-            </v-flex>
-          </v-layout>
-        </v-flex>
-        <v-flex xs12 md4 pl-3>
+            </v-col>
+          </v-row>
+        </v-col>
+        <v-col cols="12" md="4"  pl-4>
           <v-card>
-            <v-subheader class="text-xs-center primary--text">Samenvatting</v-subheader>
+            <v-subheader class="text-center primary--text">Samenvatting</v-subheader>
             <v-list dense>
-              <v-list-tile>
-                <v-list-tile-content>Totaalprijs: € {{ invoice.price.toFixed(2) }}</v-list-tile-content>
-              </v-list-tile>
+              <v-list-item>
+                <v-list-item-content>Totaalprijs: € {{ invoice.price.toFixed(2) }}</v-list-item-content>
+              </v-list-item>
               <v-divider />
-              <v-list-tile>
-                <v-list-tile-content>Periode: {{ formatDate(invoice.start_date) }} - {{ formatDate(invoice.end_date) }}</v-list-tile-content>
-              </v-list-tile>
+              <v-list-item>
+                <v-list-item-content>Periode: {{ formatDate(invoice.start_date) }} - {{ formatDate(invoice.end_date) }}</v-list-item-content>
+              </v-list-item>
               <v-divider />
-              <v-list-tile>
-                <v-list-tile-content>Betaalmethode contract: {{ invoice.payment_method }}</v-list-tile-content>
-              </v-list-tile>
+              <v-list-item>
+                <v-list-item-content>Betaalmethode contract: {{ invoice.payment_method }}</v-list-item-content>
+              </v-list-item>
               <v-divider />
-              <v-list-tile>
-                <v-list-tile-content>Factuurnummer: {{ invoice.ref_number }}</v-list-tile-content>
-              </v-list-tile>
+              <v-list-item>
+                <v-list-item-content>Factuurnummer: {{ invoice.ref_number }}</v-list-item-content>
+              </v-list-item>
             </v-list>
             <v-divider />
             <v-list two-line>
-              <v-list-tile v-for="(unit, i) in invoice.units" :key="i">
-                <v-list-tile-content>
-                  <v-list-tile-title>Overeengekomen prijs: {{ unit.pivot.price }}</v-list-tile-title>
-                  <v-list-tile-sub-title>Product: {{ unit.display_name }}</v-list-tile-sub-title>
-                </v-list-tile-content>
-              </v-list-tile>
+              <v-list-item v-for="(unit, i) in invoice.units" :key="i">
+                <v-list-item-content>
+                  <v-list-item-title>Overeengekomen prijs: {{ unit.pivot.price }}</v-list-item-title>
+                  <v-list-item-subtitle>Product: {{ unit.display_name }}</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
             </v-list>
           </v-card>
-        </v-flex>
-      </v-layout>
+        </v-col>
+      </v-row>
       <v-card-actions>
-        <v-btn flat class="primary" @click="createPayment()">
+        <v-btn text class="primary" @click="createPayment()">
           <span v-if="createdPayment.payment_method ==='incasso'">Bedrag afschrijven via incasso</span>
           <span v-else>Handmatig betaling invoeren</span>
         </v-btn>
         <v-spacer></v-spacer>
-        <v-btn flat class="secondary" @click="$emit('input')">Sluiten</v-btn>
+        <v-btn text class="secondary" @click="$emit('input')">Sluiten</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

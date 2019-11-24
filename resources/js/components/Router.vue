@@ -1,14 +1,14 @@
 \<template>
   <v-app>
     <v-navigation-drawer v-model="drawer" clipped fixed app v-if="authenticated">
-      <nav-items :authenticated="authenticated" class="pt-4"></nav-items>
+      <nav-items :authenticated="authenticated" class= "pt-6"></nav-items>
     </v-navigation-drawer>
-    <v-toolbar app fixed clipped-left class="primary" dark>
-      <v-toolbar-side-icon
-        color="white--text secondary"
+    <v-app-bar app fixed clipped-left class="primary" dark>
+      <v-app-bar-nav-icon
+        class="white--text secondary"
         @click.stop="drawer = !drawer"
         v-if="authenticated"
-      ></v-toolbar-side-icon>
+      ></v-app-bar-nav-icon>
       <v-toolbar-title style="cursor: pointer" @click="$router.push('/')">OPSLAGMAGAZIJN</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items v-if="authenticated">
@@ -25,45 +25,45 @@
             </v-btn>
           </template>
           <v-list>
-            <v-list-tile @click="$router.push('/u/profile')">
-              <v-list-tile-action>
+            <v-list-item @click="$router.push('/u/profile')">
+              <v-list-item-action>
                 <v-icon>person</v-icon>
-              </v-list-tile-action>
-              <v-list-tile-title>Mijn profiel</v-list-tile-title>
-            </v-list-tile>
-            <v-list-tile @click="$router.push('/u')">
-              <v-list-tile-action>
+              </v-list-item-action>
+              <v-list-item-title>Mijn profiel</v-list-item-title>
+            </v-list-item>
+            <v-list-item @click="$router.push('/u')">
+              <v-list-item-action>
                 <v-icon>people</v-icon>
-              </v-list-tile-action>
-              <v-list-tile-title>Alle gebruikers</v-list-tile-title>
-            </v-list-tile>
-            <v-list-tile @click="$router.push('/settings')">
-              <v-list-tile-action>
+              </v-list-item-action>
+              <v-list-item-title>Alle gebruikers</v-list-item-title>
+            </v-list-item>
+            <v-list-item @click="$router.push('/settings')">
+              <v-list-item-action>
                 <v-icon>settings</v-icon>
-              </v-list-tile-action>
-              <v-list-tile-title>Instellingen</v-list-tile-title>
-            </v-list-tile>
-            <v-list-tile @click="$router.push('/logs')">
-              <v-list-tile-action>
+              </v-list-item-action>
+              <v-list-item-title>Instellingen</v-list-item-title>
+            </v-list-item>
+            <v-list-item @click="$router.push('/logs')">
+              <v-list-item-action>
                 <v-icon>description</v-icon>
-              </v-list-tile-action>
-              <v-list-tile-title>Systeemlog</v-list-tile-title>
-            </v-list-tile>            
-            <v-list-tile @click="$router.push('/logout')">
-              <v-list-tile-action>
+              </v-list-item-action>
+              <v-list-item-title>Systeemlog</v-list-item-title>
+            </v-list-item>
+            <v-list-item @click="$router.push('/logout')">
+              <v-list-item-action>
                 <v-icon>exit_to_app</v-icon>
-              </v-list-tile-action>
-              <v-list-tile-title>Uitloggen</v-list-tile-title>
-            </v-list-tile>
+              </v-list-item-action>
+              <v-list-item-title>Uitloggen</v-list-item-title>
+            </v-list-item>
           </v-list>
         </v-menu>
       </v-toolbar-items>
-    </v-toolbar>
+    </v-app-bar>
     <v-content>
-      <v-container fluid fill-height :class="{'pa-0' : $vuetify.breakpoint.smAndDown}">
-        <v-layout justify-center :align-center="authRoutes">
+      <v-container class="fill-height" fluid :class="{'pa-0' : $vuetify.breakpoint.smAndDown}">
+        <v-row justify="center" :align-center="authRoutes">
           <router-view></router-view>
-        </v-layout>
+        </v-row>
       </v-container>
       <v-snackbar v-model="snackbar.show" :color="snackbar.type">
         {{ snackbar.message }}
@@ -74,154 +74,154 @@
 
 <script lang="ts">
 // import "@babel/polyfill";
-import Vue from "vue";
-import axios from "js/axios";
-import Router from "vue-router";
-import { Component, Prop, Watch } from "vue-property-decorator";
-import Users from "./user/Users.vue";
-import Index from "./dashboard/Index.vue";
-import Login from "./auth/Login.vue";
-import Tenants from "./tenants/Tenants.vue";
-import Tenant from "./tenants/Tenant.vue";
-import Settings from "./settings/Settings.vue";
-import Logs from "./logs/Logs.vue";
-import Locations from "./locations/Locations.vue";
-import Payments from "./payments/Payments.vue";
-import Units from "./units/Units.vue";
-import Unit from "./units/Unit.vue";
-import Invoices from "./invoices/Invoices.vue";
-import Contracts from "./contracts/Contracts.vue";
-import Contract from "./contracts/Contract.vue";
-import Register from "./auth/Register.vue";
-import Dashboard from "./user/Dashboard.vue";
-import NavItems from "./layout/NavItems.vue";
-import NotFound from "./errors/404.vue";
-import Booking from "./bookings/Booking.vue";
-import Store from "js/store";
-import NewCustomer from "./customers/NewCustomer.vue";
+import Vue from 'vue'
+import axios from 'js/axios'
+import Router from 'vue-router'
+import { Component, Prop, Watch } from 'vue-property-decorator'
+import Users from './user/Users.vue'
+import Index from './dashboard/Index.vue'
+import Login from './auth/Login.vue'
+import Tenants from './tenants/Tenants.vue'
+import Tenant from './tenants/Tenant.vue'
+import Settings from './settings/Settings.vue'
+import Logs from './logs/Logs.vue'
+import Locations from './locations/Locations.vue'
+import Payments from './payments/Payments.vue'
+import Units from './units/Units.vue'
+import Unit from './units/Unit.vue'
+import Invoices from './invoices/Invoices.vue'
+import Contracts from './contracts/Contracts.vue'
+import Contract from './contracts/Contract.vue'
+import Register from './auth/Register.vue'
+import Dashboard from './user/Dashboard.vue'
+import NavItems from './layout/NavItems.vue'
+import NotFound from './errors/404.vue'
+import Booking from './bookings/Booking.vue'
+import Store from 'js/store'
+import NewCustomer from './customers/NewCustomer.vue'
 
-Vue.use(Router);
+Vue.use(Router)
 
 const router = new Router({
-  mode: "history",
+  mode: 'history',
   routes: [
     {
-      path: "/",
+      path: '/',
       component: Index,
       beforeEnter: (to: any, from: any, next: any) =>
-        !Store.getters.authenticated ? next("/login") : next()
+        !Store.getters.authenticated ? next('/login') : next()
     },
     {
-      path: "/boek",
+      path: '/boek',
       component: Booking
     },
     {
-      path: "/registreer-verhuurder",
+      path: '/registreer-verhuurder',
       component: NewCustomer
-    },    
+    },
     {
-      path: "/login",
+      path: '/login',
       component: Login,
       beforeEnter: (to: any, from: any, next: any) =>
-        Store.getters.authenticated ? next("/") : next()
+        Store.getters.authenticated ? next('/') : next()
     },
     {
-      path: "/register",
+      path: '/register',
       component: Register,
       beforeEnter: (to: any, from: any, next: any) =>
-        Store.getters.authenticated ? next("/") : next()
+        Store.getters.authenticated ? next('/') : next()
     },
     {
-      path: "/tenants",
+      path: '/tenants',
       component: Tenants,
       beforeEnter: (to: any, from: any, next: any) =>
-        !Store.getters.authenticated ? next("/login") : next()
+        !Store.getters.authenticated ? next('/login') : next()
     },
     {
-      path: "/tenants/:id",
+      path: '/tenants/:id',
       component: Tenant,
       beforeEnter: (to: any, from: any, next: any) =>
-        !Store.getters.authenticated ? next("/login") : next()
+        !Store.getters.authenticated ? next('/login') : next()
     },
     {
-      path: "/units",
+      path: '/units',
       component: Units,
       beforeEnter: (to: any, from: any, next: any) =>
-        !Store.getters.authenticated ? next("/login") : next()
+        !Store.getters.authenticated ? next('/login') : next()
     },
     {
-      path: "/units/:id",
+      path: '/units/:id',
       component: Unit,
       beforeEnter: (to: any, from: any, next: any) =>
-        !Store.getters.authenticated ? next("/login") : next()
+        !Store.getters.authenticated ? next('/login') : next()
     },
     {
-      path: "/contracts",
+      path: '/contracts',
       component: Contracts,
       beforeEnter: (to: any, from: any, next: any) =>
-        !Store.getters.authenticated ? next("/login") : next()
+        !Store.getters.authenticated ? next('/login') : next()
     },
     {
-      path: "/contracts/:id",
+      path: '/contracts/:id',
       component: Contract,
       beforeEnter: (to: any, from: any, next: any) =>
-        !Store.getters.authenticated ? next("/login") : next()
+        !Store.getters.authenticated ? next('/login') : next()
     },
     {
-      path: "/invoices",
+      path: '/invoices',
       component: Invoices,
       beforeEnter: (to: any, from: any, next: any) =>
-        !Store.getters.authenticated ? next("/login") : next()
+        !Store.getters.authenticated ? next('/login') : next()
     },
     {
-      path: "/u",
+      path: '/u',
       component: Users,
       beforeEnter: (to: any, from: any, next: any) =>
-        !Store.getters.authenticated ? next("/login") : next()
+        !Store.getters.authenticated ? next('/login') : next()
     },
     {
-      path: "/payments",
+      path: '/payments',
       component: Payments,
       beforeEnter: (to: any, from: any, next: any) =>
-        !Store.getters.authenticated ? next("/login") : next()
+        !Store.getters.authenticated ? next('/login') : next()
     },
     {
-      path: "/logs",
+      path: '/logs',
       component: Logs,
       beforeEnter: (to: any, from: any, next: any) =>
-        !Store.getters.authenticated ? next("/login") : next()
+        !Store.getters.authenticated ? next('/login') : next()
     },
     {
-      path: "/locations",
+      path: '/locations',
       component: Locations,
       beforeEnter: (to: any, from: any, next: any) =>
-        !Store.getters.authenticated ? next("/login") : next()
-    },    
+        !Store.getters.authenticated ? next('/login') : next()
+    },
     {
-      path: "/u/profile",
+      path: '/u/profile',
       component: Dashboard,
       beforeEnter: (to: any, from: any, next: any) =>
-        !Store.getters.authenticated ? next("/login") : next()
+        !Store.getters.authenticated ? next('/login') : next()
     },
     {
-      path: "/settings",
+      path: '/settings',
       component: Settings,
       beforeEnter: (to: any, from: any, next: any) =>
-        !Store.getters.authenticated ? next("/login") : next()
+        !Store.getters.authenticated ? next('/login') : next()
     },
     {
-      path: "/logout",
+      path: '/logout',
       component: () => {
-        Store.commit("updateToken", null);
-        router.push("/login");
+        Store.commit('updateToken', null)
+        router.push('/login')
       }
     },
     {
-      path: "*",
+      path: '*',
       component: NotFound
     }
   ]
-});
+})
 
 @Component({
   router: router,
@@ -233,31 +233,31 @@ const router = new Router({
 export default class RouterComponent extends Vue {
   private drawer: boolean = true;
 
-  async mounted() {
-    const r = (await axios.get("/api/settings")).data;
+  async mounted () {
+    const r = (await axios.get('/api/settings')).data
   }
-  get authRoutes() {
+
+  get authRoutes () {
     if (
-      this.$route.fullPath.startsWith("/login") ||
-      this.$route.fullPath.startsWith("/register")
-    )
-      return true;
-    return false;
+      this.$route.fullPath.startsWith('/login') ||
+      this.$route.fullPath.startsWith('/register')
+    ) { return true }
+    return false
   }
 
-  get authenticated() {
-    return Store.getters.authenticated;
+  get authenticated () {
+    return Store.getters.authenticated
   }
 
-  get snackbar() {
+  get snackbar () {
     return Store.getters.snackbarStatus
   }
 
-  @Watch("snackbar.show")
-  onSnackbarChanged(newval: boolean, oldval: boolean) {
+  @Watch('snackbar.show')
+  onSnackbarChanged (newval: boolean, oldval: boolean) {
     if (oldval !== undefined) {
-      let t = setTimeout(() => (Store.commit('snackbar', { show: false, message: ""})), 3500);
-      clearTimeout(t);
+      const t = setTimeout(() => (Store.commit('snackbar', { show: false, message: '' })), 3500)
+      clearTimeout(t)
     }
   }
 }

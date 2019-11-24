@@ -1,17 +1,17 @@
 <template>
-  <v-layout row wrap v-if="!loading">
-    <v-flex xs12 sm6 md3 :class="{'pr-3' :$vuetify.breakpoint.mdAndUp}" v-for="location in locations" :key="location.id">
+  <v-row wrap v-if="!loading">
+    <v-col cols="12" sm="6" md="3" :class="{'pr-3' :$vuetify.breakpoint.mdAndUp}" v-for="location in locations" :key="location.id">
       <v-card flat class="grey lighten-3 pa-1">
-        <v-layout row fill-height justify-center align-center pa-5 class="text-xs-center white">
-          <v-flex>
+        <v-row fill-height justify-center align-center  pa-12 class="text-center white">
+          <v-col>
             <h3 class="headline mb-0 primary--text">{{ location.facility_name }}</h3>
-            <h5 class="subheading grey--text">Boxen beschikbaar: {{ location.units_count }}</h5>
-          </v-flex>
-        </v-layout>
-        <v-btn flat color="primary" @click="$emit('done', location)">Kiezen</v-btn>
+            <h5 class="subtitle-1 grey--text">filled en beschikbaar: {{ location.units_count }}</h5>
+          </v-col>
+        </v-row>
+        <v-btn text color="primary" @click="$emit('done', location)">Kiezen</v-btn>
       </v-card>
-    </v-flex>
-  </v-layout>
+    </v-col>
+  </v-row>
 </template>
 
 <script lang="ts">

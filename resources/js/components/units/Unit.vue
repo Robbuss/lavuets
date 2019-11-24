@@ -1,41 +1,41 @@
 <template>
-  <v-flex v-if="!loading" fill-height>
-    <v-layout row wrap>
-      <v-flex xs12 md4>
+  <v-col v-if="!loading" fill-height>
+    <v-row wrap>
+      <v-col cols="12" md="4">
         <edit-create-unit :unit="unit" :creating="false"></edit-create-unit>
-      </v-flex>
-      <v-flex xs12 md4 pl-4>
+      </v-col>
+      <v-col cols="12" md="4"  pl-6>
         <v-card>
           <v-toolbar class="primary" dark>
             <v-toolbar-title>Contracten op dit product</v-toolbar-title>
           </v-toolbar>
           <v-list>
-            <v-list-tile
+            <v-list-item
               v-for="(contract, i ) in contracts"
               :key="i"
               @click="$router.push('/contracts/' + contract.id)"
             >
-              <v-list-tile-content>
-                <v-list-tile-title>Verhuurd aan {{ contract.tenant.name }}</v-list-tile-title>
-                <v-list-tile-sub-title>Sinds {{formatDate(contract.start_date) }}</v-list-tile-sub-title>
-              </v-list-tile-content>
-              <v-list-tile-action v-if="contract.active">
+              <v-list-item-content>
+                <v-list-item-title>Verhuurd aan {{ contract.tenant.name }}</v-list-item-title>
+                <v-list-item-subtitle>Sinds {{formatDate(contract.start_date) }}</v-list-item-subtitle>
+              </v-list-item-content>
+              <v-list-item-action v-if="contract.active">
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on }">
                     <v-icon color="success--text" dark v-on="on">check</v-icon>
                   </template>
                   <span>Dit contract loopt nog</span>
                 </v-tooltip>
-              </v-list-tile-action>
-            </v-list-tile>
-            <v-list-tile v-if="contracts.length === 0">
-              <v-list-tile-content>Nog niet verhuurd.</v-list-tile-content>
-            </v-list-tile>
+              </v-list-item-action>
+            </v-list-item>
+            <v-list-item v-if="contracts.length === 0">
+              <v-list-item-content>Nog niet verhuurd.</v-list-item-content>
+            </v-list-item>
           </v-list>
         </v-card>
-      </v-flex>
-    </v-layout>
-  </v-flex>
+      </v-col>
+    </v-row>
+  </v-col>
 </template>
 
 <script lang="ts">

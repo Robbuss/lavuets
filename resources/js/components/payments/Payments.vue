@@ -1,5 +1,5 @@
 <template>
-  <v-flex sm12>
+  <v-col sm="12">
     <div>
       <v-toolbar flat color="primary" dark>
         <v-toolbar-title>Betalingen</v-toolbar-title>
@@ -45,28 +45,28 @@
         <v-card-title class="primary white--text">
           <h3 class="card-title">Informatie over deze betaling</h3>
         </v-card-title>
-        <v-layout row wrap>
-          <v-flex xs12>
+        <v-row wrap>
+          <v-col cols="12">
             Betalingen op dit factuurnummer: {{ relatedPayments.length }}
             <v-list>
-              <v-list-tile v-for="(payment, i) in relatedPayments" :key="i">
-                <v-list-tile-content>
+              <v-list-item v-for="(payment, i) in relatedPayments" :key="i">
+                <v-list-item-content>
                   <span class="font-weight-bold">€ {{ payment.amount }}</span>
-                </v-list-tile-content>
-                <v-list-tile-content>
+                </v-list-item-content>
+                <v-list-item-content>
                   <PaymentStatusChip :payment="payment" />
-                </v-list-tile-content>
-              </v-list-tile>
+                </v-list-item-content>
+              </v-list-item>
             </v-list>
-          </v-flex>
-        </v-layout>
+          </v-col>
+        </v-row>
         <v-card-actions>
           <v-btn @click="$router.push('/contracts/' + selectedPayment.contract_id)">naar contract</v-btn>
           <v-btn @click="showPaymentInfo = false; selectedPayment = null">sluiten</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </v-flex>
+  </v-col>
 </template>
 
 <script lang="ts">

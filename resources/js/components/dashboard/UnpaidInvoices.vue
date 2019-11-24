@@ -3,8 +3,8 @@
     <v-card-title flat dense class="primary--text">
       <h3>Openstaande facturen</h3>
     </v-card-title>
-    <v-layout row wrap v-if="unpaid.length > 0">
-      <v-flex>
+    <v-row wrap v-if="unpaid.length > 0">
+      <v-col>
         <v-data-table
           :headers="headers"
           :items="unpaid"
@@ -52,17 +52,17 @@
             <td colspan="100%" @click="$emit('generate')" v-else>Geen facturen gevonden</td>
           </template>
         </v-data-table>
-      </v-flex>
-    </v-layout>
-    <v-layout row wrap align-center justify-center v-if="unpaid.length === 0">
-      <v-flex shrink>
+      </v-col>
+    </v-row>
+    <v-row wrap align-center justify-center v-if="unpaid.length === 0">
+      <v-col shrink>
         <img src="/all-set.png" />
-      </v-flex>
-      <v-flex grow>
+      </v-col>
+      <v-col grow>
         <h3 class="text-lighten-1 inline">Geen onbetaalde facturen</h3>
         <p class="grey--text text-darken-3">Whoop whoop! Money in the bank.</p>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
     <CreatePayment
       v-model="createPaymentModal"
       :invoice="selectedInvoice"

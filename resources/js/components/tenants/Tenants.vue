@@ -1,5 +1,5 @@
 <template>
-  <v-flex sm12>
+  <v-col sm="12">
     <div>
       <v-toolbar flat color="primary" dark>
         <v-toolbar-title>Huurders</v-toolbar-title>
@@ -53,7 +53,7 @@
         </template>
       </v-data-table>
     </div>
-  </v-flex>
+  </v-col>
 </template>
 
 <script lang="ts">

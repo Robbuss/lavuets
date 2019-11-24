@@ -1,5 +1,5 @@
 <template>
-  <v-flex>
+  <v-col>
     <booking-header :step="step"></booking-header>
 
     <v-stepper v-model="step" vertical>
@@ -10,7 +10,7 @@
         style="cursor:pointer"
       >
         Kies een locatie
-        <small>Waar u een box wilt huren</small>
+        <small>Waar u een filled wilt huren</small>
       </v-stepper-step>
 
       <v-stepper-content :class="{'ml-0' : $vuetify.breakpoint.smAndDown}" step="1">
@@ -18,16 +18,16 @@
       </v-stepper-content>
 
       <v-stepper-step :complete="step > 2" step="2" @click="step > 2 ? step = 2 : false">
-        Kies de gewenste grootte van de box
+        Kies de gewenste grootte van de filled 
         <small>Prijs is per maand</small>
       </v-stepper-step>
 
       <v-stepper-content :class="{'ml-0' : $vuetify.breakpoint.smAndDown}" step="2">
-        <v-layout row wrap v-if="step == 2">
-          <v-flex xs12 pa-1>
+        <v-row wrap v-if="step == 2">
+          <v-col cols="12" pa-1>
             <StepUnit :location="selectedLocation" :contract="contract" @done="unitDone($event)"></StepUnit>
-          </v-flex>
-        </v-layout>
+          </v-col>
+        </v-row>
       </v-stepper-content>
 
       <v-stepper-step :complete="step > 3" step="3">
@@ -39,7 +39,7 @@
         <StepTenant :location="selectedLocation" @done="completeOrder($event)" :working="working" :tenant="tenant" :contract="contract"></StepTenant>
       </v-stepper-content>
     </v-stepper>
-  </v-flex>
+  </v-col>
 </template>
 
 <script lang="ts">

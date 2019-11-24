@@ -1,13 +1,13 @@
 <template>
-<v-layout row wrap>
-  <v-flex xs12>
+<v-row wrap>
+  <v-col cols="12">
     <v-form>
     <v-text-field v-for="(setting, i) in settings" :key="i"
     :label="setting.key" v-model="setting.value"/>
     <v-btn @click="update" color="primary">Updaten</v-btn>
     </v-form>
-  </v-flex>
-  <v-flex sm12>
+  </v-col>
+  <v-col sm="12">
     <div>
       Hier komen algemene instellingen voor een app: 
       - naam
@@ -24,8 +24,8 @@
       - huurcontract
 
     </div>
-  </v-flex>
-</v-layout>
+  </v-col>
+</v-row>
 </template>
 
 <script lang="ts">

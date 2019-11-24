@@ -1,53 +1,51 @@
 <template>
   <v-card flat class="grey lighten-3 pa-1">
     <v-form v-model="valid" lazy-validation ref="form">
-      <v-layout
+      <v-row
         row
         fill-height
         justify-center
         align-center
         :class="{'pa-5' :$vuetify.breakpoint.mdAndUp, 'pa-1': $vuetify.breakpoint.smAndDown}"
-        class="text-xs-center white"
+        class="text-center white"
       >
-        <v-layout row wrap>
-          <v-flex xs12 md8 :class="{'pr-5' :$vuetify.breakpoint.mdAndUp}">
+        <v-row wrap>
+          <v-col cols="12" md="8" :class="{'pr-5' :$vuetify.breakpoint.mdAndUp}">
             <v-container grid-list-md ma-0 pa-0>
-              <v-layout wrap class="text-xs-left">
-                <v-flex xs12>
+              <v-row wrap class="text-xs-left">
+                <v-col cols="12">
                   <h4 class="grey--text headline text-xs-left">Details</h4>
-                </v-flex>
+                </v-col>
 
-                <v-flex xs12 v-if="false">
+                <v-col cols="12" v-if="false">
                   Ik huur ten minste voor een periode van:
                   <v-select
                     v-model="contract.period"
                     :items="items"
-                    box
+                    filled
                     label="Kies een duur"
                     :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                     :persistent-hint="contract.period ? true : false"
                     :hint="'Het totaalbedrag voor deze periode zal elke ' + contract.period + ' in rekening worden gebracht.'"
                     required
                   ></v-select>
-                </v-flex>
+                </v-col>
 
-                <v-flex xs12>
+                <v-col cols="12">
                   Ik wil graag als begin datum:
                   <v-menu
                     ref="datePicker"
                     v-model="datePicker"
                     :close-on-content-click="false"
                     :nudge-right="40"
-                    lazy
                     transition="scale-transition"
                     offset-y
-                    full-width
                     max-width="290px"
                     min-width="290px"
                   >
                     <template v-slot:activator="{ on }">
                       <v-text-field
-                        box
+                        filled
                         v-model="formattedDate"
                         :rules="[
                         v => !!v || 'Dit veld mag niet leeg zijn',
@@ -65,14 +63,14 @@
                       @input="datePicker = false"
                     ></v-date-picker>
                   </v-menu>
-                </v-flex>
+                </v-col>
 
-                <v-flex xs12>
+                <v-col cols="12">
                   <h4 class="grey--text headline text-xs-left">Persoonsgegevens</h4>
-                </v-flex>
-                <v-flex xs12>
+                </v-col>
+                <v-col cols="12">
                   <v-text-field
-                    box
+                    filled
                     :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                     required
                     v-model="tenant.name"
@@ -80,10 +78,10 @@
                     autocomplete="name"
                     name="name"
                   ></v-text-field>
-                </v-flex>
-                <v-flex xs12 sm6>
+                </v-col>
+                <v-col cols="12" sm="6">
                   <v-text-field
-                    box
+                    filled
                     :rules="[
                     v => !!v || 'Dit veld mag niet leeg zijn',
                     v => /.+@.+/.test(v) || 'Geef een geldig e-mailadres op']"
@@ -94,10 +92,10 @@
                     v-model="tenant.email"
                     label="E-mail"
                   ></v-text-field>
-                </v-flex>
-                <v-flex xs12 sm6>
+                </v-col>
+                <v-col cols="12" sm="6">
                   <v-text-field
-                    box
+                    filled
                     :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                     required
                     v-model="tenant.phone"
@@ -107,10 +105,10 @@
                     name="phone"
                     autocomplete="tel"
                   ></v-text-field>
-                </v-flex>
-                <v-flex xs12 sm10>
+                </v-col>
+                <v-col cols="12" sm="10">
                   <v-text-field
-                    box
+                    filled
                     :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                     required
                     v-model="tenant.street_addr"
@@ -118,20 +116,20 @@
                     autocomplete="shipping street-address"
                     name="ship-address"
                   ></v-text-field>
-                </v-flex>
-                <v-flex xs12 sm6 md2>
+                </v-col>
+                <v-col cols="12" sm="6" md="2">
                   <v-text-field
-                    box
+                    filled
                     :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                     required
                     v-model="tenant.street_number"
                     label="Huisnummer"
                   ></v-text-field>
-                </v-flex>
+                </v-col>
 
-                <v-flex xs12 sm8>
+                <v-col cols="12" sm="8">
                   <v-text-field
-                    box
+                    filled
                     :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                     required
                     v-model="tenant.city"
@@ -139,11 +137,11 @@
                     autocomplete="shipping locality"
                     name="ship-city"
                   ></v-text-field>
-                </v-flex>
+                </v-col>
 
-                <v-flex xs12 sm6 md4>
+                <v-col cols="12" sm="6" md="4">
                   <v-text-field
-                    box
+                    filled
                     :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                     required
                     v-model="tenant.postal_code"
@@ -151,82 +149,82 @@
                     autocomplete="shipping postal-code"
                     name="ship-zip"
                   ></v-text-field>
-                </v-flex>
+                </v-col>
 
-                <v-flex xs12 sm12>
+                <v-col cols="12" sm="12">
                   <v-text-field
-                    box
+                    filled
                     :rules="ibanRules"
                     required
                     v-model="tenant.iban"
                     label="IBAN Bankrekeningnummer"
                   ></v-text-field>
-                </v-flex>
+                </v-col>
 
-                <v-flex xs12>
-                  <v-checkbox v-model="isCompany" required label="Ik bestel namens een bedrijf" />
-                </v-flex>
+                <v-col cols="12">
+                  <v-checkbox  v-model="isCompany" required label="Ik bestel namens een bedrijf" />
+                </v-col>
 
-                <v-layout row wrap v-if="isCompany">
-                  <v-flex xs12>
+                <v-row wrap v-if="isCompany">
+                  <v-col cols="12">
                     <h4 class="grey--text headline text-xs-left">Bedrijfsgegevens</h4>
-                  </v-flex>
+                  </v-col>
 
-                  <v-flex xs12 sm6 md4>
+                  <v-col cols="12" sm="6" md="4">
                     <v-text-field
                       :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                       required
                       id="company"
-                      box
+                      fille
                       v-model="tenant.company_name"
                       label="Bedrijfsnaam"
                     ></v-text-field>
-                  </v-flex>
-                  <v-flex xs12 sm6 md4>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="4">
                     <v-text-field
                       :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                       required
-                      box
+                      fille
                       v-model="tenant.kvk"
                       label="KVK"
                     ></v-text-field>
-                  </v-flex>
-                  <v-flex xs12 sm6 md4>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="4">
                     <v-text-field
                       :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                       required
-                      box
+                      fille
                       v-model="tenant.btw"
                       label="BTW"
                     ></v-text-field>
-                  </v-flex>
-                  <v-layout row wrap>
-                    <v-flex xs12>
+                  </v-col>
+                  <v-row wrap>
+                    <v-col cols="12">
                       <p>Voor bedrijven wordt 21% BTW in rekening gebracht. De BTW bedraagt: €{{ calculateVatAmount }}. Het totaal bedrag komt daarmee op: €{{ totalIncludingVat }}.</p>
-                    </v-flex>
-                  </v-layout>
-                </v-layout>
-              </v-layout>
+                    </v-col>
+                  </v-row>
+                </v-row>
+              </v-row>
             </v-container>
-          </v-flex>
-          <v-flex xs12 md4>
+          </v-col>
+          <v-col cols="12" md="4">
             <v-card flat class="grey lighten-3">
-              <v-toolbar flat class="primary white--text text-xs-center">
+              <v-toolbar flat class="primary white--text text-center">
                 <v-toolbar-title>Overzicht</v-toolbar-title>
               </v-toolbar>
-              <v-flex
-                xs12
+              <v-col
+                cols="12"
                 :class="{'pa-5' :$vuetify.breakpoint.mdAndUp, 'pa-2' : $vuetify.breakpoint.smAndDown}"
               >
-                <h3 class="subheading grey--text">
-                  U huurt een box in
+                <h3 class="subtitle-1 grey--text">
+                  U huurt een filled in
                   <span class="primary--text">{{ location.facility_name }}</span>
                 </h3>
-                <h3 class="subheading grey--text">
+                <h3 class="subtitle-1 grey--text">
                   Opslagruimte
                   <span class="primary--text">{{ calculateSize }} M3</span>
                 </h3>
-                <h3 class="subheading grey--text">
+                <h3 class="subtitle-1 grey--text">
                   Prijs per maand
                   <span
                     class="primary--text"
@@ -234,44 +232,44 @@
                   >€ {{ calculatePrice }} ,-</span>
                   <span class="primary--text" v-if="isCompany">€ {{ totalIncludingVat }} ,-</span>
                 </h3>
-                <h3 class="subheading grey--text" v-if="false">
+                <h3 class="subtitle-1 grey--text" v-if="false">
                   Voor de duur van
                   <span
                     class="primary--text"
                   >{{ contract.period || 'Kies een duur' }}</span>
                 </h3>
-                <h3 class="subheading grey--text">
+                <h3 class="subtitle-1 grey--text">
                   Begin datum
                   <span class="primary--text">{{ formattedDate || 'Selecteer datum' }}</span>
                 </h3>
-              </v-flex>
+              </v-col>
             </v-card>
-            <v-layout row wrap justify-content>
-              <v-flex xs12 class="text-xs-center">
-                <v-checkbox
+            <v-row wrap justify-content>
+              <v-col cols="12" class="text-center">
+                <v-checkbox 
                   v-model="terms"
                   :rules="[v => !!v || 'Je moet akkoord gaan met de algemene voorwaarden']"
                   required
                   label="Ik ga akkoord met de algemene voorwaarden en de automatische afschrijving van vervolg betalingen"
                 />
-              </v-flex>
-              <v-flex xs12>
+              </v-col>
+              <v-col cols="12">
                 <v-btn
                   :disabled="working"
                   :loading="working"
                   @click="validate"
                   large
-                  flat
+                  text
                   class="primary"
                 >Naar betalen</v-btn>
-              </v-flex>
-              <v-flex class="justify-content">
+              </v-col>
+              <v-col class="justify-content">
                 <img width="100px" src="logo.png" />
-              </v-flex>
-            </v-layout>
-          </v-flex>
-        </v-layout>
-      </v-layout>
+              </v-col>
+            </v-row>
+          </v-col>
+        </v-row>
+      </v-row>
     </v-form>
   </v-card>
 </template>

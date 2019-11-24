@@ -8,30 +8,30 @@
     <v-card-text>
       <v-form v-model="valid" lazy-validation ref="form">
         <v-container grid-list-md ma-0 pa-0>
-          <v-layout wrap>
-            <v-flex xs12 sm6 md4>
+          <v-row wrap>
+            <v-col cols="12" sm="6" md="4">
               <v-text-field
-                box
+                filled 
                 :disabled="!editFields"
                 :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                 required
                 v-model="editedItem.name"
                 label="Naam"
               ></v-text-field>
-            </v-flex>
-            <v-flex xs12 sm6 md4>
+            </v-col>
+            <v-col cols="12" sm="6" md="4">
               <v-text-field
-                box
+                filled 
                 :disabled="!editFields"
                 :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                 required
                 v-model="editedItem.email"
                 label="E-mail"
               ></v-text-field>
-            </v-flex>
-            <v-flex xs12 sm6 md4>
+            </v-col>
+            <v-col cols="12" sm="6" md="4">
               <v-text-field
-                box
+                filled 
                 :disabled="!editFields"
                 :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                 required
@@ -39,82 +39,82 @@
                 label="Mobiel nummer voor toegang"
                 placeholder="Telefoonnummer"
               ></v-text-field>
-            </v-flex>
-            <v-flex xs12 sm6 md10>
+            </v-col>
+            <v-col cols="12" sm="6" md="10">
               <v-text-field
-                box
+                filled 
                 :disabled="!editFields"
                 :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                 required
                 v-model="editedItem.street_addr"
                 label="Straat"
               ></v-text-field>
-            </v-flex>
-            <v-flex xs12 sm6 md2>
+            </v-col>
+            <v-col cols="12" sm="6" md="2">
               <v-text-field
-                box
+                filled 
                 :disabled="!editFields"
                 :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                 required
                 v-model="editedItem.street_number"
                 label="Huisnummer"
               ></v-text-field>
-            </v-flex>
-            <v-flex xs12 sm6>
+            </v-col>
+            <v-col cols="12" sm="6">
               <v-text-field
-                box
+                filled 
                 :disabled="!editFields"
                 :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                 required
                 v-model="editedItem.city"
                 label="Stad"
               ></v-text-field>
-            </v-flex>
-            <v-flex xs12 sm6>
+            </v-col>
+            <v-col cols="12" sm="6">
               <v-text-field
-                box
+                filled 
                 :disabled="!editFields"
                 :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                 required
                 v-model="editedItem.postal_code"
                 label="Postcode"
               ></v-text-field>
-            </v-flex>
-            <v-flex xs12>
+            </v-col>
+            <v-col cols="12">
               <v-text-field
-                box
+                filled 
                 :disabled="!editFields"
                 v-model="editedItem.iban"
                 :rules="ibanRules"
                 label="IBAN Rekeningnummer"
               ></v-text-field>
-            </v-flex>
-            <v-flex xs12>
-              <v-checkbox
+            </v-col>
+            <v-col cols="12">
+              <v-checkbox 
                 :disabled="!editFields"
                 v-model="editedItem.is_company"
                 label="Deze klant is een bedrijf"
                 hide-details
                 class="mt-0"
               />
-            </v-flex>
-            <v-layout row wrap v-if="editedItem.is_company">
-              <v-flex xs12 sm6 md4>
+            </v-col>
+            <v-row wrap v-if="editedItem.is_company">
+              <v-col cols="12" sm="6" md="4">
                 <v-text-field
-                  box
+                  filled 
                   :disabled="!editFields"
                   v-model="editedItem.company_name"
                   label="Bedrijfsnaam"
                 ></v-text-field>
-              </v-flex>
-              <v-flex xs12 sm6 md4>
-                <v-text-field box :disabled="!editFields" v-model="editedItem.kvk" label="KVK"></v-text-field>
-              </v-flex>
-              <v-flex xs12 sm6 md4>
-                <v-text-field box :disabled="!editFields" v-model="editedItem.btw" label="BTW"></v-text-field>
-              </v-flex>
-            </v-layout>
-          </v-layout>
+              </v-col>
+              <v-col cols="12" sm="6" md="4">
+                <v-text-field filled :disabled="!editFields" v-model="editedItem.kvk" label="KVK"></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="6" md="4">
+                <v-text-field filled :disabled="!editFields" v-model="editedItem.btw" label="BTW"></v-text-field>
+              </v-col>
+            </v-row>
+          </v-row>
         </v-container>
       </v-form>
     </v-card-text>
@@ -129,7 +129,7 @@
         @click="save"
       >Opslaan</v-btn>
       <v-btn v-if="!editFields" color="secondary lighten-1" @click="editFields = true">Aanpassen</v-btn>
-      <v-btn flat color="primary darken-1" @click="cancel">Annuleren</v-btn>
+      <v-btn text color="primary darken-1" @click="cancel">Annuleren</v-btn>
     </v-card-actions>
   </v-card>
 </template>

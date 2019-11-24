@@ -3,16 +3,16 @@
     <v-toolbar flat dense color="primary white--text">
       <v-toolbar-title>Todo list:</v-toolbar-title>
     </v-toolbar>
-    <v-flex pa-0>
+    <v-col pa-0>
       <v-list dense>
         <template v-for="(todo, i) in todos">
           <v-divider :key="'d' + i"></v-divider>
-          <v-list-tile :key="i">
-            <v-list-tile-title>{{ todo }}</v-list-tile-title>
-          </v-list-tile>
+          <v-list-item :key="i">
+            <v-list-item-title>{{ todo }}</v-list-item-title>
+          </v-list-item>
         </template>
       </v-list>
-    </v-flex>
+    </v-col>
   </v-card>
 </template>
 

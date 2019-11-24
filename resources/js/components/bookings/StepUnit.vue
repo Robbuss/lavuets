@@ -1,103 +1,102 @@
 <template>
   <v-card flat class="grey lighten-3 pa-1" v-if="units">
-    <v-layout row wrap class="white">
-      <v-flex md2>
+    <v-row wrap class="white">
+      <v-col md="2">
         <v-toolbar dense flat color="primary" dark>
           <v-toolbar-title>Grootte</v-toolbar-title>
         </v-toolbar>
         <v-list dense style="border-right: 1px solid #EEEEEE">
-          <v-item-group v-model="window" mandatory tag="v-flex">
+          <v-item-group v-model="window" mandatory tag="v-col">
             <v-item v-for="(n, k) in units" :key="k+'1'">
               <div slot-scope="{ active, toggle }">
                 <v-divider></v-divider>
-                <v-list-tile
+                <v-list-item
                   :input-value="active"
                   @click="toggle"
                   :class="{'primary white--text' : unitChecked(n)}"
                 >
-                  <v-list-tile-content>
-                    <v-list-tile-title>{{ n[0].size }} m3</v-list-tile-title>
-                  </v-list-tile-content>
-                </v-list-tile>
+                  <v-list-item-content>
+                    <v-list-item-title>{{ n[0].size }} m3</v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
               </div>
             </v-item>
           </v-item-group>
         </v-list>
-      </v-flex>
+      </v-col>
 
-      <v-flex md10>
+      <v-col md="10">
         <v-toolbar dense flat color="primary" dark>
-          <v-toolbar-title>Klik op een box om te selecteren</v-toolbar-title>
+          <v-toolbar-title>Klik op een filled om te selecteren</v-toolbar-title>
         </v-toolbar>
         <v-window v-model="window" vertical>
           <v-window-item v-for="(n, k) in units" :key="k + '2'">
-            <v-layout row wrap>
-              <v-flex
-                @click="pickBox(u)"
+            <v-row wrap>
+              <v-col
+                @click="pickfilled (u)"
                 ma-1
-                pa-3
+                pa-4
                 v-for="u in n"
                 :key="u.id"
-                class="text-xs-center"
+                class="text-center"
                 style="border: 2px solid #EEEEEE; cursor:pointer"
                 :class="{'lighten-3 primary' : contract.units.indexOf(u) > -1}"
-              >{{ u.display_name }}</v-flex>
-            </v-layout>
+              >{{ u.display_name }}</v-col>
+            </v-row>
           </v-window-item>
         </v-window>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
     <v-divider></v-divider>
-    <v-layout row wrap>
-      <v-flex xs12>
+    <v-row wrap>
+      <v-col cols="12">
         <v-list>
-          <v-subheader>Gekozen box(en)</v-subheader>
+          <v-subheader>Gekozen filled (en)</v-subheader>
           <template v-for="chosen in contract.units">
             <v-divider :key="chosen.id + 'd'"></v-divider>
-            <v-list-tile :key="chosen.id" avatar>
-              <v-list-tile-avatar>
+            <v-list-item :key="chosen.id">
+              <v-list-item-avatar>
                 <v-avatar>
-                  <v-img src="/closed_box.png" />
+                  <v-img src="/closed_filled .png" />
                 </v-avatar>
-              </v-list-tile-avatar>
+              </v-list-item-avatar>
 
-              <v-list-tile-content>
-                <v-list-tile-title>{{ chosen.name }}</v-list-tile-title>
-                <v-list-tile-sub-title>{{ chosen.size }}m3 voor €{{ chosen.price }} per maand</v-list-tile-sub-title>
-              </v-list-tile-content>
+              <v-list-item-content>
+                <v-list-item-title>{{ chosen.name }}</v-list-item-title>
+                <v-list-item-subtitle>{{ chosen.size }}m3 voor €{{ chosen.price }} per maand</v-list-item-subtitle>
+              </v-list-item-content>
 
-              <v-list-tile-action @click="pickBox(chosen)">
+              <v-list-item-action @click="pickfilled (chosen)">
                 <v-btn icon color="grey--text">
                   <v-icon>delete</v-icon>
                 </v-btn>
-              </v-list-tile-action>
-
-            </v-list-tile>
+              </v-list-item-action>
+            </v-list-item>
           </template>
 
-          <v-list-tile v-if="contract.units.length === 0" avatar>
-            <v-list-tile-avatar>
+          <v-list-item v-if="contract.units.length === 0">
+            <v-list-item-avatar>
               <v-avatar>
-                <v-img src="/open_box.png" />
+                <v-img src="/open_filled .png" />
               </v-avatar>
-            </v-list-tile-avatar>
+            </v-list-item-avatar>
 
-            <v-list-tile-content>
-              <v-list-tile-title>Geen boxen gekozen.</v-list-tile-title>
-              <v-list-tile-sub-title>Klik een box aan om je keuze te maken</v-list-tile-sub-title>
-            </v-list-tile-content>
-          </v-list-tile>
+            <v-list-item-content>
+              <v-list-item-title>Geen filled en gekozen.</v-list-item-title>
+              <v-list-item-subtitle>Klik een filled aan om je keuze te maken</v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
         </v-list>
-      </v-flex>
-      <v-flex xs12>
-        <v-btn flat color="primary" @click="submit">Door naar gegevens invullen</v-btn>
-      </v-flex>
-    </v-layout>
-    <v-layout row>
-      <v-flex xs12>
-        <v-alert :value="error">Je moet een box kiezen om door te gaan</v-alert>
-      </v-flex>
-    </v-layout>
+      </v-col>
+      <v-col cols="12">
+        <v-btn text color="primary" @click="submit">Door naar gegevens invullen</v-btn>
+      </v-col>
+    </v-row>
+    <v-row row>
+      <v-col cols="12">
+        <v-alert :value="error">Je moet een filled kiezen om door te gaan</v-alert>
+      </v-col>
+    </v-row>
   </v-card>
 </template>
 
@@ -133,8 +132,10 @@ export default class StepUnit extends Vue {
   private error: boolean = false;
   private loading: boolean = true;
 
-  async mounted(){
-    this.units = (await axios.post("/api/book-data/units", {location_id: this.location.id})).data;
+  async mounted() {
+    this.units = (await axios.post("/api/book-data/units", {
+      location_id: this.location.id
+    })).data;
     this.loading = false;
   }
 
@@ -146,7 +147,7 @@ export default class StepUnit extends Vue {
     }
   }
 
-  pickBox(unit: any) {
+  pickfilled(unit: any) {
     const index = this.contract.units.indexOf(unit);
     if (index > -1) {
       this.contract.units.splice(index, 1);

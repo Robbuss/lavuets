@@ -1,9 +1,9 @@
 <template>
-  <v-flex fluid v-if="!loading" fill-height>
-    <v-layout row wrap>
-      <v-flex xs12>
-        <v-layout row wrap mb-3>
-          <v-flex xs12>
+  <v-col fluid v-if="!loading" fill-height>
+    <v-row wrap>
+      <v-col cols="12">
+        <v-row wrap  mb-4>
+          <v-col cols="12">
             <v-toolbar color="primary" dark tabs>
               <BackButton />
               <v-tooltip bottom>
@@ -35,11 +35,11 @@
                 <component :units="units" :contract="contract" :hidetoolbar="true" v-bind:is="item.component"/>
               </v-tab-item>
             </v-tabs-items>
-          </v-flex>
-        </v-layout>
-      </v-flex>
-    </v-layout>
-  </v-flex>
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-row>
+  </v-col>
 </template>
 
 <script lang="ts">

@@ -1,14 +1,14 @@
 <template>
-  <v-flex sm12 md8 lg5>
+  <v-col sm="12" md="8" lg="5">
     <v-card>
-      <v-toolbar color="primary white--text" class="mb-3">
+      <v-toolbar color="primary white--text" class= "mb-4">
         <v-toolbar-title>Login</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn icon dark @click="$router.push('/register')">
           <v-icon>settings</v-icon>
         </v-btn>
       </v-toolbar>
-      <v-form class="pa-3" v-model="valid" lazy-validation ref="form">
+      <v-form class= "pa-4" v-model="valid" lazy-validation ref="form">
         <v-text-field
           label="E-mailadres"
           required
@@ -28,7 +28,7 @@
           @keydown.native.enter="validate"
           prepend-icon="lock"
         />
-        <v-btn class="ml-0" color="primary" @click="validate" :disabled="working" :loading="working">Login</v-btn>
+        <v-btn  color="primary" @click="validate" :disabled="working" :loading="working">Login</v-btn>
         <v-alert
           :value="message"
           type="warning"
@@ -37,7 +37,7 @@
         </v-alert>
       </v-form>
     </v-card>
-  </v-flex>
+  </v-col>
 </template>
 
 <script lang="ts">

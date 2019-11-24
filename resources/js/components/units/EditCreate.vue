@@ -5,34 +5,34 @@
       <v-toolbar-title>{{ formTitle }}</v-toolbar-title>
     </v-toolbar>
     <v-form lazy-validation ref="form">
-      <v-layout row wrap class="pa-3">
-        <v-flex sm12>
+      <v-row wrap class= "pa-4">
+        <v-col sm="12">
           <v-select
             label="Kies een locatie"
             placeholder="Waar de unit zich bevindt"
             v-model="editedItem.location_id"
             required
-            box
+            filled 
             item-text="facility_name"
             item-value="id"
             :items="locations"
             :rules="[v => !!v || 'Je moet een locatie kiezen']"
           />
-        </v-flex>
-        <v-flex sm12>
+        </v-col>
+        <v-col sm="12">
           <v-text-field
             label="Product naam"
-            box
+            filled 
             placeholder="Komt op de factuur"
             v-model="editedItem.name"
             required
             :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
           />
-        </v-flex>
-        <v-flex sm12>
+        </v-col>
+        <v-col sm="12">
           <v-text-field
             type="number"
-            box
+            filled 
             label="Grootte in m3"
             suffix="m3"
             placeholder="Gebruik alleen getallen"
@@ -43,11 +43,11 @@
               v => v >= 0 || 'Waarde moet positief zijn'
             ]"
           />
-        </v-flex>
-        <v-flex sm12>
+        </v-col>
+        <v-col sm="12">
           <v-text-field
             type="number"
-            box
+            filled 
             min="0"
             prefix="€"
             label="Prijs in euro's"
@@ -59,11 +59,11 @@
               v => v >= 0 || 'Waarde moet positief zijn'
             ]"
           />
-        </v-flex>
-        <v-flex sm12 md6>
+        </v-col>
+        <v-col sm="12" md="6">
           <v-text-field
             type="number"
-            box
+            filled 
             label="BTW percentage"
             suffix="%"
             placeholder="Gebruik alleen een getal"
@@ -72,10 +72,10 @@
             :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
             :class="{'pr-3' : $vuetify.breakpoint.mdAndUp}"
           />
-        </v-flex>
-        <v-flex sm12 md6>
+        </v-col>
+        <v-col sm="12" md="6">
           <v-select
-            box
+            filled 
             label="BTW rekenen voor"
             placeholder="Kies wat voor klanten btw betalen"
             v-model="editedItem.should_tax"
@@ -85,31 +85,31 @@
             :items="shouldTaxOptions"
             :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
           />
-        </v-flex>
-        <v-flex sm12 md6>
+        </v-col>
+        <v-col sm="12" md="6">
           <v-select
-            box
+            filled 
             :class="{'pr-3' : $vuetify.breakpoint.mdAndUp}"
-            :items="activeBox"
+            :items="activefilled "
             v-model="editedItem.active"
             label="Product is verhuurbaar"
           />
-        </v-flex>
-        <v-flex sm12 md6>
+        </v-col>
+        <v-col sm="12" md="6">
           <v-select
-            box
-            :items="activeBox"
+            filled 
+            :items="activefilled "
             v-model="editedItem.show_frontend"
             label="Product tonen in boekingsformulier"
           />
-        </v-flex>
-        <v-flex xs12>
+        </v-col>
+        <v-col cols="12">
           <v-alert
             :value="(editedItem.show_frontend && !editedItem.active) || (!editedItem.show_frontend && editedItem.active)"
             type="info"
           >Wanneer het product niet verhuurbaar is óf wanneer product tonen in het boekingsformulier uit staat, zal het niet worden getoond.</v-alert>
-        </v-flex>
-      </v-layout>
+        </v-col>
+      </v-row>
     </v-form>
 
     <v-card-actions>
@@ -120,7 +120,7 @@
         :disabled="working"
         @click="save"
       >Opslaan</v-btn>
-      <v-btn flat color="primary darken-1" @click="cancel">Annuleren</v-btn>
+      <v-btn text color="primary darken-1" @click="cancel">Annuleren</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -147,7 +147,7 @@ export default class Editunit extends Vue {
     { value: "all", key: "Iedereen" },
     { value: "none", key: "Niemand" }
   ];
-  private activeBox: any = [
+  private activefilled : any = [
     {
       text: "Ja",
       value: true
@@ -165,7 +165,7 @@ export default class Editunit extends Vue {
     active: true,
     price: 0,
     vat_percentage: 0.21,
-    should_tax: [],
+    should_tax: false,
     show_frontend: true
   };
   private defaultItem: any = {
@@ -176,7 +176,7 @@ export default class Editunit extends Vue {
     active: null,
     price: 0,
     vat_percentage: 0.21,
-    should_tax: [],
+    should_tax: false,
     show_frontend: true
   };
   private response = "";
@@ -184,7 +184,7 @@ export default class Editunit extends Vue {
   get formTitle() {
     return this.creating && !this.unit
       ? "Product aanmaken"
-      : "De gegevens van " + this.unit.name + " bewerken";
+      : "Gegevens " + this.unit.name + " bewerken";
   }
 
   async mounted() {

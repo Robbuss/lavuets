@@ -3,11 +3,11 @@
     <v-card-title>
       <h3 class="primary--text heading">Betalingen</h3>
     </v-card-title>
-    <v-layout row wrap justify-center>
-      <v-flex>
+    <v-row wrap justify-center>
+      <v-col>
         <canvas ref="canvas"></canvas>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
   </v-card>
 </template>
 

@@ -1,5 +1,5 @@
 <template>
-  <v-flex sm12>
+  <v-col sm="12">
     <v-toolbar flat color="primary" dark>
       <v-toolbar-title>Gebruikers</v-toolbar-title>
       <v-spacer></v-spacer>
@@ -15,7 +15,7 @@
         <td colspan="100%" v-else>Geen gebruikers gevonden</td>
       </template>
     </v-data-table>
-  </v-flex>
+  </v-col>
 </template>
 
 <script lang="ts">
