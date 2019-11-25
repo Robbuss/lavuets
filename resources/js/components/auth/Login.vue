@@ -1,14 +1,14 @@
 <template>
   <v-col sm="12" md="8" lg="5">
     <v-card>
-      <v-toolbar color="primary white--text" class= "mb-4">
+      <v-toolbar color="primary white--text" class="mb-4">
         <v-toolbar-title>Login</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn icon dark @click="$router.push('/register')">
           <v-icon>settings</v-icon>
         </v-btn>
       </v-toolbar>
-      <v-form class= "pa-4" v-model="valid" lazy-validation ref="form">
+      <v-form class="pa-4" v-model="valid" lazy-validation ref="form">
         <v-text-field
           label="E-mailadres"
           required
@@ -28,13 +28,8 @@
           @keydown.native.enter="validate"
           prepend-icon="lock"
         />
-        <v-btn  color="primary" @click="validate" :disabled="working" :loading="working">Login</v-btn>
-        <v-alert
-          :value="message"
-          type="warning"
-        >
-          {{ message }}
-        </v-alert>
+        <v-btn color="primary" @click="validate" :disabled="working" :loading="working">Login</v-btn>
+        <v-alert :value="message" type="warning">{{ message }}</v-alert>
       </v-form>
     </v-card>
   </v-col>
@@ -70,7 +65,7 @@ export default class Login extends Vue {
         this.message = r.data.message;
       }
       if (r.data.access_token) {
-        store.commit("updateToken", r.data.access_token)
+        store.commit("updateToken", r.data.access_token);
         this.$router.push("/");
       }
     } catch (e) {

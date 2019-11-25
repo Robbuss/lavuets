@@ -4,11 +4,20 @@
       <v-toolbar flat color="primary" dark>
         <v-toolbar-title>Huurders</v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-text-field class="pt-0" v-model="search" append-icon="search" label="Zoeken" single-line hide-details></v-text-field>
+        <v-text-field
+          class="pt-0"
+          v-model="search"
+          append-icon="search"
+          label="Zoeken"
+          single-line
+          hide-details
+        ></v-text-field>
         <v-tooltip bottom>
-          <v-btn icon slot="activator" @click="createItem">
-            <v-icon>add</v-icon>
-          </v-btn>
+          <template v-slot:activator="{ on }">
+            <v-btn v-on="on" icon slot="activator" @click="createItem">
+              <v-icon>add</v-icon>
+            </v-btn>
+          </template>
           <span>Huurder toevoegen</span>
         </v-tooltip>
         <v-dialog v-model="dialog" max-width="80%">
@@ -27,25 +36,17 @@
         :items="tenants"
         class="elevation-1"
         :loading="loading"
-        :pagination.sync="paginationSync"
+        :footer-props="options"
         :search="search"
+        multi-sort
+        :sort-by="['created_at']"
+        :sort-desc="[true]"
+        @row:click="$router.push('/tenants/' + $event.id)"
       >
-        <template v-slot:items="props">
-          <tr class="pointer">
-            <td
-              class="pointer"
-              @click="$router.push('/tenants/' + props.item.id)"
-            >{{ props.item.name }}</td>
-            <td @click="$router.push('/tenants/' + props.item.id)">{{ props.item.email }}</td>
-            <td @click="$router.push('/tenants/' + props.item.id)">{{ props.item.company_name }}</td>
-            <td @click="$router.push('/tenants/' + props.item.id)">{{ props.item.phone }}</td>
-            <td>{{ props.item.city }}</td>
-            <td>{{ formatDate(props.item.created_at) }}</td>
-            <td class="justify-center layout px-0">
-              <v-icon small class="mr-2" @click="editItem(props.item)">edit</v-icon>
-              <v-icon small @click="deleteItem(props.item)">delete</v-icon>
-            </td>
-          </tr>
+        <template v-slot:item.created_at="{ item }">{{ formatDate(item.created_at) }}</template>
+        <template v-slot:item.actions="{ item }">
+          <v-icon small class="mr-2" @click="editItem(item)">edit</v-icon>
+          <v-icon small @click="deleteItem(item)">delete</v-icon>
         </template>
         <template v-slot:no-data>
           <td colspan="100%" v-if="loading">Klanten laden...</td>
@@ -78,10 +79,10 @@ export default class Tenants extends Vue {
   private editedItem: any = null;
   private search: string = "";
 
-  private paginationSync: any = {
-    rowsPerPage: 25,
-    descending: true,
-    sortBy: 'created_at'
+  private options: any = {
+    itemsPerPage: 25,
+    itemsPerPageText: "Huurders per pagina",
+    itemsPerPageAllText: "Allemaal"
   };
 
   private headers: any = [
@@ -90,13 +91,8 @@ export default class Tenants extends Vue {
     { text: "Bedrijf", value: "company_name" },
     { text: "Telefoonnummer", value: "phone" },
     { text: "Stad", value: "city" },
-    // { text: "Straat", value: "street_addr" },
-    // { text: "Nr", value: "street_number" },
-    // { text: "Postcode", value: "postal_code" },
-    // { text: "BTW", value: "btw" },
-    // { text: "KvK", value: "kvk" },
     { text: "Aangemaakt", value: "created_at" },
-    { text: "Actions", value: "name", sortable: false }
+    { text: "Acties", value: "actions", sortable: false, align: "right" }
   ];
 
   formatDate(date: any) {
@@ -123,11 +119,11 @@ export default class Tenants extends Vue {
   }
 
   deleteItem(item: any) {
+    if (!confirm("Wil je deze klant verwijderen?")) return;
+
     const index = this.tenants.indexOf(item);
-    confirm("Are you sure you want to delete this item?") &&
-      this.tenants.splice(index, 1) &&
-      axios.post("/api/tenants/" + item.id + "/delete");
-    
+    this.tenants.splice(index, 1);
+    axios.post("/api/tenants/" + item.id + "/delete");
     store.commit("snackbar", { type: "success", message: "Klant verwijderd." });
   }
 

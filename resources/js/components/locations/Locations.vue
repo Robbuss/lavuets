@@ -5,7 +5,7 @@
       <v-spacer></v-spacer>
       <v-dialog v-model="dialog" max-width="500px">
         <template v-slot:activator="{ on }">
-          <v-btn color="primary" icon v-on="on">
+          <v-btn class="white--text" icon v-on="on">
             <v-icon>add</v-icon>
           </v-btn>
         </template>
@@ -44,14 +44,11 @@
       :sort-by="['name', 'facility_name']"
       :sort-desc="[false, true]"
       multi-sort
+      :footer-props="options"
     >
-      <template v-slot:items="props">
-        <td>{{ props.item.name }}</td>
-        <td>{{ props.item.facility_name }}</td>
-        <td class="justify-end layout">
-          <v-icon small class="mr-2" @click="editItem(props.item)">edit</v-icon>
-          <v-icon small @click="deleteItem(props.item)">delete</v-icon>
-        </td>
+      <template v-slot:item.actions="{ item }">
+        <v-icon small class="mr-2" @click="editItem(item)">edit</v-icon>
+        <v-icon small @click="deleteItem(item)">delete</v-icon>
       </template>
     </v-data-table>
   </v-col>
@@ -77,8 +74,12 @@ export default class Locations extends Vue {
       value: "name"
     },
     { text: "Facility Name", value: "facility_name" },
-    { text: "actions", value: "name", sortable: false, align: "right" }
+    { text: "Acties", value: "actions", sortable: false, align: "right" }
   ];
+  private options: any = {
+    itemsPerPageText: "Locaties per pagina",
+    itemsPerPageAllText: "Allemaal"
+  };
   private editedIndex: number = -1;
   private editedItem: any = {
     name: "",
@@ -115,11 +116,11 @@ export default class Locations extends Vue {
   }
 
   deleteItem(item: any) {
-    const index = this.locations.indexOf(item);
-    confirm("Are you sure you want to delete this item?") &&
-      this.locations.splice(index, 1);
-    axios.post("/api/locations/" + item.id + "/delete");
+    if (!confirm("Wil je dit item verwijderen? ")) return;
 
+    const index = this.locations.indexOf(item);
+    this.locations.splice(index, 1);
+    axios.post("/api/locations/" + item.id + "/delete");
     store.commit("snackbar", {
       type: "success",
       message: "Locatie verwijderd."

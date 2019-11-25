@@ -18,7 +18,7 @@
               <v-icon>add</v-icon>
             </v-btn>
           </template>
-          <span>filled toevoegen</span>
+          <span>Product toevoegen</span>
         </v-tooltip>
         <v-dialog v-model="dialog" max-width="80%" persistent>
           <edit-create-unit
@@ -36,36 +36,29 @@
         :items="units"
         class="elevation-1"
         :loading="loading"
-        :options="pagination"
+        :footer-props="options"
         multi-sort
+        @click:row="$router.push('/units/' + $event.id)"
       >
-        <template v-slot:items="props">
-          <tr @click="$router.push('/units/' + props.item.id)" style="cursor: pointer">
-            <td>{{ props.item.facility_name }}</td>
-            <td>{{ props.item.name }}</td>
-            <td>{{ props.item.size }}</td>
-            <td>€{{ props.item.price }}</td>
-            <td>
-              <v-chip
-                flat
-                dark
-                :class="{'green' : props.item.active, 'orange' : !props.item.active }"
-                v-if="props.item.free"
-              >
-                Beschikbaar
-                <span v-if="!props.item.active">, niet verhuurbaar</span>
-              </v-chip>
-              <v-chip flat v-else>Verhuurd</v-chip>
-            </td>
-            <td class="layout justify-end">
-              <v-icon small class="mr-2" @click.stop="editItem(props.item)">edit</v-icon>
-              <v-icon small @click.stop="deleteItem(props.item)">delete</v-icon>
-            </td>
-          </tr>
+        <template v-slot:item.status="{ item }">
+          <v-chip
+            flat
+            dark
+            :class="{'green' : item.active, 'orange' : !item.active }"
+            v-if="item.free"
+          >
+            Beschikbaar
+            <span v-if="!item.active">, niet verhuurbaar</span>
+          </v-chip>
+          <v-chip flat v-else>Verhuurd</v-chip>
+        </template>
+        <template v-slot:item.actions="{ item }">
+          <v-icon small class="mr-2" @click.stop="editItem(item)">edit</v-icon>
+          <v-icon small @click.stop="deleteItem(item)">delete</v-icon>
         </template>
         <template v-slot:no-data>
-          <td colspan="100%" v-if="loading">filled en laden...</td>
-          <td colspan="100%" v-else>Geen filled en gevonden</td>
+          <td colspan="100%" v-if="loading">Producten laden...</td>
+          <td colspan="100%" v-else>Geen producten gevonden</td>
         </template>
       </v-data-table>
     </div>
@@ -99,10 +92,13 @@ export default class Units extends Vue {
     { text: "Grootte (m3)", value: "size" },
     { text: "Prijs (p/m)", value: "price" },
     { text: "Status", value: "status" },
-    { text: "Acties", align: "right", sortable: false }
+    { text: "Acties", value: "actions", align: "right", sortable: false }
   ];
-  private pagination: any = {
-    rowsPerPage: 75
+
+  private options: any = {
+    itemsPerPage: 75,
+    itemsPerPageText: "Locaties per pagina",
+    itemsPerPageAllText: "Allemaal"
   };
 
   @Watch("dialog")
@@ -125,11 +121,15 @@ export default class Units extends Vue {
   }
 
   deleteItem(item: any) {
+    if (
+      !confirm(
+        "Product verwijderen? Als er contracten actief zijn op dit product gaat het mis!"
+      )
+    )
+      return;
+
     const index = this.units.indexOf(item);
-    confirm(
-      "Weet je zeker dat je dit product wil verwijderen? Als er contracten actief zijn op dit product gaat het mis!"
-    ) &&
-      this.units.splice(index, 1) &&
+    this.units.splice(index, 1) &&
       axios.post("/api/units/" + item.id + "/delete") &&
       store.commit("snackbar", {
         type: "success",

@@ -21,6 +21,11 @@ class Customer extends Model implements HasMedia
         return "Klant {$eventName}";
     }
 
+    public function settings()
+    {
+        return $this->hasMany(Setting::class);
+    }
+
     /**
      * Call this method to get current Customer
      *

@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
+use App\Models\User;
 use App\Models\Customer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
 class CustomerController extends Controller
@@ -27,13 +29,20 @@ class CustomerController extends Controller
      */
     public function create(Request $request)
     {
-        $Customer = Customer::create([
+        $customer = Customer::create([
             'domain' => $request->domain,
             'email' => $request->email,
             'name' => $request->name,
             'company_name' => $request->company_name,
         ]);
-        return ['id' => $Customer->id];
+        $user = User::create([
+            'customer_id' => $customer->id,
+            'password' => Hash::make(sha1(time())),
+            'name' => $request->name,
+            'email' => $request->email,
+            'sso_token' => sha1(time())
+        ]);
+        return ['customer_id' => $customer->id, 'user_id' => $user->id, 'sso_token' => $user->sso_token];
     }
 
     public function read(Customer $Customer)

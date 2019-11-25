@@ -4,13 +4,25 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use GuzzleHttp\Client;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use GuzzleHttp\Exception\BadResponseException;
 
 class AuthController extends Controller
 {
-    public function login(Request $request)
+    public function login(Request $request){
+        return $this->userAuth($request->email, $request->password);
+    }
+
+    public function singleSignOn(User $user, $sso)
+    {
+        if($user->sso_token !== $sso)
+            abort(401);
+        return $this->userAuth($user->email, $sso);   
+    }
+
+    public function userAuth($email, $password)
     {
         $http = new Client();
         try {
@@ -19,11 +31,11 @@ class AuthController extends Controller
                     'grant_type' => 'password',
                     'client_id' => config('services.passport.client_id'),
                     'client_secret' => config('services.passport.client_secret'),
-                    'username' => $request->email,
-                    'password' => $request->password
+                    'username' => $email,
+                    'password' => $password
                 ]
             ]);
-            activity('auth')->log($request->email . ' heeft ingelogd');
+            activity('auth')->log($user->email . ' heeft ingelogd');
             return json_decode((string) $response->getBody(), true);
         } catch (BadResponseException $e) {
             $response = $e->getResponse();
@@ -34,8 +46,9 @@ class AuthController extends Controller
 
     public function register(Request $request)
     { 
-        if(!config('auth.enable_registration'))
-            return ['errors' => 'Registration is closed'];
+
+        if(!Setting::where('key', 'enable_registration')->first()->value)
+            return ['errors' => 'Registratie is gesloten'];
 
         $request->validate([
             'name' => ['required', 'string', 'max:255'],

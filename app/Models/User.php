@@ -20,7 +20,7 @@ class User extends Authenticatable implements HasMedia
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'sso_token', 'customer_id'
     ];
 
     /**
@@ -29,15 +29,12 @@ class User extends Authenticatable implements HasMedia
      * @var array
      */
     protected $hidden = [
-        'password'
+        'password',
     ];
 
     protected static function boot()
     {
         parent::boot();
         static::addGlobalScope(new CustomerScope);
-        self::creating(function($model){
-            $model->customer_id = Customer::current()->id;
-        });
     }
 }

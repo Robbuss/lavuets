@@ -6,46 +6,50 @@
     <v-row wrap v-if="unpaid.length > 0">
       <v-col>
         <v-data-table
+          :footer-props="options"
+          :items-per-page="10"
+          @click:row="createPayment($event)"
           :headers="headers"
           :items="unpaid"
           :loading="loading"
-          rows-per-page-text="Facturen per pagina"
-          :pagination.sync="pagination"
+          multi-sort
+          :sort-by="['ref_number']"
+          :sort-desc="[true]"
         >
-          <template v-slot:items="props">
-            <tr @click="createPayment(props.item)" class="pointer">
-              <td>{{ props.item.ref_number }}</td>
-              <td>€ {{ props.item.price.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&,") }}</td>
-              <td>
-                <PaymentStatusChip :payment="props.item.payments[0]" />
-              </td>
-              <td>{{ props.item.tenant.name }}</td>
-              <td>{{ props.item.payment_method }}</td>
-              <td>{{ formatDate(props.item.start_date, 'LL') }}</td>
-              <td>{{ formatDate(props.item.end_date, 'LL') }}</td>
-              <td>
-                <v-tooltip bottom v-if="props.item.sent">
-                  <v-icon class="grey--text text-lighten-1" small slot="activator">mail</v-icon>
-                  <span>{{ formatDate(props.item.sent, 'LLL') }}</span>
-                </v-tooltip>
-                <v-tooltip bottom v-else>
-                  <v-icon class="primary--text" small slot="activator">mail</v-icon>
-                  <span>Niet verzonden</span>
-                </v-tooltip>
-                <v-tooltip bottom>
-                  <v-btn
-                    slot="activator"
-                    icon
-                    small
-                    class="grey--text text-lighten-1"
-                    @click="$router.push('/contracts/' + props.item.contract_id)"
-                  >
-                    <v-icon small>send</v-icon>
-                  </v-btn>
-                  <span>Naar het contract</span>
-                </v-tooltip>
-              </td>
-            </tr>
+          <template v-slot:item.payments="{ item }">
+            <PaymentStatusChip :payment="item.payments[0]" />
+          </template>
+          <template
+            v-slot:item.price="{ item }"
+          >€ {{ item.price.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&,") }}</template>
+          <template v-slot:item.start_date="{ item }">{{ formatDate(item.start_date, 'LL') }}</template>
+          <template v-slot:item.end_date="{ item }">{{ formatDate(item.end_date, 'LL') }}</template>
+          <template v-slot:item.sent="{ item }">
+            <v-tooltip bottom v-if="item.sent">
+              <template v-slot:activator="{ on }">
+                <v-icon v-on="on" class="grey--text text-lighten-1" small slot="activator">mail</v-icon>
+              </template>
+              <span>{{ formatDate(item.sent, 'LLL') }}</span>
+            </v-tooltip>
+            <v-tooltip bottom v-else>
+              <v-icon class="primary--text" small slot="activator">mail</v-icon>
+              <span>Niet verzonden</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on }">
+                <v-btn
+                  slot="activator"
+                  icon
+                  v-on="on"
+                  small
+                  class="grey--text text-lighten-1"
+                  @click="$router.push('/contracts/' + item.contract_id)"
+                >
+                  <v-icon small>send</v-icon>
+                </v-btn>
+              </template>
+              <span>Naar het contract</span>
+            </v-tooltip>
           </template>
           <template v-slot:no-data>
             <td colspan="100%" v-if="loading">Facturen laden...</td>
@@ -54,11 +58,11 @@
         </v-data-table>
       </v-col>
     </v-row>
-    <v-row wrap align-center justify-center v-if="unpaid.length === 0">
-      <v-col shrink>
+    <v-row wrap align-center justify="center" v-if="unpaid.length === 0">
+      <v-col class="shrink">
         <img src="/all-set.png" />
       </v-col>
-      <v-col grow>
+      <v-col class="grow">
         <h3 class="text-lighten-1 inline">Geen onbetaalde facturen</h3>
         <p class="grey--text text-darken-3">Whoop whoop! Money in the bank.</p>
       </v-col>
@@ -71,7 +75,11 @@
     />
   </v-card>
 </template>
-
+<style scoped>
+tr {
+  cursor: pointer !important;
+}
+</style>
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
@@ -91,20 +99,19 @@ export default class UnsedInvoice extends Vue {
   private selectedInvoice: any = null;
   private createPaymentModal: boolean = false;
   private loading: boolean = true;
-  private pagination: any = {
-    rowsPerPage: 10,
-    descending: true,
-    sortBy: "ref_number"
+  private options: any = {
+    itemsPerPageText: "Facturen per pagina",
+    itemsPerPageAllText: "Allemaal"
   };
   private headers: any = [
     { text: "Factuur nr", value: "ref_number" },
     { text: "Bedrag", value: "price" },
-    { text: "Betaling", value: "payment.payment_id" },
+    { text: "Betaling", value: "payments" },
     { text: "Naam", value: "tenant.name" },
     { text: "Betaalmethode", value: "payment_method" },
     { text: "Van", value: "start_date" },
     { text: "Tot", value: "end_date" },
-    { text: "Verzonden", value: "sent" },
+    { text: "Verzonden", value: "sent" }
   ];
 
   async mounted() {
