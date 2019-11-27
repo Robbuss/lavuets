@@ -38,10 +38,11 @@
         :loading="loading"
         :footer-props="options"
         :search="search"
+        :items-per-page="25"
         multi-sort
         :sort-by="['created_at']"
         :sort-desc="[true]"
-        @row:click="$router.push('/tenants/' + $event.id)"
+        @click:row="$router.push('/tenants/' + $event.id)"
       >
         <template v-slot:item.created_at="{ item }">{{ formatDate(item.created_at) }}</template>
         <template v-slot:item.actions="{ item }">
@@ -80,7 +81,6 @@ export default class Tenants extends Vue {
   private search: string = "";
 
   private options: any = {
-    itemsPerPage: 25,
     itemsPerPageText: "Huurders per pagina",
     itemsPerPageAllText: "Allemaal"
   };

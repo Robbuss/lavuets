@@ -36,6 +36,7 @@
         :items="units"
         class="elevation-1"
         :loading="loading"
+        :itemsPerPage="50"
         :footer-props="options"
         multi-sort
         @click:row="$router.push('/units/' + $event.id)"
@@ -96,8 +97,7 @@ export default class Units extends Vue {
   ];
 
   private options: any = {
-    itemsPerPage: 75,
-    itemsPerPageText: "Locaties per pagina",
+    itemsPerPageText: "Producten per pagina",
     itemsPerPageAllText: "Allemaal"
   };
 

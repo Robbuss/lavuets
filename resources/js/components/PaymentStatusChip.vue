@@ -1,8 +1,6 @@
 <template>
-  <v-chip flat dark class=" lighten-2 text--darken-1" :class="hasPayment.color">
-    <v-avatar>
-      <v-icon>{{ hasPayment.icon }}</v-icon>
-    </v-avatar>
+  <v-chip flat dark class="lighten-2 text--darken-1" :class="hasPayment.color">
+      <v-icon left >{{ hasPayment.icon }}</v-icon>
     {{ hasPayment.text }}
   </v-chip>
 </template>

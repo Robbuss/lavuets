@@ -1,72 +1,61 @@
 <template>
   <v-col sm="12">
-    <div>
-      <v-toolbar flat color="primary" dark>
-        <v-toolbar-title>Contracten</v-toolbar-title>
-        <v-spacer></v-spacer>
-        <v-text-field
-          class="white--text pt-0"
-          v-model="search"
-          append-icon="search"
-          label="Zoeken"
-          single-line
-          hide-details
-        ></v-text-field>
-        <v-tooltip bottom>
-          <v-btn icon slot="activator" @click="dialog = true">
+    <v-toolbar flat color="primary" dark>
+      <v-toolbar-title>Contracten</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-text-field
+        class="white--text pt-0"
+        v-model="search"
+        append-icon="search"
+        label="Zoeken"
+        single-line
+        hide-details
+      ></v-text-field>
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on }">
+          <v-btn v-on="on" icon @click="dialog = true">
             <v-icon>add</v-icon>
           </v-btn>
-          <span>Contract toevoegen</span>
-        </v-tooltip>
-        <edit-create v-if="dialog" :dialog="dialog" :contract="chosenContract" @input="close"></edit-create>
-      </v-toolbar>
-      <v-data-table
-        :headers="headers"
-        :search="search"
-        :items="contracts"
-        class="elevation-1"
-        :loading="loading"
-        rows-per-page-text="Contracten per pagina"
-        :pagination.sync="pagination"
-      >
-        <template v-slot:items="props">
-          <td
-            class="pointer"
-            @click="$router.push('/contracts/' + props.item.id)"
-          >{{ props.item.tenant_name }}</td>
-          <td>{{ formatDate(props.item.start_date) }}</td>
-          <td v-if="!props.item.deactivated_at">
-            <v-chip  flat dark color="green">Actief</v-chip>
-          </td>
-          <td v-if="props.item.deactivated_at">
-            <v-chip  flat>{{ props.item.deactivated_at }}</v-chip>
-          </td>
-          <td>
-            <v-chip
-              :class="{'info' : props.item.payment_method === 'incasso', 'grey' : props.item.payment_method === 'factuur'}"
-              
-              flat
-              dark
-            >{{ props.item.payment_method }}</v-chip>
-          </td>
-          <td v-if="props.item.auto_invoice">
-            <v-chip class=" green lighten-3" flat dark>Aan</v-chip>
-          </td>
-          <td v-if="!props.item.auto_invoice">
-            <v-chip class=" red lighten-3" flat dark>Uit</v-chip>
-          </td>
-          <td>{{ props.item.company_name }}</td>
-          <td class="justify-center layout px-0">
-            <v-icon small class="mr-2" @click="editItem(props.item)">edit</v-icon>
-            <v-icon small @click="deleteItem(props.item)">delete</v-icon>
-          </td>
         </template>
-        <template v-slot:no-data>
-          <td colspan="100%" v-if="loading">Contracten laden...</td>
-          <td colspan="100%" v-else>Geen contracten</td>
-        </template>
-      </v-data-table>
-    </div>
+        <span>Contract toevoegen</span>
+      </v-tooltip>
+      <edit-create v-if="dialog" :dialog="dialog" :contract="chosenContract" @input="close"></edit-create>
+    </v-toolbar>
+    <v-data-table
+      :headers="headers"
+      :search="search"
+      :items="contracts"
+      class="elevation-1"
+      :loading="loading"
+      :footer-props="options"
+      :sort-by="['created_at']"
+      :sort-desc="[true]"
+      @click:row="$router.push('/contracts/' + $event.id)"
+    >
+      <template v-slot:item.start_date="{ item }">{{ formatDate(item.start_date) }}</template>
+      <template v-slot:item.deactivated_at="{ item }">
+        <v-chip v-if="item.deactivated_at">{{ props.item.deactivated_at }}</v-chip>
+      </template>
+      <template v-slot:item.payment_method="{ item }">
+        <v-chip
+          :class="{'info' : item.payment_method === 'incasso', 'grey' : item.payment_method === 'factuur'}"
+          flat
+          dark
+        >{{ item.payment_method }}</v-chip>
+      </template>
+      <template v-slot:item.auto_invoice="{ item }">
+        <v-icon v-if="item.auto_invoice" class="green--text lighten-3">check</v-icon>
+        <v-icon v-else class="red--text lighten-3">close</v-icon>
+      </template>
+      <template v-slot:item.actions="{ item }">
+        <v-icon small class="mr-2" @click="editItem(item)">edit</v-icon>
+        <v-icon small @click="deleteItem(item)">delete</v-icon>
+      </template>
+      <template v-slot:no-data>
+        <td colspan="100%" v-if="loading">Contracten laden...</td>
+        <td colspan="100%" v-else>Geen contracten</td>
+      </template>
+    </v-data-table>
   </v-col>
 </template>
 
@@ -95,20 +84,20 @@ export default class Contracts extends Vue {
   private step: number = 0;
   private chosenContract: any = {};
 
+  private options: any = {
+    itemsPerPageText: "Contracten per pagina",
+    itemsPerPageAllText: "Allemaal"
+  };
+
   private headers: any = [
     { text: "Klantnaam", value: "tenant_name" },
     { text: "Ingangsdatum", value: "start_date" },
     { text: "Gedeactiveerd op", value: "active" },
     { text: "Type", value: "payment_method" },
-    { text: "Automatisch factureren", value: "auto_invoice" },
+    { text: "Verzend factuur", value: "auto_invoice" },
     { text: "Bedrijfsnaam", value: "company_name" },
-    { text: "Actions", value: "name", sortable: false }
+    { text: "Acties", value: "actions", sortable: false }
   ];
-  private pagination: any = {
-    rowsPerPage: 25,
-    sortBy: "start_date",
-    descending: true,
-  };
 
   formatDate(date: any) {
     return moment(date).format("LL");
@@ -137,12 +126,15 @@ export default class Contracts extends Vue {
   }
 
   deleteItem(item: any) {
+    if (!confirm("Wil je dit contract echt verwijderen?")) return;
     const index = this.contracts.indexOf(item);
-    confirm("Are you sure you want to delete this item?") &&
-      this.contracts.splice(index, 1) &&
-      axios.post("/api/contracts/" + item.id + "/delete");
+    this.contracts.splice(index, 1);
+    axios.post("/api/contracts/" + item.id + "/delete");
 
-    store.commit("snackbar", { type: "success", message: "Contract verwijderd." });
+    store.commit("snackbar", {
+      type: "success",
+      message: "Contract verwijderd."
+    });
   }
 
   async close() {

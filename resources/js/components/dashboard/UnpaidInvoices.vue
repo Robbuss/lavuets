@@ -32,7 +32,9 @@
               <span>{{ formatDate(item.sent, 'LLL') }}</span>
             </v-tooltip>
             <v-tooltip bottom v-else>
-              <v-icon class="primary--text" small slot="activator">mail</v-icon>
+              <template v-slot:activator="{ on }">
+              <v-icon v-on="on" class="primary--text" small slot="activator">mail</v-icon>
+              </template>
               <span>Niet verzonden</span>
             </v-tooltip>
             <v-tooltip bottom>

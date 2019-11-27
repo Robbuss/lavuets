@@ -11,7 +11,7 @@
           label="Zoeken"
           single-line
           hide-details
-        ></v-text-field>        
+        ></v-text-field>
       </v-toolbar>
       <v-data-table
         :headers="headers"
@@ -19,21 +19,18 @@
         :search="search"
         class="elevation-1"
         :loading="loading"
-        :pagination.sync="paginationSync"
+        :sort-by="['created_at']"
+        :sort-desc="[true]"
+        multi-sort
+        @click:row="toggleInfo($event)"
+        :footer-props="options"
       >
-        <template v-slot:items="props">
-          <tr @click="toggleInfo(props.item)" style="cursor:pointer;">
-            <td class="font-weight-bold">€ {{ props.item.amount }}</td>
-            <td>
-              <PaymentStatusChip :payment="props.item" />
-            </td>
-            <td>{{ props.item.tenant }}</td>
-            <td>{{ props.item.payment_id }}</td>
-            <td>{{ props.item.invoice_ref_number }}</td>
-            <td>{{ formatDate(props.item.created_at) }}</td>
-            <td>{{ formatDate(props.item.updated_at) }}</td>
-          </tr>
+        <template v-slot:item.amount="{ item }" class="font-weight-bold">€ {{ item.amount }}</template>
+        <template v-slot:item.status="{ item }">
+          <PaymentStatusChip :payment="item" />
         </template>
+        <template v-slot:item.crea  ted_at="{ item }">{{ formatDate(item.created_at) }}</template>
+        <template v-slot:item.updated_at="{ item }">{{ formatDate(item.updated_at) }}</template>
         <template v-slot:no-data>
           <td colspan="100%" v-if="loading">Betalingen laden...</td>
           <td colspan="100%" v-else>Geen betalingen</td>
@@ -89,23 +86,22 @@ export default class Payments extends Vue {
   private showPaymentInfo: boolean = false;
   private selectedPayment: any = null;
   private relatedPayments: any = null;
-  private search: string|null = null;
-
-  private paginationSync: any = {
-    descending: true,
-    rowsPerPage: 50, // -1 for All",
-    sortBy: "created_at"
-  };
+  private search: string | null = null;
 
   private headers: any = [
     { text: "Bedrag", align: "left", value: "amount" },
     { text: "Status", align: "left", value: "status" },
-    { text: "Klant", align: "left", value: "payment.tenant.name" },
+    { text: "Klant", align: "left", value: "tenant" },
     { text: "Betalings nr", align: "left", value: "payment_id" },
     { text: "Factuur nr", align: "left", value: "invoice_ref_number" },
     { text: "Gemaakt op", value: "created_at" },
     { text: "Gewijzigd op", value: "updated_at" }
   ];
+
+  private options: any = {
+    itemsPerPageText: "Betalingen per pagina",
+    itemsPerPageAllText: "Allemaal"
+  };
 
   formatDate(date: any) {
     return moment(date).format("LL");

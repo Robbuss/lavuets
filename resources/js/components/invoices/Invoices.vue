@@ -1,95 +1,101 @@
 <template>
   <v-col sm="12">
-    <div>
-      <v-toolbar flat color="primary" dark v-if="!hidetoolbar">
-        <v-toolbar-title>Facturen</v-toolbar-title>
-        <v-spacer></v-spacer>
-        <v-text-field
-          class="white--text pt-0"
-          v-model="search"
-          append-icon="search"
-          label="Zoeken"
-          single-line
-          hide-details
-        ></v-text-field>
-        <v-tooltip bottom v-if="contract && contract.tenant_id">
-          <v-btn icon slot="activator" @click="$router.push('/invoices')">
-            <v-icon>info</v-icon>
-          </v-btn>
+    <v-toolbar flat color="primary" dark v-if="!hidetoolbar">
+      <v-toolbar-title>Facturen</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-text-field
+        class="white--text pt-0"
+        v-model="search"
+        append-icon="search"
+        label="Zoeken"
+        single-line
+        hide-details
+      ></v-text-field>
+      <template v-if="contract && contract.tenant_id">
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on }">
+            <v-btn icon v-on="on" @click="$router.push('/invoices')">
+              <v-icon>info</v-icon>
+            </v-btn>
+          </template>
           <span>Alle facturen van alle klanten bekijken</span>
         </v-tooltip>
-        <v-tooltip bottom v-if="contract && contract.tenant_id">
-          <v-btn icon slot="activator" @click="dialog = true">
-            <v-icon>add</v-icon>
-          </v-btn>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on }">
+            <v-btn icon v-on="on" @click="dialog = true">
+              <v-icon>add</v-icon>
+            </v-btn>
+          </template>
           <span>Nieuwe factuur maken</span>
         </v-tooltip>
-      </v-toolbar>
-      <v-data-table
-        :search="search"
-        :headers="headers"
-        :items="invoices"
-        class="elevation-1"
-        :loading="loading"
-        rows-per-page-text="Facturen per pagina"
-        :pagination.sync="pagination"
-      >
-        <template v-slot:actions-prepend v-if="contract && contract.tenant_id">
-          <div style="position:absolute; left:0px; bottom:7px;">
-            <v-btn small flat class="primary" @click="dialog = true">Nieuwe factuur</v-btn>
-          </div>
-        </template>
-        <template v-slot:items="props">
-          <tr>
-            <td>{{ props.item.ref_number }}</td>
-            <td>
-              <PaymentStatusChip :payment="props.item.payments[0]" />
-            </td>
-            <td>{{ props.item.tenant.name }}</td>
-            <td
-              v-if="!contract"
-              @click="$router.push('/contracts/' + props.item.contract_id)"
-              class="pointer"
-            >{{ getUnits(props.item.units) }}</td>
-            <td v-else>{{ getUnits(props.item.units) }}</td>
-            <td>€{{ formatMoney(props.item.price) }}</td>
-            <td>{{ formatDate(props.item.start_date, 'LL') }}</td>
-            <td>{{ formatDate(props.item.end_date, 'LL') }}</td>
-            <td v-if="props.item.sent">{{ formatDate(props.item.sent, 'LL') }}</td>
-            <td v-else>Niet verzonden</td>
-            <td>
-              <v-row align-center>
-                <v-btn class="primary--text" small icon @click="editItem(props.item)">
-                  <v-icon small>edit</v-icon>
-                </v-btn>
-                <v-btn class="primary--text" small icon @click="deleteItem(props.item)">
-                  <v-icon small>delete</v-icon>
-                </v-btn>
-                <v-btn class="primary--text" small icon @click="download(props.item)">
-                  <v-icon small>attach_file</v-icon>
-                </v-btn>
-                <v-btn
-                  class="primary--text"
-                  :disabled="props.item.sent ? true : false"
-                  small
-                  icon
-                  @click="confirmSendingInvoice(props.item)"
-                >
-                  <v-icon small>mail</v-icon>
-                </v-btn>
-              </v-row>
-            </td>
-          </tr>
-        </template>
-        <template v-slot:no-data>
-          <td colspan="100%" v-if="loading">Facturen laden...</td>
-          <td colspan="100%" @click="$emit('generate')" v-else>Geen facturen gevonden</td>
-        </template>
-      </v-data-table>
-    </div>
+      </template>
+    </v-toolbar>
+    <v-data-table
+      :search="search"
+      :headers="headers"
+      :items="invoices"
+      class="elevation-1"
+      :loading="loading"
+      multi-sort
+      :footer-props="options"
+      :sort-by="['ref_number']"
+      :sort-desc="[true]"
+      @click:row="(contract && contract.id) ? $router.push('/invoices/' + $event.id): null"
+    >
+      <template v-slot:actions-prepend v-if="contract && contract.tenant_id">
+        <div style="position:absolute; left:0px; bottom:7px;">
+          <v-btn small flat class="primary" @click="dialog = true">Nieuwe factuur</v-btn>
+        </div>
+      </template>
+      <template v-slot:item.payment="{ item }">
+        <PaymentStatusChip :payment="item.payments[0]" />
+      </template>
+      <template v-slot:item.units="{ item }">
+        {{ getUnits(item.units) }}
+      </template>
+      <template v-slot:item.price="{ item }">
+        €{{ formatMoney(item.price) }}
+      </template>
+      <template v-slot:item.start_date="{ item }">
+        {{ formatDate(item.start_date, 'LL') }}
+      </template>
+      <template v-slot:item.end_date="{ item }">
+        {{ formatDate(item.end_date, 'LL') }}
+      </template>
+      <template v-slot:item.sent="{ item }">
+        <template v-if="item.sent">{{ formatDate(item.sent, 'LL') }}</template>
+        <template v-else>Niet verzonden</template>
+      </template>
+      <template v-slot:item.actions="{ item }">
+        <v-row align-center>
+          <v-btn class="primary--text" small icon @click="editItem(item)">
+            <v-icon small>edit</v-icon>
+          </v-btn>
+          <v-btn class="primary--text" small icon @click="deleteItem(item)">
+            <v-icon small>delete</v-icon>
+          </v-btn>
+          <v-btn class="primary--text" small icon @click="download(item)">
+            <v-icon small>attach_file</v-icon>
+          </v-btn>
+          <v-btn
+            class="primary--text"
+            :disabled="item.sent ? true : false"
+            small
+            icon
+            @click="confirmSendingInvoice(item)"
+          >
+            <v-icon small>mail</v-icon>
+          </v-btn>
+        </v-row>
+      </template>
+      <template v-slot:no-data>
+        <td colspan="100%" v-if="loading">Facturen laden...</td>
+        <td colspan="100%" @click="$emit('generate')" v-else>Geen facturen gevonden</td>
+      </template>
+    </v-data-table>
 
     <v-dialog v-model="dialog" max-width="80%" persistent>
-      <edit-create-invoice
+      <EditCreateInvoice
         v-if="dialog"
         @saved="createdItem"
         @canceled="close"
@@ -97,7 +103,7 @@
         :contract="contract"
         :units="units"
         :invoice="editedItem"
-      ></edit-create-invoice>
+      />
     </v-dialog>
     <v-dialog v-model="confirmSend" max-width="80%" persistent v-if="contract">
       <v-toolbar class="primary white--text">
@@ -127,7 +133,7 @@ import store from "js/store";
 
 @Component({
   components: {
-    editCreateInvoice: EditCreateInvoice,
+    EditCreateInvoice,
     PaymentStatusChip
   }
 })
@@ -150,21 +156,22 @@ export default class Invoices extends Vue {
   private createMode: boolean = true;
   private confirmSend: boolean = false;
   private editedItem: any = null;
-  private pagination: any = {
-    rowsPerPage: 25,
-    descending: true,
-    sortBy: "ref_number"
+
+  private options: any = {
+    itemsPerPageText: "Facturen per pagina",
+    itemsPerPageAllText: "Allemaal"
   };
+
   private headers: any = [
-    { text: "Factuur nr", value: "invoice.ref_number" },
-    { text: "Betaling", value: "payment.payment_id" },
-    { text: "Naam", value: "invoice.name" },
+    { text: "Factuur nr", value: "ref_number" },
+    { text: "Betaling", value: "payment" },
+    { text: "Naam", value: "tenant.name" },
     { text: "Producten", value: "units" },
     { text: "Bedrag", value: "price" },
     { text: "Van", value: "start_date" },
     { text: "Tot", value: "end_date" },
     { text: "Verzonden", value: "sent" },
-    { text: "Acties", sortable: false }
+    { text: "Acties", value: "actions", sortable: false }
   ];
 
   @Watch("dialog")
@@ -234,10 +241,10 @@ export default class Invoices extends Vue {
   }
 
   deleteItem(item: any) {
+    if (!confirm("Are you sure you want to delete this item?")) return;
     const index = this.invoices.indexOf(item);
-    confirm("Are you sure you want to delete this item?") &&
-      this.invoices.splice(index, 1) &&
-      axios.post("/api/invoices/" + item.id + "/delete");
+    this.invoices.splice(index, 1);
+    axios.post("/api/invoices/" + item.id + "/delete");
 
     store.commit("snackbar", {
       type: "success",

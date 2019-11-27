@@ -27,7 +27,7 @@ class ContractController extends Controller
                         'tenant_id' => $q->tenant_id,
                         'tenant_name' => $q->tenant->name,
                         'company_name' => $q->tenant->company_name,
-                        'deactivated_at' => ($q->deactivated_at) ? $q->deactivated_at->isoFormat('LL') : null,
+                        'deactivated_at' => $q->deactivated_at,
                         'auto_invoice' => $q->auto_invoice,
                         'period' => $q->period,
                         'method' => $q->method,
