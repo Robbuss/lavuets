@@ -35,34 +35,13 @@ class AuthController extends Controller
                     'password' => $password
                 ]
             ]);
-            activity('auth')->log($user->email . ' heeft ingelogd');
+            activity('auth')->log($email . ' heeft ingelogd');
             return json_decode((string) $response->getBody(), true);
         } catch (BadResponseException $e) {
             $response = $e->getResponse();
             $responseBodyAsString = $response->getBody()->getContents();
             return $responseBodyAsString;
         }
-    }
-
-    public function register(Request $request)
-    { 
-
-        if(!Setting::where('key', 'enable_registration')->first()->value)
-            return ['errors' => 'Registratie is gesloten'];
-
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:6'],
-        ]);
-
-        User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-
-        return ['access_token' => $this->login($request)];
     }
 
     public function logout()

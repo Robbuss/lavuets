@@ -3,10 +3,6 @@
     <v-card>
       <v-toolbar color="primary white--text" class="mb-4">
         <v-toolbar-title>Login</v-toolbar-title>
-        <v-spacer></v-spacer>
-        <v-btn icon dark @click="$router.push('/register')">
-          <v-icon>settings</v-icon>
-        </v-btn>
       </v-toolbar>
       <v-form class="pa-4" v-model="valid" lazy-validation ref="form">
         <v-text-field
@@ -14,6 +10,7 @@
           required
           :rules="[v => !!v || 'Dit veld is verplicht']"
           type="text"
+          outlined
           v-model="user.email"
           placeholder="willecoyote@acme.mail"
           prepend-icon="mail"
@@ -23,13 +20,14 @@
           type="password"
           :rules="[v => !!v || 'Dit veld is verplicht']"
           required
+          outlined
           v-model="user.password"
           placeholder="RoadRunnermustdie"
           @keydown.native.enter="validate"
           prepend-icon="lock"
         />
         <v-btn color="primary" @click="validate" :disabled="working" :loading="working">Login</v-btn>
-        <v-alert :value="message" type="warning">{{ message }}</v-alert>
+        <v-alert v-if="message" type="warning">{{ message }}</v-alert>
       </v-form>
     </v-card>
   </v-col>

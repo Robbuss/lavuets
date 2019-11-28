@@ -1,7 +1,6 @@
 <?php
 Route::post('/login', 'AuthController@login');
 Route::post('/login/{user}/{sso}', 'AuthController@singleSignOn');
-Route::post('/register', 'AuthController@register');
 
 Route::get('/book-data/locations', 'BookingController@stepLocation');
 Route::post('/book-data/units', 'BookingController@stepUnits');

@@ -34,7 +34,7 @@
     >
       <template v-slot:item.start_date="{ item }">{{ formatDate(item.start_date) }}</template>
       <template v-slot:item.deactivated_at="{ item }">
-        <v-chip v-if="item.deactivated_at">{{ props.item.deactivated_at }}</v-chip>
+        <v-chip v-if="item.deactivated_at">{{ formatDate(item.deactivated_at) }}</v-chip>
       </template>
       <template v-slot:item.payment_method="{ item }">
         <v-chip
@@ -92,7 +92,7 @@ export default class Contracts extends Vue {
   private headers: any = [
     { text: "Klantnaam", value: "tenant_name" },
     { text: "Ingangsdatum", value: "start_date" },
-    { text: "Gedeactiveerd op", value: "active" },
+    { text: "Gedeactiveerd op", value: "deactivated_at" },
     { text: "Type", value: "payment_method" },
     { text: "Verzend factuur", value: "auto_invoice" },
     { text: "Bedrijfsnaam", value: "company_name" },

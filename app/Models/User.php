@@ -37,4 +37,34 @@ class User extends Authenticatable implements HasMedia
         parent::boot();
         static::addGlobalScope(new CustomerScope);
     }
+
+    public function scopeCanLogin($query)
+    {
+        return $query->where('customer_id', Customer::current()->id);
+    }
+
+    public function tryLoginBySSO($token)
+    {
+        if ($this->sso_token !== null && Hash::check($token, $this->sso_token)) {
+            return true;
+        }
+        return false;
+    }
+
+    public function regenerateSSOToken()
+    {
+        $token = str_random(32);
+        $this->sso_token = Hash::make($token);
+        $this->save();
+        return $this->id.'_'.$token;
+    }
+
+    public static function ssoLogin($token) {
+        $splitted = explode('_', $token, 2);
+        if (count($splitted) !== 2 || !($user = User::canLogin()->whereId($splitted[0])->first()))
+            return false;
+        if ($user->tryLoginBySSO($splitted[1]))
+            return $user;
+        return false;
+    }
 }

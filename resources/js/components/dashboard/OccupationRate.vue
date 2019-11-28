@@ -1,9 +1,9 @@
 <template>
-  <v-card>
+  <v-card class="fill-height">
     <v-card-title>
       <h3 class="primary--text heading">Bezetting</h3>
     </v-card-title>
-    <v-row wrap justify-center>
+    <v-row wrap justify="center">
       <v-col>
         <canvas ref="canvas"></canvas>
       </v-col>

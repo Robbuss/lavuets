@@ -1,44 +1,41 @@
 <template>
   <v-col fluid v-if="!loading" fill-height>
-    <v-row wrap>
-      <v-col cols="12">
-        <v-row wrap  mb-4>
-          <v-col cols="12">
-            <v-toolbar color="primary" dark tabs>
-              <BackButton />
-              <v-tooltip bottom>
-              <v-toolbar-title
-                slot="activator"
-                style="cursor:pointer;"
-                @click="$router.push('/tenants/' + contract.tenant.id)"
-              >{{ contract.tenant.name }}</v-toolbar-title>
-              <span>Naar klant informatie</span>
-              </v-tooltip>
-              <v-spacer></v-spacer>
-              <v-tooltip bottom>
-                <v-btn icon slot="activator" @click="download">
-                  <v-icon>insert_drive_file</v-icon>
-                </v-btn>
-                <span>Contract downloaden</span>
-              </v-tooltip>
+    <v-toolbar class="primary white--text" tabs>
+      <BackButton />
+      <v-tooltip bottom>
+        <v-toolbar-title
+          slot="activator"
+          style="cursor:pointer;"
+          @click="$router.push('/tenants/' + contract.tenant.id)"
+        >{{ contract.tenant.name }}</v-toolbar-title>
+        <span>Naar klant informatie</span>
+      </v-tooltip>
+      <v-spacer></v-spacer>
+      <v-tooltip bottom>
+        <v-btn icon slot="activator" @click="download">
+          <v-icon>insert_drive_file</v-icon>
+        </v-btn>
+        <span>Contract downloaden</span>
+      </v-tooltip>
 
-              <template v-slot:extension>
-                <v-tabs v-model="tab" color="primary">
-                  <v-tabs-slider color="secondary"></v-tabs-slider>
-                  <v-tab v-for="item in items" :key="item.title">{{ item.title }}</v-tab>
-                </v-tabs>
-              </template>
-            </v-toolbar>
+      <template v-slot:extension>
+        <v-tabs v-model="tab" dark class="primary">
+          <v-tabs-slider color="secondary"></v-tabs-slider>
+          <v-tab v-for="item in items" :key="item.title">{{ item.title }}</v-tab>
+        </v-tabs>
+      </template>
+    </v-toolbar>
 
-            <v-tabs-items v-model="tab">
-              <v-tab-item v-for="(item, index) in items" :key="index">
-                <component :units="units" :contract="contract" :hidetoolbar="true" v-bind:is="item.component"/>
-              </v-tab-item>
-            </v-tabs-items>
-          </v-col>
-        </v-row>
-      </v-col>
-    </v-row>
+    <v-tabs-items v-model="tab">
+      <v-tab-item v-for="(item, index) in items" :key="index">
+        <component
+          :units="units"
+          :contract="contract"
+          :hidetoolbar="true"
+          v-bind:is="item.component"
+        />
+      </v-tab-item>
+    </v-tabs-items>
   </v-col>
 </template>
 
@@ -74,7 +71,6 @@ export default class SingleContract extends Vue {
   ];
   private tab: number = 0;
 
-
   async mounted() {
     await this.getData();
     this.loading = false;
@@ -82,11 +78,10 @@ export default class SingleContract extends Vue {
 
   async getData() {
     try {
-      const r = (await axios.get(
-        "/api/contracts/" + this.$route.params.id
-      )).data;
-      this.contract = r.contract; 
-      this.units = r.free_units; 
+      const r = (await axios.get("/api/contracts/" + this.$route.params.id))
+        .data;
+      this.contract = r.contract;
+      this.units = r.free_units;
     } catch (e) {
       this.response = e.message;
     }

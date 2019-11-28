@@ -1,14 +1,14 @@
 <template>
-  <v-card>
-    <v-col  pa-4>
+  <v-card class="fill-height">
+    <v-col class="pa-4">
       <h3 class="primary--text heading inline" v-if="monthly">Maandelijkse omzet</h3>
       <h3 class="primary--text heading inline" v-else>Jaarlijkste omzet</h3>
     </v-col>
-    <v-row wrap  px-4>
-      <v-col  px-4>
+    <v-row wrap class="px-4">
+      <v-col class="px-4">
         <v-card
           flat
-          class="pa-2 round green-filled "
+          class="pa-2 round green-filled"
           :class="{'white--text' : (this.percentageProfit > 5)}"
           :style="{width: this.percentageProfit + '%'}"
         >
@@ -20,21 +20,21 @@
         >Inkomsten van verhuurde filled en ({{ this.percentageProfit }}%)</span>
         <v-card
           flat
-          class="pa-2  mr-6 red-filled  round"
+          class="pa-2 mr-6 red-filled round"
           :class="{'white--text' : (this.percentageProfit > 5)}"
           :style="{width: Math.round((this.potentialExtraProfit / this.totalProfit) * 100) + '%'}"
         >
           <h3 class="heading">€{{ formatMoney(this.potentialExtraProfit) }}</h3>
         </v-card>
         <span class="font-italic red-text" style="font-size: 0.8em">Mogelijke (extra) inkomsten</span>
-        <v-card flat class="pa-2 blue-filled  white--text round">
+        <v-card flat class="pa-2 blue-filled white--text round">
           <h3 class="heading">€{{ formatMoney(this.totalProfit) }}</h3>
         </v-card>
         <span class="font-italic blue-text" style="font-size: 0.8em">Mogelijke totale omzet</span>
       </v-col>
     </v-row>
-    <v-row justify-center>
-      <v-col shrink>
+    <v-row justify="center" align="end">
+      <v-col class="shrink">
         <v-switch class="pa-0 ma-0" v-model="monthly">
           <span
             class="grey--text text-lighten-1"
@@ -53,15 +53,15 @@
 </template>
 
 <style scoped>
-.red-filled  {
+.red-filled {
   color: rgb(255, 255, 255);
   background: linear-gradient(to right, rgb(255, 118, 87), rgb(227, 74, 74));
 }
-.green-filled  {
+.green-filled {
   color: rgb(255, 255, 255);
   background: linear-gradient(to right, rgb(102, 229, 181), rgb(41, 224, 105));
 }
-.blue-filled  {
+.blue-filled {
   color: rgb(255, 255, 255);
   background: linear-gradient(to right, rgb(52, 181, 229), rgb(46, 132, 224));
 }
@@ -96,7 +96,9 @@ export default class RevenueTiles extends Vue {
 
   get realizedProfit() {
     let p = 0;
-    this.contracts.map((x: any) => x.units.map((x: any) => (p += Number(x.price))));
+    this.contracts.map((x: any) =>
+      x.units.map((x: any) => (p += Number(x.price)))
+    );
     return this.monthly ? p : p * 12;
   }
 

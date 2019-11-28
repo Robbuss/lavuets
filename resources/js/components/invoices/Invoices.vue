@@ -1,5 +1,5 @@
 <template>
-  <v-col sm="12">
+  <v-col sm="12" class="pa-0">
     <v-toolbar flat color="primary" dark v-if="!hidetoolbar">
       <v-toolbar-title>Facturen</v-toolbar-title>
       <v-spacer></v-spacer>

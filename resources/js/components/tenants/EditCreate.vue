@@ -11,7 +11,7 @@
           <v-row wrap>
             <v-col cols="12" sm="6" md="4">
               <v-text-field
-                filled 
+                outlined
                 :disabled="!editFields"
                 :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                 required
@@ -21,7 +21,7 @@
             </v-col>
             <v-col cols="12" sm="6" md="4">
               <v-text-field
-                filled 
+                outlined
                 :disabled="!editFields"
                 :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                 required
@@ -31,7 +31,7 @@
             </v-col>
             <v-col cols="12" sm="6" md="4">
               <v-text-field
-                filled 
+                outlined
                 :disabled="!editFields"
                 :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                 required
@@ -42,7 +42,7 @@
             </v-col>
             <v-col cols="12" sm="6" md="10">
               <v-text-field
-                filled 
+                outlined
                 :disabled="!editFields"
                 :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                 required
@@ -52,7 +52,7 @@
             </v-col>
             <v-col cols="12" sm="6" md="2">
               <v-text-field
-                filled 
+                outlined
                 :disabled="!editFields"
                 :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                 required
@@ -62,7 +62,7 @@
             </v-col>
             <v-col cols="12" sm="6">
               <v-text-field
-                filled 
+                outlined
                 :disabled="!editFields"
                 :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                 required
@@ -72,7 +72,7 @@
             </v-col>
             <v-col cols="12" sm="6">
               <v-text-field
-                filled 
+                outlined
                 :disabled="!editFields"
                 :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                 required
@@ -82,7 +82,7 @@
             </v-col>
             <v-col cols="12">
               <v-text-field
-                filled 
+                outlined
                 :disabled="!editFields"
                 v-model="editedItem.iban"
                 :rules="ibanRules"
@@ -90,7 +90,7 @@
               ></v-text-field>
             </v-col>
             <v-col cols="12">
-              <v-checkbox 
+              <v-checkbox
                 :disabled="!editFields"
                 v-model="editedItem.is_company"
                 label="Deze klant is een bedrijf"
@@ -98,22 +98,23 @@
                 class="mt-0"
               />
             </v-col>
-            <v-row wrap v-if="editedItem.is_company">
+            <template v-if="editedItem.is_company">
               <v-col cols="12" sm="6" md="4">
                 <v-text-field
-                  filled 
+                  outlined
                   :disabled="!editFields"
                   v-model="editedItem.company_name"
                   label="Bedrijfsnaam"
+                  placeholder="ACME inc"
                 ></v-text-field>
               </v-col>
               <v-col cols="12" sm="6" md="4">
-                <v-text-field filled :disabled="!editFields" v-model="editedItem.kvk" label="KVK"></v-text-field>
+                <v-text-field outlined :disabled="!editFields" v-model="editedItem.kvk" label="KVK" placeholder="KVK nummer"></v-text-field>
               </v-col>
               <v-col cols="12" sm="6" md="4">
-                <v-text-field filled :disabled="!editFields" v-model="editedItem.btw" label="BTW"></v-text-field>
+                <v-text-field outlined :disabled="!editFields" v-model="editedItem.btw" label="BTW" placeholder="BTW nummer"></v-text-field>
               </v-col>
-            </v-row>
+            </template>
           </v-row>
         </v-container>
       </v-form>

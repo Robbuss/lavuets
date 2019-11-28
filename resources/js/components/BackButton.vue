@@ -1,8 +1,10 @@
 <template>
   <v-tooltip bottom>
-    <v-btn icon @click="$router.back()" slot="activator">
+    <template v-slot:activator="{ on }">
+    <v-btn v-on="on" icon @click="$router.back()" slot="activator">
       <v-icon>chevron_left</v-icon>
     </v-btn>
+    </template>
     <span>Terug naar het vorige scherm</span>
   </v-tooltip>
 </template>

@@ -12,7 +12,7 @@
             placeholder="Waar de unit zich bevindt"
             v-model="editedItem.location_id"
             required
-            filled 
+            outlined 
             item-text="facility_name"
             item-value="id"
             :items="locations"
@@ -22,7 +22,7 @@
         <v-col sm="12">
           <v-text-field
             label="Product naam"
-            filled 
+            outlined 
             placeholder="Komt op de factuur"
             v-model="editedItem.name"
             required
@@ -32,7 +32,7 @@
         <v-col sm="12">
           <v-text-field
             type="number"
-            filled 
+            outlined 
             label="Grootte in m3"
             suffix="m3"
             placeholder="Gebruik alleen getallen"
@@ -47,7 +47,7 @@
         <v-col sm="12">
           <v-text-field
             type="number"
-            filled 
+            outlined 
             min="0"
             prefix="€"
             label="Prijs in euro's"
@@ -63,7 +63,7 @@
         <v-col sm="12" md="6">
           <v-text-field
             type="number"
-            filled 
+            outlined 
             label="BTW percentage"
             suffix="%"
             placeholder="Gebruik alleen een getal"
@@ -75,7 +75,7 @@
         </v-col>
         <v-col sm="12" md="6">
           <v-select
-            filled 
+            outlined 
             label="BTW rekenen voor"
             placeholder="Kies wat voor klanten btw betalen"
             v-model="editedItem.should_tax"
@@ -88,7 +88,7 @@
         </v-col>
         <v-col sm="12" md="6">
           <v-select
-            filled 
+            outlined 
             :class="{'pr-3' : $vuetify.breakpoint.mdAndUp}"
             :items="activefilled "
             v-model="editedItem.active"
@@ -97,7 +97,7 @@
         </v-col>
         <v-col sm="12" md="6">
           <v-select
-            filled 
+            outlined 
             :items="activefilled "
             v-model="editedItem.show_frontend"
             label="Product tonen in boekingsformulier"

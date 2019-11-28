@@ -1,19 +1,18 @@
 <template>
-  <v-row wrap justify-center>
+  <v-row wrap justify="center">
     <v-col cols="12" sm="8" md="6" lg="4">
       <v-card class= "pa-4">
-        <h3 class="text-center">Welkom</h3>
-        <v-row justify-center>
-          <v-col shrink>
-            <img width="125" src="/logo.png" />
+        <v-row justify="center">
+          <v-col class="shrink px-4">
+            <img width="225" src="/logo.png" />
           </v-col>
         </v-row>
         <v-form v-model="valid" lazy-validation ref="form">
-          <v-container grid-list-md ma-0 pa-0>
-            <v-row wrap justify-center>
+          <v-container class="ma-0 pa-0">
+            <v-row wrap justify="center">
               <v-col cols="12">
                 <v-text-field
-                  filled 
+                  outlined 
                   :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                   required
                   v-model="newCustomer.name"
@@ -22,7 +21,7 @@
               </v-col>
               <v-col cols="12">
                 <v-text-field
-                  filled 
+                  outlined 
                   :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                   required
                   v-model="newCustomer.company_name"
@@ -31,7 +30,7 @@
               </v-col>
               <v-col cols="12">
                 <v-text-field
-                  filled 
+                  outlined 
                   :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                   required
                   v-model="newCustomer.email"
@@ -40,7 +39,7 @@
               </v-col>
               <v-col cols="12">
                 <v-text-field
-                  filled 
+                  outlined 
                   :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                   required
                   v-model="newCustomer.domain"
@@ -72,6 +71,7 @@
   </v-row>
 </template>
 <style>
+
 .custom-loader {
   animation: loader 1s infinite;
   display: flex;
@@ -131,7 +131,7 @@ export default class NewCustomer extends Vue {
     this.working = true;
     try {
       const r = (await axios.post("/api/customers/create", this.newCustomer)).data;
-      window.location.href = "http://" + this.newCustomer.domain + ".opslag.dev.v-d-berg.com/" + r.user_id + "/" + r.sso_token ;
+      window.location.href = "http://" + this.newCustomer.domain + ".opslag.dev.v-d-berg.com/login/" + r.user_id + "/" + r.sso_token ;
     } catch (e) {}
     this.working = false;
   }

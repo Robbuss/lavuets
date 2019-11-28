@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card class="fill-height">
     <v-card-title>
       <h3 class="primary--text heading">Betalingen</h3>
     </v-card-title>
