@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Scopes\CustomerScope;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 class Setting extends BaseModel
@@ -22,7 +21,7 @@ class Setting extends BaseModel
                 'customer_id' => $customer->id,
                 'public' => $setting['public'],
                 'key' => $setting['key'],
-                'value' => $setting['value']
+                'value' => $setting['value'],
             ]);
         }
         Setting::where('key', 'app_name')->update(['value' => $customer->company_name]);

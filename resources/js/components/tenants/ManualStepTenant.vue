@@ -2,16 +2,15 @@
   <v-card flat class="grey lighten-3 pa-1">
     <v-form v-model="valid" lazy-validation ref="form">
       <v-row
-        row
-        fill-height
-        justify-center
-        align-center
+        wrap
+        justify="center"
+        align="center"
         :class="{'pa-5' :$vuetify.breakpoint.mdAndUp, 'pa-1': $vuetify.breakpoint.smAndDown}"
-        class="text-center white"
+        class="text-center white fill-height"
       >
         <v-row wrap>
           <v-col cols="12" md="8" :class="{'pr-5' :$vuetify.breakpoint.mdAndUp}">
-            <v-container grid-list-md ma-0 pa-0>
+            <v-container class="ma-0 pa-0">
               <v-row wrap class="text-xs-left">
                 <v-col cols="12">
                   <h4 class="grey--text headline text-xs-left">Details</h4>
@@ -24,16 +23,14 @@
                     v-model="datePicker"
                     :close-on-content-click="false"
                     :nudge-right="40"
-                    lazy
                     transition="scale-transition"
                     offset-y
-                    
                     max-width="290px"
                     min-width="290px"
                   >
                     <template v-slot:activator="{ on }">
                       <v-text-field
-                        filled 
+                        filled
                         v-model="formattedDate"
                         :rules="[
                         v => !!v || 'Dit veld mag niet leeg zijn',
@@ -57,7 +54,7 @@
                 </v-col>
                 <v-col cols="12">
                   <v-text-field
-                    filled 
+                    filled
                     :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                     required
                     v-model="tenant.name"
@@ -68,7 +65,7 @@
                 </v-col>
                 <v-col cols="12" sm="6">
                   <v-text-field
-                    filled 
+                    filled
                     :rules="[
                     v => !!v || 'Dit veld mag niet leeg zijn',
                     v => /.+@.+/.test(v) || 'Geef een geldig e-mailadres op']"
@@ -82,7 +79,7 @@
                 </v-col>
                 <v-col cols="12" sm="6">
                   <v-text-field
-                    filled 
+                    filled
                     :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                     required
                     v-model="tenant.phone"
@@ -95,7 +92,7 @@
                 </v-col>
                 <v-col cols="12" sm="10">
                   <v-text-field
-                    filled 
+                    filled
                     :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                     required
                     v-model="tenant.street_addr"
@@ -106,7 +103,7 @@
                 </v-col>
                 <v-col cols="12" sm="6" md="2">
                   <v-text-field
-                    filled 
+                    filled
                     :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                     required
                     v-model="tenant.street_number"
@@ -116,7 +113,7 @@
 
                 <v-col cols="12" sm="8">
                   <v-text-field
-                    filled 
+                    filled
                     :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                     required
                     v-model="tenant.city"
@@ -128,7 +125,7 @@
 
                 <v-col cols="12" sm="6" md="4">
                   <v-text-field
-                    filled 
+                    filled
                     :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                     required
                     v-model="tenant.postal_code"
@@ -140,7 +137,7 @@
 
                 <v-col cols="12" sm="12">
                   <v-text-field
-                    filled 
+                    filled
                     :rules="ibanRules"
                     required
                     v-model="tenant.iban"
@@ -149,7 +146,7 @@
                 </v-col>
 
                 <v-col cols="12">
-                  <v-checkbox  v-model="isCompany" required label="Ik bestel namens een bedrijf" />
+                  <v-checkbox v-model="isCompany" required label="Ik bestel namens een bedrijf" />
                 </v-col>
 
                 <v-row wrap v-if="isCompany">
@@ -162,7 +159,7 @@
                       :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                       required
                       id="company"
-                      filled 
+                      filled
                       v-model="tenant.company_name"
                       label="Bedrijfsnaam"
                     ></v-text-field>
@@ -171,7 +168,7 @@
                     <v-text-field
                       :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                       required
-                      filled 
+                      filled
                       v-model="tenant.kvk"
                       label="KVK"
                     ></v-text-field>
@@ -180,7 +177,7 @@
                     <v-text-field
                       :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                       required
-                      filled 
+                      filled
                       v-model="tenant.btw"
                       label="BTW"
                     ></v-text-field>

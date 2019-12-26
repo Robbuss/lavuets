@@ -11,21 +11,21 @@
     </v-row>
     <v-container class="container--fluid">
       <v-row wrap>
-        <v-col d-flex cols="12" sm="6" md="5">
+        <v-col cols="12" sm="6" md="5">
           <PaymentChart :payments="payments" />
         </v-col>
-        <v-col d-flex cols="12" sm="6" md="4">
+        <v-col cols="12" sm="6" md="4">
           <OccupationRate :units="units" />
         </v-col>
-        <v-col d-flex cols="12" sm="6" md="3">
+        <v-col cols="12" sm="6" md="3">
           <Revenue :contracts="contracts" :units="units" />
         </v-col>
 
-        <v-col d-flex cols="12">
+        <v-col cols="12">
           <UnpaidInvoices />
         </v-col>
 
-        <v-col d-flex cols="12" sm="6">
+        <v-col cols="12" sm="6">
           <TodoList />
         </v-col>
       </v-row>
@@ -33,6 +33,12 @@
     <ManualTenant v-model="dialog" />
   </v-col>
 </template>
+
+<style scoped>
+.noscroll {
+  overflow: hidden;
+}
+</style>
 
 <script lang="ts">
 import Vue from "vue";
@@ -82,7 +88,7 @@ export default class Index extends Vue {
   }
 
   manualTenant() {
-    this.dialog = true;
+    this.dialog = !this.dialog;
   }
 
   get greeting() {

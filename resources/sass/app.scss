@@ -10,20 +10,32 @@
     cursor: pointer;
 }
 
+.overflow-y-hidden {
+    overflow-y: hidden;
+}
+
 .red-box {
     color: rgb(255, 255, 255);
-    background: linear-gradient(to right, rgb(255, 118, 87), rgb(227, 74, 74)) !important;
+    background: linear-gradient(
+        to right,
+        rgb(255, 118, 87),
+        rgb(227, 74, 74)
+    ) !important;
 }
 
 .green-box {
     color: rgb(255, 255, 255);
-    background: linear-gradient(to right, rgb(102, 229, 181), rgb(41, 224, 105));
+    background: linear-gradient(
+        to right,
+        rgb(102, 229, 181),
+        rgb(41, 224, 105)
+    );
 }
 
 .blue-box {
     color: rgb(255, 255, 255);
     background: linear-gradient(to right, rgb(52, 181, 229), rgb(46, 132, 224));
 }
-.flat{
-    box-shadow:none !important;
+.flat {
+    box-shadow: none !important;
 }

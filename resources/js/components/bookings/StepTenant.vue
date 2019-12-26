@@ -2,12 +2,11 @@
   <v-card flat class="grey lighten-3 pa-1">
     <v-form v-model="valid" lazy-validation ref="form">
       <v-row
-        row
-        fill-height
-        justify-center
-        align-center
+        wrap
+        justify="center"
+        align="center"
         :class="{'pa-5' :$vuetify.breakpoint.mdAndUp, 'pa-1': $vuetify.breakpoint.smAndDown}"
-        class="text-center white"
+        class="text-center white fill-height"
       >
         <v-row wrap>
           <v-col cols="12" md="8" :class="{'pr-5' :$vuetify.breakpoint.mdAndUp}">

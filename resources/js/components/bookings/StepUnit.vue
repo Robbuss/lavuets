@@ -27,18 +27,16 @@
 
       <v-col md="10">
         <v-toolbar dense flat color="primary" dark>
-          <v-toolbar-title>Klik op een filled om te selecteren</v-toolbar-title>
+          <v-toolbar-title>Klik op een box om deze te selecteren</v-toolbar-title>
         </v-toolbar>
         <v-window v-model="window" vertical>
           <v-window-item v-for="(n, k) in units" :key="k + '2'">
             <v-row wrap>
               <v-col
                 @click="pickfilled (u)"
-                ma-1
-                pa-4
                 v-for="u in n"
                 :key="u.id"
-                class="text-center"
+                class="ma-1 pa-4 text-center"
                 style="border: 2px solid #EEEEEE; cursor:pointer"
                 :class="{'lighten-3 primary' : contract.units.indexOf(u) > -1}"
               >{{ u.display_name }}</v-col>
@@ -51,13 +49,13 @@
     <v-row wrap>
       <v-col cols="12">
         <v-list>
-          <v-subheader>Gekozen filled (en)</v-subheader>
+          <v-subheader>Gekozen box(en)</v-subheader>
           <template v-for="chosen in contract.units">
             <v-divider :key="chosen.id + 'd'"></v-divider>
             <v-list-item :key="chosen.id">
               <v-list-item-avatar>
                 <v-avatar>
-                  <v-img src="/closed_filled .png" />
+                  <v-img src="/closed_box.png" />
                 </v-avatar>
               </v-list-item-avatar>
 
@@ -77,13 +75,13 @@
           <v-list-item v-if="contract.units.length === 0">
             <v-list-item-avatar>
               <v-avatar>
-                <v-img src="/open_filled .png" />
+                <v-img src="/open_box.png" />
               </v-avatar>
             </v-list-item-avatar>
 
             <v-list-item-content>
-              <v-list-item-title>Geen filled en gekozen.</v-list-item-title>
-              <v-list-item-subtitle>Klik een filled aan om je keuze te maken</v-list-item-subtitle>
+              <v-list-item-title>Geen box en gekozen.</v-list-item-title>
+              <v-list-item-subtitle>Klik een box aan om je keuze te maken</v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
         </v-list>
@@ -94,7 +92,7 @@
     </v-row>
     <v-row row>
       <v-col cols="12">
-        <v-alert :value="error">Je moet een filled kiezen om door te gaan</v-alert>
+        <v-alert :value="error">Je moet een box kiezen om door te gaan</v-alert>
       </v-col>
     </v-row>
   </v-card>

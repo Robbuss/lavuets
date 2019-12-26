@@ -1,3 +1,9 @@
 .pointer {
     cursor: pointer;
 }
+.overflow-y-hidden {
+    overflow-y: hidden;
+}
+.flat {
+    box-shadow: none !important;
+}
