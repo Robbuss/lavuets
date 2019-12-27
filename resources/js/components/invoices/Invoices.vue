@@ -1,5 +1,5 @@
 <template>
-  <v-col sm="12">
+  <v-col sm="12" :class="{'pa-0': noPadding}">
     <v-toolbar flat color="primary" dark v-if="!hidetoolbar">
       <v-toolbar-title>Facturen</v-toolbar-title>
       <v-spacer></v-spacer>
@@ -146,6 +146,9 @@ export default class Invoices extends Vue {
 
   @Prop()
   units: any;
+
+  @Prop({ default: false })
+  noPadding: boolean
 
   private search = "";
   private response = "";

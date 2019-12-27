@@ -41,6 +41,9 @@
         multi-sort
         @click:row="$router.push('/units/' + $event.id)"
       >
+        <template v-slot:item.price="{ item }">
+          €{{ item.price }}
+        </template>
         <template v-slot:item.status="{ item }">
           <v-chip
             flat

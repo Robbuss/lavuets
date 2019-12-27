@@ -1,5 +1,5 @@
 <template>
-  <v-col v-if="!loading" fill-height>
+  <v-col v-if="!loading" fill-height class="py-0">
     <v-row wrap>
       <v-col cols="12" md="6">
         <edit-create-unit :unit="unit" :creating="false"></edit-create-unit>

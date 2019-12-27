@@ -29,7 +29,7 @@
         <template v-slot:item.status="{ item }">
           <PaymentStatusChip :payment="item" />
         </template>
-        <template v-slot:item.crea  ted_at="{ item }">{{ formatDate(item.created_at) }}</template>
+        <template v-slot:item.created_at="{ item }">{{ formatDate(item.created_at) }}</template>
         <template v-slot:item.updated_at="{ item }">{{ formatDate(item.updated_at) }}</template>
         <template v-slot:no-data>
           <td colspan="100%" v-if="loading">Betalingen laden...</td>
@@ -42,24 +42,22 @@
         <v-card-title class="primary white--text">
           <h3 class="card-title">Informatie over deze betaling</h3>
         </v-card-title>
-        <v-row wrap>
-          <v-col cols="12">
-            Betalingen op dit factuurnummer: {{ relatedPayments.length }}
-            <v-list>
-              <v-list-item v-for="(payment, i) in relatedPayments" :key="i">
-                <v-list-item-content>
-                  <span class="font-weight-bold">€ {{ payment.amount }}</span>
-                </v-list-item-content>
-                <v-list-item-content>
-                  <PaymentStatusChip :payment="payment" />
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
-          </v-col>
-        </v-row>
+        <v-card-text>
+          Betalingen op dit factuurnummer: {{ relatedPayments.length }}
+          <v-list>
+            <v-list-item v-for="(payment, i) in relatedPayments" :key="i">
+              <v-list-item-content>
+                <span class="font-weight-bold">€ {{ payment.amount }}</span>
+              </v-list-item-content>
+              <v-list-item-content>
+                <PaymentStatusChip :payment="payment" />
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-card-text>
         <v-card-actions>
-          <v-btn @click="$router.push('/contracts/' + selectedPayment.contract_id)">naar contract</v-btn>
-          <v-btn @click="showPaymentInfo = false; selectedPayment = null">sluiten</v-btn>
+          <v-btn text class="primary" @click="$router.push('/contracts/' + selectedPayment.contract_id)">naar contract</v-btn>
+          <v-btn text @click="showPaymentInfo = false; selectedPayment = null">sluiten</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

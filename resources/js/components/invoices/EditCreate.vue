@@ -4,7 +4,7 @@
       <v-toolbar-title>{{ formTitle }}</v-toolbar-title>
     </v-toolbar>
 
-    <v-form ref="form" v-model="valid" lazy-validation class= "pa-4">
+    <v-form ref="form" v-model="valid" lazy-validation class="pa-4">
       <v-row wrap>
         <v-col cols="12" sm="6" md="6" lg="5">
           <v-text-field
@@ -40,13 +40,12 @@
             lazy
             transition="scale-transition"
             offset-y
-            
             max-width="290px"
             min-width="290px"
           >
             <template v-slot:activator="{ on }">
               <v-text-field
-                filled 
+                filled
                 v-model="startDate"
                 prepend-icon="event"
                 :rules="[
@@ -79,16 +78,14 @@
             v-model="datePicker2"
             :close-on-content-click="false"
             :nudge-right="40"
-            lazy
             transition="scale-transition"
             offset-y
-            
             max-width="290px"
             min-width="290px"
           >
             <template v-slot:activator="{ on }">
               <v-text-field
-                filled 
+                filled
                 v-model="endDate"
                 prepend-icon="event"
                 :rules="[
@@ -117,7 +114,7 @@
 
       <v-row wrap>
         <v-col cols="12">
-          <v-checkbox  v-model="showSentDate" label="Deze factuur is al verzonden"></v-checkbox >
+          <v-checkbox v-model="showSentDate" label="Deze factuur is al verzonden"></v-checkbox>
         </v-col>
         <v-expand-transition>
           <v-col cols="12" md="6" lg="5" v-if="showSentDate">
@@ -134,13 +131,12 @@
               lazy
               transition="scale-transition"
               offset-y
-              
               max-width="290px"
               min-width="290px"
             >
               <template v-slot:activator="{ on }">
                 <v-text-field
-                  filled 
+                  filled
                   v-model="sent"
                   prepend-icon="event"
                   :rules="[
@@ -169,10 +165,16 @@
           :loading="working"
           :disabled="working"
           @click="save"
+          text
         >Opslaan</v-btn>
-        <v-btn @click="cancel" flat color="primary darken-1">Annuleren</v-btn>
+        <v-btn @click="cancel" text color="primary darken-1">Annuleren</v-btn>
         <v-spacer></v-spacer>
-        <v-btn v-if="(invoice && !invoice.credit_invoice) && !this.creating" @click="createCredit" flat color="primary">Creditfactuur maken</v-btn>
+        <v-btn
+          v-if="(invoice && !invoice.credit_invoice) && !this.creating"
+          @click="createCredit"
+          outlined
+          color="primary"
+        >Creditfactuur maken</v-btn>
       </v-card-actions>
     </v-form>
   </v-card>

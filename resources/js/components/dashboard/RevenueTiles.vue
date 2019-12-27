@@ -1,9 +1,9 @@
 <template>
   <v-card class="fill-height">
-    <v-col class="pa-4">
+    <v-card-title>
       <h3 class="primary--text heading inline" v-if="monthly">Maandelijkse omzet</h3>
-      <h3 class="primary--text heading inline" v-else>Jaarlijkste omzet</h3>
-    </v-col>
+      <h3 class="primary--text heading inline" v-else>Jaarlijkse omzet</h3>
+    </v-card-title>
     <v-row wrap class="px-4">
       <v-col class="px-4">
         <v-card

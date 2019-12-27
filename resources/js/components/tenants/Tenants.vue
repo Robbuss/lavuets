@@ -46,8 +46,8 @@
       >
         <template v-slot:item.created_at="{ item }">{{ formatDate(item.created_at) }}</template>
         <template v-slot:item.actions="{ item }">
-          <v-icon small class="mr-2" @click="editItem(item)">edit</v-icon>
-          <v-icon small @click="deleteItem(item)">delete</v-icon>
+          <v-icon small class="mr-2" @click.stop="editItem(item)">edit</v-icon>
+          <v-icon small @click.stop="deleteItem(item)">delete</v-icon>
         </template>
         <template v-slot:no-data>
           <td colspan="100%" v-if="loading">Klanten laden...</td>

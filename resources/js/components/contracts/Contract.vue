@@ -3,11 +3,14 @@
     <v-toolbar class="primary white--text" tabs>
       <BackButton />
       <v-tooltip bottom>
-        <v-toolbar-title
-          slot="activator"
-          style="cursor:pointer;"
-          @click="$router.push('/tenants/' + contract.tenant.id)"
-        >{{ contract.tenant.name }}</v-toolbar-title>
+        <template v-slot:activator="{ on }">
+          <v-toolbar-title
+            slot="activator"
+            style="cursor:pointer;"
+            v-on="on"
+            @click="$router.push('/tenants/' + contract.tenant.id)"
+          >{{ contract.tenant.name }}</v-toolbar-title>
+        </template>
         <span>Naar klant informatie</span>
       </v-tooltip>
       <v-spacer></v-spacer>
@@ -33,6 +36,7 @@
         <component
           :units="units"
           :contract="contract"
+          :noPadding="true"
           :hidetoolbar="true"
           v-bind:is="item.component"
         />

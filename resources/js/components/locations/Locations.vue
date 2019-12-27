@@ -19,10 +19,26 @@
               <v-container grid-list-md>
                 <v-row wrap>
                   <v-col cols="12">
-                    <v-text-field v-model="editedItem.name" label="Internal name"></v-text-field>
+                    <v-text-field
+                      v-model="editedItem.name"
+                      persistent-hint
+                      hint="Naam voor intern gebruik. Kan een code of afkorting zijn"
+                      label="Interne naam"
+                      prepend-icon="place"
+                      required
+                      :rules="[v => !!v || 'Interne naam kan niet leeg zijn']"
+                    ></v-text-field>
                   </v-col>
                   <v-col cols="12">
-                    <v-text-field v-model="editedItem.facility_name" label="Facility Name"></v-text-field>
+                    <v-text-field
+                      v-model="editedItem.facility_name"
+                      prepend-icon="place"
+                      persistent-hint
+                      required
+                      hint="Naam voor klanten die gebruikt wordt in het selectie formulier"
+                      :rules="[v => !!v || 'Locatie naam kan niet leeg zijn']"
+                      label="Locatie naam"
+                    ></v-text-field>
                   </v-col>
                 </v-row>
               </v-container>
@@ -30,8 +46,8 @@
 
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="primary" flat @click="close">Annuleren</v-btn>
-              <v-btn class="primary" flat @click="save">Opslaan</v-btn>
+              <v-btn color="primary" text @click="close">Annuleren</v-btn>
+              <v-btn class="primary" text @click="save">Opslaan</v-btn>
             </v-card-actions>
           </v-form>
         </v-card>
@@ -69,11 +85,11 @@ export default class Locations extends Vue {
   private valid: boolean = false;
   private headers: any = [
     {
-      text: "Name",
+      text: "Interne naam",
       align: "left",
       value: "name"
     },
-    { text: "Facility Name", value: "facility_name" },
+    { text: "Locatie naam", value: "facility_name" },
     { text: "Acties", value: "actions", sortable: false, align: "right" }
   ];
   private options: any = {

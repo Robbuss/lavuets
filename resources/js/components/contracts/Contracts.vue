@@ -25,7 +25,7 @@
       :headers="headers"
       :search="search"
       :items="contracts"
-      class="elevation-1"
+      class="elevation-1 pointer"
       :loading="loading"
       :footer-props="options"
       :sort-by="['created_at']"
@@ -48,8 +48,8 @@
         <v-icon v-else class="red--text lighten-3">close</v-icon>
       </template>
       <template v-slot:item.actions="{ item }">
-        <v-icon small class="mr-2" @click="editItem(item)">edit</v-icon>
-        <v-icon small @click="deleteItem(item)">delete</v-icon>
+        <v-icon small class="mr-2" @click.stop="editItem(item)">edit</v-icon>
+        <v-icon small @click.stop="deleteItem(item)">delete</v-icon>
       </template>
       <template v-slot:no-data>
         <td colspan="100%" v-if="loading">Contracten laden...</td>
