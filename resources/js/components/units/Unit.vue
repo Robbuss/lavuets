@@ -1,12 +1,12 @@
 <template>
   <v-col v-if="!loading" fill-height>
     <v-row wrap>
-      <v-col cols="12" md="4">
+      <v-col cols="12" md="6">
         <edit-create-unit :unit="unit" :creating="false"></edit-create-unit>
       </v-col>
-      <v-col cols="12" md="4"  pl-6>
+      <v-col cols="12" md="6">
         <v-card>
-          <v-toolbar class="primary" dark>
+          <v-toolbar class="primary" flat dark>
             <v-toolbar-title>Contracten op dit product</v-toolbar-title>
           </v-toolbar>
           <v-list>

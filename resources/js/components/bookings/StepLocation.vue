@@ -1,5 +1,5 @@
 <template>
-  <v-row wrap v-if="!loading">
+  <v-row v-if="!loading">
     <v-col
       cols="12"
       sm="6"
@@ -8,14 +8,14 @@
       v-for="location in locations"
       :key="location.id"
     >
-      <v-card outlined class="grey lighten-3 pa-1">
-        <v-row justify="center" align="center" class="text-center white pa-12 fill-height">
-          <v-col>
-            <h3 class="headline mb-0 primary--text">{{ location.facility_name }}</h3>
-            <h5 class="subtitle-1 grey--text">Aantal beschikbaar: {{ location.units_count }}</h5>
-          </v-col>
-        </v-row>
-        <v-btn text color="primary" @click="$emit('done', location)">Kiezen</v-btn>
+      <v-card outlined class="grey lighten-3">
+        <v-card-text class="white text-center">
+          <h3 class="headline mb-0 primary--text">{{ location.facility_name }}</h3>
+          <h5 class="subtitle-1 grey--text">Aantal beschikbaar: {{ location.units_count }}</h5>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn text color="primary" @click="$emit('done', location)">Kiezen</v-btn>
+        </v-card-actions>
       </v-card>
     </v-col>
   </v-row>

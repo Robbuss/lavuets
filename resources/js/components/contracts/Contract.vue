@@ -12,14 +12,16 @@
       </v-tooltip>
       <v-spacer></v-spacer>
       <v-tooltip bottom>
-        <v-btn icon slot="activator" @click="download">
-          <v-icon>insert_drive_file</v-icon>
-        </v-btn>
+        <template v-slot:activator="{ on }">
+          <v-btn icon dark slot="activator" v-on="on" @click="download">
+            <v-icon>insert_drive_file</v-icon>
+          </v-btn>
+        </template>
         <span>Contract downloaden</span>
       </v-tooltip>
 
       <template v-slot:extension>
-        <v-tabs v-model="tab" dark class="primary">
+        <v-tabs v-model="tab" dark background-color="primary">
           <v-tabs-slider color="secondary"></v-tabs-slider>
           <v-tab v-for="item in items" :key="item.title">{{ item.title }}</v-tab>
         </v-tabs>

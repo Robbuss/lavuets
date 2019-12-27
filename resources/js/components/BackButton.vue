@@ -1,7 +1,7 @@
 <template>
   <v-tooltip bottom>
     <template v-slot:activator="{ on }">
-    <v-btn v-on="on" icon @click="$router.back()" slot="activator">
+    <v-btn dark v-on="on" icon @click="$router.back()" slot="activator">
       <v-icon>chevron_left</v-icon>
     </v-btn>
     </template>

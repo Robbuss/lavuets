@@ -9,8 +9,8 @@
         @click="step > 1 ? step = 1: false"
         style="cursor:pointer"
       >
-        Kies een locatie
-        <small>Waar u een filled wilt huren</small>
+        Waar u een ruimte wilt huren
+        <small>Kies een locatie</small>
       </v-stepper-step>
 
       <v-stepper-content :class="{'ml-0' : $vuetify.breakpoint.smAndDown}" step="1">
@@ -18,13 +18,13 @@
       </v-stepper-content>
 
       <v-stepper-step :complete="step > 2" step="2" @click="step > 2 ? step = 2 : false">
-        Kies de gewenste grootte van de filled 
+        Kies de gewenste grootte van de box 
         <small>Prijs is per maand</small>
       </v-stepper-step>
 
       <v-stepper-content :class="{'ml-0' : $vuetify.breakpoint.smAndDown}" step="2">
         <v-row wrap v-if="step == 2">
-          <v-col cols="12" pa-1>
+          <v-col cols="12">
             <StepUnit :location="selectedLocation" :contract="contract" @done="unitDone($event)"></StepUnit>
           </v-col>
         </v-row>

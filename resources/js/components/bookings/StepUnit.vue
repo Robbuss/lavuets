@@ -1,50 +1,52 @@
 <template>
   <v-card flat class="grey lighten-3 pa-1" v-if="units">
-    <v-row wrap class="white">
-      <v-col md="2">
-        <v-toolbar dense flat color="primary" dark>
-          <v-toolbar-title>Grootte</v-toolbar-title>
-        </v-toolbar>
-        <v-list dense style="border-right: 1px solid #EEEEEE">
-          <v-item-group v-model="window" mandatory tag="v-col">
-            <v-item v-for="(n, k) in units" :key="k+'1'">
-              <div slot-scope="{ active, toggle }">
-                <v-divider></v-divider>
-                <v-list-item
-                  :input-value="active"
-                  @click="toggle"
-                  :class="{'primary white--text' : unitChecked(n)}"
-                >
-                  <v-list-item-content>
-                    <v-list-item-title>{{ n[0].size }} m3</v-list-item-title>
-                  </v-list-item-content>
-                </v-list-item>
-              </div>
-            </v-item>
-          </v-item-group>
-        </v-list>
-      </v-col>
+    <v-container fluid>
+      <v-row wrap class="white">
+        <v-col md="2" class="pa-0">
+          <v-toolbar dense flat color="primary" dark>
+            <v-toolbar-title>Grootte</v-toolbar-title>
+          </v-toolbar>
+          <v-list dense style="border-right: 1px solid #EEEEEE">
+            <v-item-group v-model="window" mandatory tag="v-col">
+              <v-item v-for="(n, k) in units" :key="k+'1'">
+                <div slot-scope="{ active, toggle }">
+                  <v-divider></v-divider>
+                  <v-list-item
+                    :input-value="active"
+                    @click="toggle"
+                    :class="{'primary white--text' : unitChecked(n)}"
+                  >
+                    <v-list-item-content>
+                      <v-list-item-title>{{ n[0].size }} m3</v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+                </div>
+              </v-item>
+            </v-item-group>
+          </v-list>
+        </v-col>
 
-      <v-col md="10">
-        <v-toolbar dense flat color="primary" dark>
-          <v-toolbar-title>Klik op een box om deze te selecteren</v-toolbar-title>
-        </v-toolbar>
-        <v-window v-model="window" vertical>
-          <v-window-item v-for="(n, k) in units" :key="k + '2'">
-            <v-row wrap>
-              <v-col
-                @click="pickfilled (u)"
-                v-for="u in n"
-                :key="u.id"
-                class="ma-1 pa-4 text-center"
-                style="border: 2px solid #EEEEEE; cursor:pointer"
-                :class="{'lighten-3 primary' : contract.units.indexOf(u) > -1}"
-              >{{ u.display_name }}</v-col>
-            </v-row>
-          </v-window-item>
-        </v-window>
-      </v-col>
-    </v-row>
+        <v-col md="10" class="pa-0">
+          <v-toolbar dense flat color="primary" dark>
+            <v-toolbar-title>Klik op een box om deze te selecteren</v-toolbar-title>
+          </v-toolbar>
+          <v-window v-model="window" vertical>
+            <v-window-item v-for="(n, k) in units" :key="k + '2'">
+              <v-row wrap class="mx-0">
+                <v-col
+                  @click="pickfilled (u)"
+                  v-for="u in n"
+                  :key="u.id"
+                  class="ma-1 pa-4 text-center"
+                  style="border: 2px solid #EEEEEE; cursor:pointer"
+                  :class="{'lighten-3 primary' : contract.units.indexOf(u) > -1}"
+                >{{ u.display_name }}</v-col>
+              </v-row>
+            </v-window-item>
+          </v-window>
+        </v-col>
+      </v-row>
+    </v-container>
     <v-divider></v-divider>
     <v-row wrap>
       <v-col cols="12">

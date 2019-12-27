@@ -1,15 +1,15 @@
 <template>
   <v-col v-if="!loading">
-    <v-row wrap justify="space-between" align="center">
-      <v-col class="px-5">
-        <v-btn outlined small class="primary--text" @click="manualTenant">Klant toevoegen</v-btn>
-      </v-col>
-      <v-col>
-        <h1 class="subtitle-1 primary--text font-weight-bold">{{ greeting }}</h1>
-      </v-col>
-      <v-col></v-col>
-    </v-row>
     <v-container class="container--fluid">
+      <v-row wrap justify="space-between" align="center">
+        <v-col class="py-0">
+          <v-btn outlined small class="primary--text" @click="manualTenant">Klant toevoegen</v-btn>
+        </v-col>
+        <v-col class="py-0">
+          <h1 class="subtitle-1 primary--text font-weight-bold">{{ greeting }}</h1>
+        </v-col>
+        <v-col></v-col>
+      </v-row>
       <v-row wrap>
         <v-col cols="12" sm="6" md="5">
           <PaymentChart :payments="payments" />

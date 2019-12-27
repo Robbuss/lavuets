@@ -161,7 +161,7 @@
                 </v-col>
 
                 <v-col cols="12">
-                  <v-checkbox  v-model="isCompany" required label="Ik bestel namens een bedrijf" />
+                  <v-checkbox v-model="isCompany" required label="Ik bestel namens een bedrijf" />
                 </v-col>
 
                 <v-row wrap v-if="isCompany">
@@ -174,7 +174,7 @@
                       :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                       required
                       id="company"
-                      fille
+                      filled
                       v-model="tenant.company_name"
                       label="Bedrijfsnaam"
                     ></v-text-field>
@@ -183,7 +183,7 @@
                     <v-text-field
                       :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                       required
-                      fille
+                      filled
                       v-model="tenant.kvk"
                       label="KVK"
                     ></v-text-field>
@@ -192,7 +192,7 @@
                     <v-text-field
                       :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
                       required
-                      fille
+                      filled
                       v-model="tenant.btw"
                       label="BTW"
                     ></v-text-field>
@@ -216,7 +216,7 @@
                 :class="{'pa-5' :$vuetify.breakpoint.mdAndUp, 'pa-2' : $vuetify.breakpoint.smAndDown}"
               >
                 <h3 class="subtitle-1 grey--text">
-                  U huurt een filled in
+                  U huurt een box in
                   <span class="primary--text">{{ location.facility_name }}</span>
                 </h3>
                 <h3 class="subtitle-1 grey--text">
@@ -245,7 +245,7 @@
             </v-card>
             <v-row wrap justify-content>
               <v-col cols="12" class="text-center">
-                <v-checkbox 
+                <v-checkbox
                   v-model="terms"
                   :rules="[v => !!v || 'Je moet akkoord gaan met de algemene voorwaarden']"
                   required
