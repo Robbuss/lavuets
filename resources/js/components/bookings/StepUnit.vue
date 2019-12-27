@@ -1,8 +1,8 @@
 <template>
   <v-card flat class="grey lighten-3 pa-1" v-if="units">
-    <v-container fluid>
-      <v-row wrap class="white">
-        <v-col md="2" class="pa-0">
+    <v-card-text>
+      <v-row wrap>
+        <v-col md="2" :class="{ 'pr-0' : $vuetify.breakpoint.mdAndUp}">
           <v-toolbar dense flat color="primary" dark>
             <v-toolbar-title>Grootte</v-toolbar-title>
           </v-toolbar>
@@ -26,7 +26,7 @@
           </v-list>
         </v-col>
 
-        <v-col md="10" class="pa-0">
+        <v-col md="10" :class="{ 'pl-0' : $vuetify.breakpoint.mdAndUp}">
           <v-toolbar dense flat color="primary" dark>
             <v-toolbar-title>Klik op een box om deze te selecteren</v-toolbar-title>
           </v-toolbar>
@@ -37,66 +37,72 @@
                   @click="pickfilled (u)"
                   v-for="u in n"
                   :key="u.id"
-                  class="ma-1 pa-4 text-center"
+                  class="ma-1 pa-4 text-center white"
                   style="border: 2px solid #EEEEEE; cursor:pointer"
                   :class="{'lighten-3 primary' : contract.units.indexOf(u) > -1}"
-                >{{ u.display_name }}</v-col>
+                >
+                  <span class="font-weight-bold">{{ u.name }}</span>
+                  <br />
+                  {{ u.size }}m3
+                  <br />
+
+                  €{{ u.price}}
+                </v-col>
               </v-row>
             </v-window-item>
           </v-window>
         </v-col>
       </v-row>
-    </v-container>
-    <v-divider></v-divider>
-    <v-row wrap>
-      <v-col cols="12">
-        <v-list>
-          <v-subheader>Gekozen box(en)</v-subheader>
-          <template v-for="chosen in contract.units">
-            <v-divider :key="chosen.id + 'd'"></v-divider>
-            <v-list-item :key="chosen.id">
+      <v-row wrap>
+        <v-col cols="12">
+          <v-list>
+            <v-subheader>Gekozen box(en)</v-subheader>
+            <template v-for="chosen in contract.units">
+              <v-divider :key="chosen.id + 'd'"></v-divider>
+              <v-list-item :key="chosen.id">
+                <v-list-item-avatar>
+                  <v-avatar>
+                    <v-img src="/closed_box.png" />
+                  </v-avatar>
+                </v-list-item-avatar>
+
+                <v-list-item-content>
+                  <v-list-item-title>{{ chosen.name }}</v-list-item-title>
+                  <v-list-item-subtitle>{{ chosen.size }}m3 voor €{{ chosen.price }} per maand</v-list-item-subtitle>
+                </v-list-item-content>
+
+                <v-list-item-action @click="pickfilled (chosen)">
+                  <v-btn icon color="grey--text">
+                    <v-icon>delete</v-icon>
+                  </v-btn>
+                </v-list-item-action>
+              </v-list-item>
+            </template>
+
+            <v-list-item v-if="contract.units.length === 0">
               <v-list-item-avatar>
                 <v-avatar>
-                  <v-img src="/closed_box.png" />
+                  <v-img src="/open_box.png" />
                 </v-avatar>
               </v-list-item-avatar>
 
               <v-list-item-content>
-                <v-list-item-title>{{ chosen.name }}</v-list-item-title>
-                <v-list-item-subtitle>{{ chosen.size }}m3 voor €{{ chosen.price }} per maand</v-list-item-subtitle>
+                <v-list-item-title>Geen box en gekozen.</v-list-item-title>
+                <v-list-item-subtitle>Klik een box aan om je keuze te maken</v-list-item-subtitle>
               </v-list-item-content>
-
-              <v-list-item-action @click="pickfilled (chosen)">
-                <v-btn icon color="grey--text">
-                  <v-icon>delete</v-icon>
-                </v-btn>
-              </v-list-item-action>
             </v-list-item>
-          </template>
-
-          <v-list-item v-if="contract.units.length === 0">
-            <v-list-item-avatar>
-              <v-avatar>
-                <v-img src="/open_box.png" />
-              </v-avatar>
-            </v-list-item-avatar>
-
-            <v-list-item-content>
-              <v-list-item-title>Geen box en gekozen.</v-list-item-title>
-              <v-list-item-subtitle>Klik een box aan om je keuze te maken</v-list-item-subtitle>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list>
-      </v-col>
-      <v-col cols="12">
-        <v-btn text color="primary" @click="submit">Door naar gegevens invullen</v-btn>
-      </v-col>
-    </v-row>
-    <v-row row>
-      <v-col cols="12">
-        <v-alert :value="error">Je moet een box kiezen om door te gaan</v-alert>
-      </v-col>
-    </v-row>
+          </v-list>
+        </v-col>
+      </v-row>
+      <v-row v-if="error">
+        <v-col cols="12">
+          <v-alert type="warning" :value="error">Je moet een box kiezen om door te gaan</v-alert>
+        </v-col>
+      </v-row>
+    </v-card-text>
+    <v-card-actions>
+      <v-btn text color="primary" @click="submit">Door naar gegevens invullen</v-btn>
+    </v-card-actions>
   </v-card>
 </template>
 

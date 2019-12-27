@@ -18,16 +18,17 @@
       </v-stepper-content>
 
       <v-stepper-step :complete="step > 2" step="2" @click="step > 2 ? step = 2 : false">
-        Kies de gewenste grootte van de box 
+        Kies de gewenste grootte van de box
         <small>Prijs is per maand</small>
       </v-stepper-step>
 
       <v-stepper-content :class="{'ml-0' : $vuetify.breakpoint.smAndDown}" step="2">
-        <v-row wrap v-if="step == 2">
-          <v-col cols="12">
-            <StepUnit :location="selectedLocation" :contract="contract" @done="unitDone($event)"></StepUnit>
-          </v-col>
-        </v-row>
+        <StepUnit
+          v-if="step == 2"
+          :location="selectedLocation"
+          :contract="contract"
+          @done="unitDone($event)"
+        />
       </v-stepper-content>
 
       <v-stepper-step :complete="step > 3" step="3">
@@ -36,7 +37,13 @@
       </v-stepper-step>
 
       <v-stepper-content :class="{'ml-0' : $vuetify.breakpoint.smAndDown}" step="3">
-        <StepTenant :location="selectedLocation" @done="completeOrder($event)" :working="working" :tenant="tenant" :contract="contract"></StepTenant>
+        <StepTenant
+          :location="selectedLocation"
+          @done="completeOrder($event)"
+          :working="working"
+          :tenant="tenant"
+          :contract="contract"
+        ></StepTenant>
       </v-stepper-content>
     </v-stepper>
   </v-col>
@@ -80,7 +87,7 @@ export default class Booking extends Vue {
   };
   private contract: any = {
     units: [],
-    start_date: "",
+    start_date: ""
   };
 
   locationDone(event: string) {
