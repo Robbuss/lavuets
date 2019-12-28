@@ -13,9 +13,9 @@ import store from "js/store";
 @Component({})
 export default class Login extends Vue {
   async mounted() {
-    const r = (await axios.post(
-      "/api/login/" + this.$route.params.user + "/" + this.$route.params.sso
-    )).data;
+    const r = (await axios.post("/api/login/" + this.$route.params.sso, {
+      user_id: this.$route.params.user
+    })).data;
     store.commit("updateToken", r.access_token);
     this.$router.push("/");
   }

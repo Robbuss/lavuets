@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\BadResponseException;
+use App\Models\Setting;
 use Illuminate\Http\Request;
+use GuzzleHttp\Exception\BadResponseException;
 
 class AuthController extends Controller
 {
@@ -14,20 +15,20 @@ class AuthController extends Controller
         return $this->userAuth($request->email, $request->password);
     }
 
-    public function singleSignOn(User $user, $sso)
+    public function singleSignOn(Request $request, $sso)
     {
+        $user = User::where('id', $request->user_id)->first();
         if ($user->sso_token !== $sso) {
             abort(401);
         }
-
-        return $this->userAuth($user->email, $sso);
+        return ['access_token' => $user->createToken('access_token')->accessToken];
     }
 
     public function userAuth($email, $password)
     {
         $http = new Client();
         try {
-            $response = $http->post(config('services.passport.login_endpoint'), [
+            $response = $http->post(Setting::where('key', 'login_endpoint')->first()->value, [
                 'form_params' => [
                     'grant_type' => 'password',
                     'client_id' => config('services.passport.client_id'),

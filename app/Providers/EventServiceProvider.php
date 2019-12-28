@@ -40,13 +40,6 @@ class EventServiceProvider extends ServiceProvider
             }
         );
 
-        User::created(
-            function ($user) {
-                Mail::to($user->email)
-                    ->queue(new NewUser($user));
-            }
-        );
-
         Customer::created(
             function ($customer) {
                 Setting::createDefault($customer);

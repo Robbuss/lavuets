@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use App\Models\User;
+use App\Mail\NewUser;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -17,7 +20,7 @@ class UserController extends BaseController
 
     public function index()
     {
-        return User::all();
+        return User::where('customer_id', Customer::current()->id,)->get();
     }
 
     public function create(Request $request)
@@ -30,6 +33,12 @@ class UserController extends BaseController
         ]);
         $user->regenerateSSOToken();
 
+        try{
+            Mail::to($user->email)->queue(new NewUser($user));
+        }catch(Exception $e){
+            //
+        }
+        
         return ['success' => 'true'];
     }
 }

@@ -14,6 +14,8 @@ return [
     */
 
     'name' => env('APP_NAME', 'Laravel'),
+    'domain' => env('APP_DOMAIN', '10ants.nl'),
+    'protocol' => env('APP_PROTOCOL', 'https://'),
 
     'booking_complete_url' => env('BOOKING_COMPLETE_URL', '/booking-finished'),
     'mollie_webhook' => env('MOLLIE_WEBHOOK', 'https://boekonline.opslagmagazijn.nl/webhooks/mollie'),

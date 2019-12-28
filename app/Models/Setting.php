@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Scopes\CustomerScope;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 class Setting extends BaseModel
@@ -24,6 +25,16 @@ class Setting extends BaseModel
                 'value' => $setting['value'],
             ]);
         }
-        Setting::where('key', 'app_name')->update(['value' => $customer->company_name]);
+        // update the name to the company name of the newly created customer.
+        Setting::withoutGlobalScope(CustomerScope::class)
+            ->where('customer_id', $customer->id)
+            ->where('key', 'app_name')
+            ->update(['value' => $customer->company_name]);
+
+        // update the name to the company name of the newly created customer.
+        Setting::withoutGlobalScope(CustomerScope::class)
+            ->where('customer_id', $customer->id)
+            ->where('key', 'login_endpoint')
+            ->update(['value' => config('app.protocol') . $customer->domain . '.' . config('app.domain') . '/oauth/token']);
     }
 }

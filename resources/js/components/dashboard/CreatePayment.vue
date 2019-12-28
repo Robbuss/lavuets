@@ -70,7 +70,7 @@
             </v-row>
           </v-col>
           <v-col cols="12" md="4" pl-4>
-            <v-card>
+            <v-card outlined>
               <v-subheader class="text-center primary--text">Samenvatting</v-subheader>
               <v-list dense>
                 <v-list-item>

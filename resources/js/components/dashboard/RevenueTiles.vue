@@ -8,7 +8,7 @@
       <v-col class="px-4">
         <v-card
           flat
-          class="pa-2 round green-filled"
+          class="pa-2 round green-box"
           :class="{'white--text' : (this.percentageProfit > 5)}"
           :style="{width: this.percentageProfit + '%'}"
         >
@@ -17,17 +17,17 @@
         <span
           class="font-italic green-text"
           style="font-size: 0.8em"
-        >Inkomsten van verhuurde filled en ({{ this.percentageProfit }}%)</span>
+        >Inkomsten van verhuurde box en ({{ this.percentageProfit }}%)</span>
         <v-card
           flat
-          class="pa-2 mr-6 red-filled round"
+          class="pa-2 mr-6 red-box round"
           :class="{'white--text' : (this.percentageProfit > 5)}"
           :style="{width: Math.round((this.potentialExtraProfit / this.totalProfit) * 100) + '%'}"
         >
           <h3 class="heading">€{{ formatMoney(this.potentialExtraProfit) }}</h3>
         </v-card>
         <span class="font-italic red-text" style="font-size: 0.8em">Mogelijke (extra) inkomsten</span>
-        <v-card flat class="pa-2 blue-filled white--text round">
+        <v-card flat class="pa-2 blue-box white--text round">
           <h3 class="heading">€{{ formatMoney(this.totalProfit) }}</h3>
         </v-card>
         <span class="font-italic blue-text" style="font-size: 0.8em">Mogelijke totale omzet</span>
@@ -53,15 +53,15 @@
 </template>
 
 <style scoped>
-.red-filled {
+.red-box {
   color: rgb(255, 255, 255);
   background: linear-gradient(to right, rgb(255, 118, 87), rgb(227, 74, 74));
 }
-.green-filled {
+.green-box {
   color: rgb(255, 255, 255);
   background: linear-gradient(to right, rgb(102, 229, 181), rgb(41, 224, 105));
 }
-.blue-filled {
+.blue-box {
   color: rgb(255, 255, 255);
   background: linear-gradient(to right, rgb(52, 181, 229), rgb(46, 132, 224));
 }
@@ -109,6 +109,8 @@ export default class RevenueTiles extends Vue {
   }
 
   get percentageProfit() {
+    if(this.realizedProfit === 0)
+      return 100;
     return Math.round((this.realizedProfit / this.totalProfit) * 100);
   }
 

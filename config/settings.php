@@ -14,6 +14,11 @@ return [
 
     'default' => [
         [
+            'public' => '0',
+            'key' => 'login_endpoint',
+            'value' => '',
+        ],        
+        [
             'public' => '1',
             'key' => 'app_name',
             'value' => 'Tenants',

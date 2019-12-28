@@ -37,7 +37,7 @@ class CustomerController extends Controller
         ]);
         $user = User::create([
             'customer_id' => $customer->id,
-            'password' => Hash::make(sha1(time())),
+            'password' => Hash::make(time()),
             'name' => $request->name,
             'email' => $request->email,
             'sso_token' => sha1(time())

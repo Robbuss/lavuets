@@ -30,3 +30,7 @@ When you're done migrating run ```php artisan passport:install``` to generate th
 You can allways find the secret in the oauth_clients table from the Laravel Password Grant Client. It's usually id 2. Enter that in your .env.
 
 To run the app run ```npm run dev``` or ```npm run watch``` 
+
+
+php artisan passport:install
+php artisan passport:client --personal

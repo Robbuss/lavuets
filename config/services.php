@@ -21,7 +21,7 @@ return [
     ],
 
     'passport' => [
-      'login_endpoint' => env('PASSPORT_LOGIN_ENDPOINT'),  
+      'login_endpoint' => '', // defined by using a Setting; since each customer has its own customer scope on the user model to authenticate against  
       'client_id' => env('PASSPORT_CLIENT_ID'),  
       'client_secret' => env('PASSPORT_CLIENT_SECRET'),  
     ],
