@@ -84,7 +84,6 @@ import Vue from "vue";
 import axios from "js/axios";
 import Router from "vue-router";
 import { Component, Prop, Watch } from "vue-property-decorator";
-import Users from "./user/Users.vue";
 import Index from "./dashboard/Index.vue";
 import Login from "./auth/Login.vue";
 import ResetPassword from "./auth/ResetPassword.vue";
