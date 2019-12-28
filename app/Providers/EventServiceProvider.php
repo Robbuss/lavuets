@@ -2,13 +2,16 @@
 
 namespace App\Providers;
 
+use App\Mail\NewUser;
+use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\Setting;
-use App\Models\Customer;
-use Illuminate\Support\Facades\Event;
+use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Mail;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -37,8 +40,15 @@ class EventServiceProvider extends ServiceProvider
             }
         );
 
+        User::created(
+            function ($user) {
+                Mail::to($user->email)
+                    ->queue(new NewUser($user));
+            }
+        );
+
         Customer::created(
-            function($customer) {
+            function ($customer) {
                 Setting::createDefault($customer);
             }
         );

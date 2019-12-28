@@ -12,7 +12,7 @@ Route::post('/customers/create', 'CustomerController@create');
 Route::middleware('auth:api')->group(function () {
     Route::post('/logout', 'AuthController@logout');
     Route::get('/user/index', 'UserController@index');
-    Route::get('/user/profile', 'UserController@profile');
+    Route::post('/user/create', 'UserController@create');
 
     Route::get('/locations', 'LocationController@index');
     Route::post('/locations/create', 'LocationController@create');

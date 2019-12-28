@@ -2,7 +2,7 @@
   <v-col sm="12" md="8" lg="5">
     <v-card>
       <v-toolbar color="primary white--text" class="mb-4">
-        <v-toolbar-title>Login</v-toolbar-title>
+        <v-toolbar-title>Je wachtwoord resetten</v-toolbar-title>
       </v-toolbar>
       <v-form class="pa-4" v-model="valid" lazy-validation ref="form">
         <v-text-field
@@ -15,34 +15,12 @@
           placeholder="willecoyote@acme.mail"
           prepend-icon="mail"
         />
-        <v-text-field
-          label="Wachtwoord"
-          type="password"
-          :rules="[v => !!v || 'Dit veld is verplicht']"
-          required
-          outlined
-          v-model="user.password"
-          placeholder="RoadRunnermustdie"
-          @keydown.native.enter="validate"
-          prepend-icon="lock"
-        />
         <v-card-actions>
-          <v-btn
-            color="primary"
-            @click="validate"
-            depressed
-            :disabled="working"
-            :loading="working"
-          >Inloggen</v-btn>
-          <v-spacer />
-          <router-link to="/reset-password">Wachtwoord vergeten?</router-link>
+          <v-btn color="primary" @click="validate" depressed :disabled="working" :loading="working">Verstuur</v-btn>
         </v-card-actions>
         <v-alert v-if="message" type="warning">{{ message }}</v-alert>
       </v-form>
     </v-card>
-    <v-row>
-      <v-col class="text-center primary--text"> Tenants BV - <a target="__blank" href="http://www.10ants.nl">www.10ants.nl</a></v-col>
-    </v-row>
   </v-col>
 </template>
 

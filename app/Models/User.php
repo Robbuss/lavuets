@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Scopes\CustomerScope;
 use Laravel\Passport\HasApiTokens;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Notifications\Notifiable;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Illuminate\Contracts\Auth\MustVerifyEmail;

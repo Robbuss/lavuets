@@ -9,8 +9,11 @@
           <v-icon left>mdi-account</v-icon>Basisisntellingen
         </v-tab>
         <v-tab class="justify-start">
-          <v-icon left>mdi-mail</v-icon>Templates
+          <v-icon left>group</v-icon>Gebruikers
         </v-tab>
+        <v-tab class="justify-start">
+          <v-icon left>mdi-mail</v-icon>Templates
+        </v-tab>        
         <v-tab-item>
           <v-card flat>
             <v-card-text>
@@ -111,6 +114,9 @@
             </v-card-text>
           </v-card>
         </v-tab-item>
+        <v-tab-item>
+          <Users/>
+        </v-tab-item>
       </v-tabs>
     </v-card>
   </v-col>
@@ -121,8 +127,13 @@ import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
 import axios from "js/axios";
 import store from "js/store";
+import Users from "./Users"
 
-@Component({})
+@Component({
+  components:{
+    Users
+  }
+})
 export default class Settings extends Vue {
   private response = "";
   private settings: any = [];

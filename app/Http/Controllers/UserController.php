@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Customer;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -18,8 +20,16 @@ class UserController extends BaseController
         return User::all();
     }
 
-    public function profile()
+    public function create(Request $request)
     {
-        return Auth::user();
+        $user = User::create([
+            'customer_id' => Customer::current()->id,
+            'name' => $request->name,
+            'password' => Hash::make(str_random(32)),
+            'email' => $request->email,
+        ]);
+        $user->regenerateSSOToken();
+
+        return ['success' => 'true'];
     }
 }

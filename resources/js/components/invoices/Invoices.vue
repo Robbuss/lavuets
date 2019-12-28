@@ -68,13 +68,13 @@
       </template>
       <template v-slot:item.actions="{ item }">
         <v-row align-center>
-          <v-btn class="primary--text" small icon @click="editItem(item)">
+          <v-btn class="primary--text" small icon @click.stop="editItem(item)">
             <v-icon small>edit</v-icon>
           </v-btn>
-          <v-btn class="primary--text" small icon @click="deleteItem(item)">
+          <v-btn class="primary--text" small icon @click.stop="deleteItem(item)">
             <v-icon small>delete</v-icon>
           </v-btn>
-          <v-btn class="primary--text" small icon @click="download(item)">
+          <v-btn class="primary--text" small icon @click.stop="download(item)">
             <v-icon small>attach_file</v-icon>
           </v-btn>
           <v-btn

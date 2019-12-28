@@ -264,7 +264,7 @@
                 >Naar betalen</v-btn>
               </v-col>
               <v-col class="justify-content">
-                <img width="100px" src="logo.png" />
+                <img width="100px" src="/images/logo.png" />
               </v-col>
             </v-row>
           </v-col>

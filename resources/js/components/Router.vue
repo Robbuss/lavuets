@@ -34,17 +34,6 @@
             </v-btn>
           </template>
           <v-list>
-            <v-list-item @click="$router.push('/u/profile')">
-              <v-list-item-action>
-                <v-icon>person</v-icon>
-              </v-list-item-action>
-              <v-list-item-title>Mijn profiel</v-list-item-title>
-            </v-list-item>
-            <v-list-item @click="$router.push('/u')">
-              <v-list-item-action>
-                <v-icon>people</v-icon>
-              </v-list-item-action>
-              <v-list-item-title>Alle gebruikers</v-list-item-title>
             </v-list-item>
             <v-list-item @click="$router.push('/settings')">
               <v-list-item-action>
@@ -71,7 +60,7 @@
     <v-content :class="{ 'background' : registerRoute || authRoutes}" :style="svgbg">
       <v-container
         fluid
-        :class="{'pa-0' : $vuetify.breakpoint.smAndDown, 'fill-height' : authRoutes || registerRoute }"
+        :class="{'fill-height justify-center' : authRoutes || registerRoute }"
       >
         <v-row justify="center" :align-center="authRoutes || registerRoute">
           <router-view></router-view>
@@ -98,6 +87,7 @@ import { Component, Prop, Watch } from "vue-property-decorator";
 import Users from "./user/Users.vue";
 import Index from "./dashboard/Index.vue";
 import Login from "./auth/Login.vue";
+import ResetPassword from "./auth/ResetPassword.vue";
 import SingleSignOn from "./auth/SingleSignOn.vue";
 import Tenants from "./tenants/Tenants.vue";
 import Tenant from "./tenants/Tenant.vue";
@@ -110,7 +100,6 @@ import Unit from "./units/Unit.vue";
 import Invoices from "./invoices/Invoices.vue";
 import Contracts from "./contracts/Contracts.vue";
 import Contract from "./contracts/Contract.vue";
-import Dashboard from "./user/Dashboard.vue";
 import NotFound from "./errors/404.vue";
 import Booking from "./bookings/Booking.vue";
 import Store from "js/store";
@@ -136,6 +125,10 @@ const router = new Router({
       path: "/registreer-verhuurder",
       component: NewCustomer
     },
+    {
+      path: "/reset-password",
+      component: ResetPassword
+    },    
     {
       path: "/login/:user/:sso",
       component: SingleSignOn
@@ -189,12 +182,6 @@ const router = new Router({
         !Store.getters.authenticated ? next("/login") : next()
     },
     {
-      path: "/u",
-      component: Users,
-      beforeEnter: (to: any, from: any, next: any) =>
-        !Store.getters.authenticated ? next("/login") : next()
-    },
-    {
       path: "/payments",
       component: Payments,
       beforeEnter: (to: any, from: any, next: any) =>
@@ -209,12 +196,6 @@ const router = new Router({
     {
       path: "/locations",
       component: Locations,
-      beforeEnter: (to: any, from: any, next: any) =>
-        !Store.getters.authenticated ? next("/login") : next()
-    },
-    {
-      path: "/u/profile",
-      component: Dashboard,
       beforeEnter: (to: any, from: any, next: any) =>
         !Store.getters.authenticated ? next("/login") : next()
     },
@@ -271,7 +252,7 @@ export default class RouterComponent extends Vue {
   }
 
   get authRoutes() {
-    return this.$route.fullPath.startsWith("/login");
+    return this.$route.fullPath.startsWith("/login") || this.$route.fullPath.startsWith("/reset-password");
   }
 
   get authenticated() {

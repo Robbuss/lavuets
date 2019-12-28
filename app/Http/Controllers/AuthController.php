@@ -4,22 +4,23 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use GuzzleHttp\Client;
-use App\Models\Setting;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use GuzzleHttp\Exception\BadResponseException;
+use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
-    public function login(Request $request){
+    public function login(Request $request)
+    {
         return $this->userAuth($request->email, $request->password);
     }
 
     public function singleSignOn(User $user, $sso)
     {
-        if($user->sso_token !== $sso)
+        if ($user->sso_token !== $sso) {
             abort(401);
-        return $this->userAuth($user->email, $sso);   
+        }
+
+        return $this->userAuth($user->email, $sso);
     }
 
     public function userAuth($email, $password)
@@ -32,8 +33,8 @@ class AuthController extends Controller
                     'client_id' => config('services.passport.client_id'),
                     'client_secret' => config('services.passport.client_secret'),
                     'username' => $email,
-                    'password' => $password
-                ]
+                    'password' => $password,
+                ],
             ]);
             activity('auth')->log($email . ' heeft ingelogd');
             return json_decode((string) $response->getBody(), true);

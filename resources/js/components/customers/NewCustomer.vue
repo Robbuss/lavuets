@@ -4,7 +4,7 @@
       <v-card class= "pa-4">
         <v-row justify="center">
           <v-col class="shrink px-4">
-            <img width="225" src="/logo.png" />
+            <img width="225" src="//images/logo.png" />
           </v-col>
         </v-row>
         <v-form v-model="valid" lazy-validation ref="form">
@@ -54,6 +54,7 @@
                   :loading="working"
                   :disabled="working"
                   @click="save"
+                  depressed
                 >
                   Nu beginnen!
                   <template v-slot:loader>

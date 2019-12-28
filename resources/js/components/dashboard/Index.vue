@@ -6,7 +6,7 @@
           <v-btn outlined small class="primary--text" @click="manualTenant">Klant toevoegen</v-btn>
         </v-col>
         <v-col class="py-0">
-          <h1 class="subtitle-1 primary--text font-weight-bold">{{ greeting }}</h1>
+          <h1 class="subtitle-1 primary--text text-center font-weight-bold">{{ greeting }}</h1>
         </v-col>
         <v-col></v-col>
       </v-row>

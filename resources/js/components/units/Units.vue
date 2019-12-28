@@ -34,7 +34,7 @@
         :headers="headers"
         :search="search"
         :items="units"
-        class="elevation-1"
+        class="elevation-1 pointer"
         :loading="loading"
         :itemsPerPage="50"
         :footer-props="options"

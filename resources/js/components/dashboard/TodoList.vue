@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card v-if="false">
     <v-toolbar flat dense color="primary white--text">
       <v-toolbar-title>Todo list:</v-toolbar-title>
     </v-toolbar>

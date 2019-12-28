@@ -17,7 +17,7 @@
         :headers="headers"
         :items="payments"
         :search="search"
-        class="elevation-1"
+        class="elevation-1 pointer"
         :loading="loading"
         :sort-by="['created_at']"
         :sort-desc="[true]"

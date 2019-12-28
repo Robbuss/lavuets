@@ -34,7 +34,7 @@
       <v-data-table
         :headers="headers"
         :items="tenants"
-        class="elevation-1"
+        class="elevation-1 pointer"
         :loading="loading"
         :footer-props="options"
         :search="search"
