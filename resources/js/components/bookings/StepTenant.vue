@@ -3,6 +3,7 @@
     <v-form v-model="valid" lazy-validation ref="form">
       <v-row
         wrap
+        no-gutters
         justify="center"
         align="center"
         :class="{'pa-5' :$vuetify.breakpoint.mdAndUp, 'pa-1': $vuetify.breakpoint.smAndDown}"

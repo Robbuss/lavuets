@@ -1,105 +1,102 @@
 <template>
-  <v-card flat class="grey lighten-3 pa-1" v-if="units">
-    <v-card-text>
-      <v-row wrap>
-        <v-col md="2" :class="{ 'pr-0' : $vuetify.breakpoint.mdAndUp}">
-          <v-toolbar dense flat color="primary" dark>
-            <v-toolbar-title>Grootte</v-toolbar-title>
-          </v-toolbar>
-          <v-list dense style="border-right: 1px solid #EEEEEE">
-            <v-item-group v-model="window" mandatory tag="v-col">
-              <v-item v-for="(n, k) in units" :key="k+'1'">
-                <div slot-scope="{ active, toggle }">
-                  <v-divider></v-divider>
-                  <v-list-item
-                    :input-value="active"
-                    @click="toggle"
-                    :class="{'primary white--text' : unitChecked(n)}"
-                  >
-                    <v-list-item-content>
-                      <v-list-item-title>{{ n[0].size }} m3</v-list-item-title>
-                    </v-list-item-content>
-                  </v-list-item>
-                </div>
-              </v-item>
-            </v-item-group>
-          </v-list>
-        </v-col>
-
-        <v-col md="10" :class="{ 'pl-0' : $vuetify.breakpoint.mdAndUp}">
-          <v-toolbar dense flat color="primary" dark>
-            <v-toolbar-title>Klik op een box om deze te selecteren</v-toolbar-title>
-          </v-toolbar>
-          <v-window v-model="window" vertical>
-            <v-window-item v-for="(n, k) in units" :key="k + '2'">
-              <v-row wrap class="mx-0">
-                <v-col
-                  @click="pickfilled (u)"
-                  v-for="u in n"
-                  :key="u.id"
-                  class="ma-1 pa-4 text-center white"
-                  style="border: 2px solid #EEEEEE; cursor:pointer"
-                  :class="{'lighten-3 primary' : contract.units.indexOf(u) > -1}"
+  <v-card flat class="pa-1" v-if="units">
+    <v-row wrap no-gutters>
+      <v-col md="2" :class="{ 'pr-0' : $vuetify.breakpoint.mdAndUp}">
+        <v-toolbar dense flat color="primary" dark>
+          <v-toolbar-title>Grootte</v-toolbar-title>
+        </v-toolbar>
+        <v-list dense style="border-right: 1px solid #EEEEEE">
+          <v-item-group v-model="window" mandatory tag="v-col">
+            <v-item v-for="(n, k) in units" :key="k+'1'">
+              <div slot-scope="{ active, toggle }">
+                <v-divider></v-divider>
+                <v-list-item
+                  :input-value="active"
+                  @click="toggle"
+                  :class="{ 'primary white--text' : groupContainsUnit(n)}"
                 >
-                  <span class="font-weight-bold">{{ u.name }}</span>
-                  <br />
-                  {{ u.size }}m3
-                  <br />
+                  <v-list-item-content>
+                    <v-list-item-title>{{ n[0].size }} m3</v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </div>
+            </v-item>
+          </v-item-group>
+        </v-list>
+      </v-col>
 
-                  €{{ u.price}}
-                </v-col>
-              </v-row>
-            </v-window-item>
-          </v-window>
-        </v-col>
-      </v-row>
-      <v-row wrap>
-        <v-col cols="12">
-          <v-list>
-            <v-subheader>Gekozen box(en)</v-subheader>
-            <template v-for="chosen in contract.units">
-              <v-divider :key="chosen.id + 'd'"></v-divider>
-              <v-list-item :key="chosen.id">
-                <v-list-item-avatar>
-                  <v-avatar>
-                    <v-img src="/closed_box.png" />
-                  </v-avatar>
-                </v-list-item-avatar>
-
-                <v-list-item-content>
-                  <v-list-item-title>{{ chosen.name }}</v-list-item-title>
-                  <v-list-item-subtitle>{{ chosen.size }}m3 voor €{{ chosen.price }} per maand</v-list-item-subtitle>
-                </v-list-item-content>
-
-                <v-list-item-action @click="pickfilled (chosen)">
-                  <v-btn icon color="grey--text">
-                    <v-icon>delete</v-icon>
-                  </v-btn>
-                </v-list-item-action>
-              </v-list-item>
-            </template>
-
-            <v-list-item v-if="contract.units.length === 0">
+      <v-col md="10" :class="{ 'pl-0' : $vuetify.breakpoint.mdAndUp}">
+        <v-toolbar dense flat color="primary" dark>
+          <v-toolbar-title>Klik op een box om deze te selecteren</v-toolbar-title>
+        </v-toolbar>
+        <v-window v-model="window" vertical>
+          <v-window-item v-for="(n, k) in units" :key="k + '2'">
+            <v-row wrap :class="{'pl-3' : $vuetify.breakpoint.mdAndUp}">
+              <v-col v-for="u in n" :key="u.id">
+                <v-card
+                  :class="{'lighten-2 primary white--text' : unitChecked(u)}"
+                  class="pa-4"
+                  outlined
+                  style="cursor:pointer"
+                  @click="pickBox (u)"
+                >
+                  <v-card-title>{{ u.name }}</v-card-title>
+                  <v-card-subtitle>Grootte: {{ u.size }}m3</v-card-subtitle>
+                  <v-card-text>€{{ u.price}}</v-card-text>
+                </v-card>
+              </v-col>
+            </v-row>
+          </v-window-item>
+        </v-window>
+      </v-col>
+    </v-row>
+    <v-divider />
+    <v-row wrap no-gutters>
+      <v-col cols="12">
+        <v-list>
+          <v-subheader>Gekozen box(en)</v-subheader>
+          <template v-for="chosen in contract.units">
+            <v-divider :key="chosen.id + 'd'"></v-divider>
+            <v-list-item :key="chosen.id">
               <v-list-item-avatar>
                 <v-avatar>
-                  <v-img src="/open_box.png" />
+                  <v-img src="/closed_box.png" />
                 </v-avatar>
               </v-list-item-avatar>
 
               <v-list-item-content>
-                <v-list-item-title>Geen box en gekozen.</v-list-item-title>
-                <v-list-item-subtitle>Klik een box aan om je keuze te maken</v-list-item-subtitle>
+                <v-list-item-title>{{ chosen.name }}</v-list-item-title>
+                <v-list-item-subtitle>{{ chosen.size }}m3 voor €{{ chosen.price }} per maand</v-list-item-subtitle>
               </v-list-item-content>
+
+              <v-list-item-action @click="pickBox (chosen)">
+                <v-btn icon color="grey--text">
+                  <v-icon>delete</v-icon>
+                </v-btn>
+              </v-list-item-action>
             </v-list-item>
-          </v-list>
-        </v-col>
-      </v-row>
-      <v-row v-if="error">
-        <v-col cols="12">
-          <v-alert type="warning" :value="error">Je moet een box kiezen om door te gaan</v-alert>
-        </v-col>
-      </v-row>
-    </v-card-text>
+          </template>
+
+          <v-list-item v-if="contract.units.length === 0">
+            <v-list-item-avatar>
+              <v-avatar>
+                <v-img src="/open_box.png" />
+              </v-avatar>
+            </v-list-item-avatar>
+
+            <v-list-item-content>
+              <v-list-item-title>Geen box en gekozen.</v-list-item-title>
+              <v-list-item-subtitle>Klik een box aan om je keuze te maken</v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </v-col>
+    </v-row>
+    <v-row v-if="error" no-gutters>
+      <v-col cols="12">
+        <v-alert color="primary" dark :value="error">Je moet een box kiezen om door te gaan</v-alert>
+      </v-col>
+    </v-row>
     <v-card-actions>
       <v-btn text color="primary" @click="submit">Door naar gegevens invullen</v-btn>
     </v-card-actions>
@@ -145,21 +142,26 @@ export default class StepUnit extends Vue {
     this.loading = false;
   }
 
-  unitChecked(units: any) {
-    for (let i = 0; i < units.length; i++) {
-      if (this.contract.units.indexOf(units[i]) > -1) {
-        return true;
-      }
+  unitChecked(unit: any) {
+    for (let i = 0; i < this.contract.units.length; i++) {
+      if (this.contract.units[i].id === unit.id) return true;
     }
+    return false;
   }
 
-  pickfilled(unit: any) {
-    const index = this.contract.units.indexOf(unit);
-    if (index > -1) {
-      this.contract.units.splice(index, 1);
-    } else {
-      this.contract.units.push(unit);
+  groupContainsUnit(units: any) {
+    for (let i = 0; i < units.length; i++) {
+      if (this.unitChecked(units[i])) return true;
     }
+    return false;
+  }
+
+  pickBox(unit: any) {
+    for (var i = 0; i < this.contract.units.length; i++) {
+      if (this.contract.units[i].id === unit.id)
+        return this.contract.units.splice(i, 1);
+    }
+    return this.contract.units.push(unit);
   }
 
   submit() {

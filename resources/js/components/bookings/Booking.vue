@@ -1,6 +1,6 @@
 <template>
   <v-col>
-    <booking-header :step="step"></booking-header>
+    <booking-header :step="step" v-if="$vuetify.breakpoint.mdAndUp"></booking-header>
 
     <v-stepper v-model="step" vertical>
       <v-stepper-step
