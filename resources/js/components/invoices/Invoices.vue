@@ -35,12 +35,13 @@
       :headers="headers"
       :items="invoices"
       class="elevation-1"
+      :class="{'pointer' : !contract}"
       :loading="loading"
       multi-sort
       :footer-props="options"
       :sort-by="['ref_number']"
       :sort-desc="[true]"
-      @click:row="(contract && contract.id) ? $router.push('/invoices/' + $event.id): null"
+      @click:row="!contract ? $router.push('/contracts/' + $event.contract_id): null"
     >
       <template v-slot:actions-prepend v-if="contract && contract.tenant_id">
         <div style="position:absolute; left:0px; bottom:7px;">
@@ -82,7 +83,7 @@
             :disabled="item.sent ? true : false"
             small
             icon
-            @click="confirmSendingInvoice(item)"
+            @click.stop="confirmSendingInvoice(item)"
           >
             <v-icon small>mail</v-icon>
           </v-btn>

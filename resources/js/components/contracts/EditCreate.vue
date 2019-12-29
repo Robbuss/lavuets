@@ -1,6 +1,6 @@
 <template>
   <v-dialog :value="dialog" max-width="80%" persistent>
-    <v-card class= "pa-4" v-if="!loading">
+    <v-card class="pa-4" v-if="!loading">
       <v-form ref="form" v-model="valid" lazy-validation>
         <v-row wrap>
           <v-col cols="12">
@@ -12,21 +12,19 @@
             <v-select :items="mergedUnits" v-model="editedItem.units" multiple chips>
               <template v-slot:item="data">
                 <v-col
-                  class="align-center grey--text"
-                  style="display:flex"
-                  :class="{'primary--text' : editedItem.units.indexOf(data.item) > -1}"
+                  class="grey--text"
                 >
                   <v-icon
-                    :class="{'primary--text' : editedItem.units.indexOf(data.item) > -1}"
+                    class="primary--text"
                     v-if="editedItem.units.indexOf(data.item) > -1"
-                  >check_filled </v-icon>
+                  >check_filled</v-icon>
                   <v-icon v-else>check_filled _outline_blank</v-icon>
-                  <span class= "pl-4">{{ data.item.display_name }}</span>
-                  <span v-if="!data.item.active">- Non actief!</span>
+                  <span>{{ data.item.display_name }}</span>
+                  <span v-if="!data.item.active"> - Non actief!</span>
                 </v-col>
               </template>
               <template v-slot:selection="data">
-                <v-chip close @input="remove(data.item)">
+                <v-chip close @click:close="remove(data.item)">
                   {{ data.item.display_name }}
                   <span v-if="!data.item.active">- Non actief!</span>
                 </v-chip>
@@ -34,7 +32,7 @@
             </v-select>
           </v-col>
           <v-col cols="12">
-            <v-checkbox  v-model="defaultPrices" label="Standaard prijzen gebruiken"></v-checkbox >
+            <v-checkbox v-model="defaultPrices" label="Standaard prijzen gebruiken"></v-checkbox>
           </v-col>
           <v-expand-transition>
             <v-col cols="12" v-if="editedItem.units.length > 0 && !defaultPrices">
@@ -56,7 +54,7 @@
           <v-col cols="12" sm="12" md="4">
             <h6 class="caption">
               Kies een
-              <span class="font-weight-black">betalingsmethode</span>?
+              <span class="font-weight-black">betalingsmethode</span>
             </h6>
             <v-autocomplete
               :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
@@ -91,7 +89,7 @@
               <span class="font-weight-black">per mail</span> ontvangen
             </h6>
             <span></span>
-            <v-checkbox  v-model="editedItem.auto_invoice" label="Automagische facturatie" />
+            <v-checkbox v-model="editedItem.auto_invoice" label="Automagische facturatie" />
           </v-col>
         </v-row>
 

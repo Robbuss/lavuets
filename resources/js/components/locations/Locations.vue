@@ -66,6 +66,10 @@
         <v-icon small class="mr-2" @click="editItem(item)">edit</v-icon>
         <v-icon small @click="deleteItem(item)">delete</v-icon>
       </template>
+      <template v-slot:no-data>
+        <td colspan="100%" v-if="loading">Producten laden...</td>
+        <td colspan="100%" v-else>Geen producten gevonden</td>
+      </template>
     </v-data-table>
   </v-col>
 </template>

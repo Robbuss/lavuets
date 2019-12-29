@@ -5,7 +5,7 @@
       <v-toolbar-title>{{ formTitle }}</v-toolbar-title>
     </v-toolbar>
     <v-form lazy-validation ref="form">
-      <v-row wrap class= "pa-4">
+      <v-row wrap class= "pa-4" no-gutters>
         <v-col sm="12">
           <v-select
             label="Kies een locatie"

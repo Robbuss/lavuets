@@ -9,11 +9,14 @@
           <v-icon left>mdi-account</v-icon>Basisisntellingen
         </v-tab>
         <v-tab class="justify-start">
+          <v-icon left>store</v-icon>Bedrijfsinformatie
+        </v-tab>        
+        <v-tab class="justify-start">
           <v-icon left>group</v-icon>Gebruikers
         </v-tab>
         <v-tab class="justify-start">
           <v-icon left>mdi-mail</v-icon>Templates
-        </v-tab>        
+        </v-tab>
         <v-tab-item>
           <v-card flat>
             <v-card-text>
@@ -109,13 +112,20 @@
                   color="primary"
                   :disabled="loading"
                   :loading="loading"
-                >Updaten</v-btn>
+                  depressed
+                >Opslaan</v-btn>
               </v-form>
             </v-card-text>
           </v-card>
         </v-tab-item>
         <v-tab-item>
-          <Users/>
+          <Customer />
+        </v-tab-item>        
+        <v-tab-item>
+          <Users />
+        </v-tab-item>
+        <v-tab-item>
+          <Templates />
         </v-tab-item>
       </v-tabs>
     </v-card>
@@ -127,11 +137,15 @@ import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
 import axios from "js/axios";
 import store from "js/store";
-import Users from "./Users"
+import Users from "./Users";
+import Templates from "./Templates";
+import Customer from "./Customer";
 
 @Component({
-  components:{
-    Users
+  components: {
+    Users,
+    Templates,
+    Customer
   }
 })
 export default class Settings extends Vue {

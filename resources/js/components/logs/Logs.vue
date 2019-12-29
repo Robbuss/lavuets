@@ -12,24 +12,23 @@
           label="Zoeken"
           single-line
           hide-details
-        ></v-text-field>            
+        ></v-text-field>
       </v-toolbar>
       <v-data-table
         :headers="headers"
         :search="search"
         :items="logs"
+        :items-per-page="25"
+        multi-sort
+        :sort-by="['created_at']"
+        :sort-desc="[true]"
         class="elevation-1"
         :loading="loading"
         :pagination.sync="paginationSync"
       >
         <template v-slot:items="props">
-          <td>{{ props.item.id }}</td>
           <td>{{ props.item.log_name }}</td>
           <td>{{ props.item.description }}</td>
-          <td>{{ props.item.subject_id }}</td>
-          <td>{{ props.item.subject_type }}</td>
-          <td>{{ props.item.causer_id }}</td>
-          <td>{{ props.item.causer_type }}</td>
           <td>{{ props.item.created_at }}</td>
         </template>
         <template v-slot:no-data>
@@ -51,23 +50,17 @@ export default class Logs extends Vue {
   private response = "";
   private logs: any = [];
   private loading: boolean = true;
-  private search: string|null = null;
+  private search: string | null = null;
 
-  private paginationSync: any = {
-    descending: true,
-    rowsPerPage: 250, // -1 for All",
-    sortBy: "id"
+  private options: any = {
+    itemsPerPageText: "Logs per pagina",
+    itemsPerPageAllText: "Allemaal"
   };
 
   private headers: any = [
-    { text: "Id", align: "left", value: "id" },
     { text: "Naam", align: "left", value: "log_name" },
     { text: "Beschrijving", value: "description" },
-    { text: "subject_id", value: "subject_id" },
-    { text: "subject_type", value: "subject_type" },
-    { text: "causer_id", value: "causer_id" },
-    { text: "causer_type", value: "causer_type" },
-    { text: "created_at", value: "created_at" },
+    { text: "Datum/tijd", value: "created_at" }
   ];
 
   async mounted() {

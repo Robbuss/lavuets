@@ -12,7 +12,7 @@ class Customer extends Model implements HasMedia
 {
     use SoftDeletes, LogsActivity, HasMediaTrait;
 
-    protected $fillable = ['domain', 'company_name', 'name', 'email', 'city', 'street_addr', 'street_number', 'postal_code', 'phone', 'iban', 'btw', 'kvk'];
+    protected $fillable = ['domain', 'company_name', 'name', 'email', 'city','phone', 'street_addr', 'street_number', 'postal_code', 'phone', 'iban', 'btw', 'kvk'];
     protected static $logName = 'systeem';
     protected static $currentcustomer = null;
 

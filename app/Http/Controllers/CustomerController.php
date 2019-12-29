@@ -18,7 +18,6 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        // $Customer = Customer::whereHas('contracts')->with('contracts')->get();
         return Customer::all();
     }
 
@@ -45,9 +44,9 @@ class CustomerController extends Controller
         return ['customer_id' => $customer->id, 'user_id' => $user->id, 'sso_token' => $user->sso_token];
     }
 
-    public function read(Customer $Customer)
+    public function read()
     {
-        return $Customer;
+        return Customer::current();
     }
 
     /**
@@ -57,9 +56,9 @@ class CustomerController extends Controller
      * @param  \App\Models\Customer  $Customer
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Customer $Customer)
+    public function update(Request $request)
     {
-        $Customer->update($request->all());
+        Customer::current()->update($request->all());
         return ['success' => true];
     }
 

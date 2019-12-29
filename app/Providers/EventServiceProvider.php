@@ -2,16 +2,14 @@
 
 namespace App\Providers;
 
-use App\Mail\NewUser;
 use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\Setting;
-use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Mail;
+use Spatie\Activitylog\Models\Activity;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -45,6 +43,14 @@ class EventServiceProvider extends ServiceProvider
                 Setting::createDefault($customer);
             }
         );
-        //
+
+        Activity::created(
+            function ($activity) {
+                $customer = Customer::current();
+                if ($customer) {
+                    $activity->update(['customer_id' => $customer->id]);
+                }
+            }
+        );
     }
 }

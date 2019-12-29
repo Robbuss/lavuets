@@ -13,6 +13,8 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/logout', 'AuthController@logout');
     Route::get('/user/index', 'UserController@index');
     Route::post('/user/create', 'UserController@create');
+    Route::post('/customers/update', 'CustomerController@update');
+    Route::get('/customers/read', 'CustomerController@read');
 
     Route::get('/locations', 'LocationController@index');
     Route::post('/locations/create', 'LocationController@create');
