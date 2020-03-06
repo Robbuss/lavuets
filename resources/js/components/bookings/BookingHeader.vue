@@ -9,10 +9,8 @@
         box-shadow: none !important;">
       <v-stepper-header>
         <v-stepper-step :complete="step > 1" step="1">Kies een locatie</v-stepper-step>
-        <v-divider></v-divider>
 
         <v-stepper-step :complete="step > 2" step="2">Kies een box</v-stepper-step>
-        <v-divider></v-divider>
 
         <v-stepper-step step="3">
           Vul gegevens in

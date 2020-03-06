@@ -1,4 +1,4 @@
-\<template>
+<template>
   <v-app v-if="!loading">
     <v-navigation-drawer
       v-model="drawer"

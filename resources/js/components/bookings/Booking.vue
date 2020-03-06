@@ -14,7 +14,7 @@
       </v-stepper-step>
 
       <v-stepper-content :class="{'ml-0' : $vuetify.breakpoint.smAndDown}" step="1">
-        <StepLocation @done="locationDone($event)"></StepLocation>
+        <StepLocation :domain="domain" @done="locationDone($event)"></StepLocation>
       </v-stepper-content>
 
       <v-stepper-step :complete="step > 2" step="2" @click="step > 2 ? step = 2 : false">
@@ -24,6 +24,7 @@
 
       <v-stepper-content :class="{'ml-0' : $vuetify.breakpoint.smAndDown}" step="2">
         <StepUnit
+          :domain="domain"
           v-if="step == 2"
           :location="selectedLocation"
           :contract="contract"
@@ -67,6 +68,9 @@ import StepTenant from "./StepTenant.vue";
   }
 })
 export default class Booking extends Vue {
+  @Prop()
+  domain: string;
+
   private step: number = 0;
   private count: number = 0;
   private working: boolean = false;
@@ -102,7 +106,10 @@ export default class Booking extends Vue {
   async completeOrder() {
     this.working = true;
     try {
-      const r = await axios.post("/api/booking/create", {
+      let url = this.domain
+        ? this.domain + "/api/booking/create"
+        : "/api/booking/create";
+      const r = await axios.post(url, {
         tenant: this.tenant,
         contract: this.contract,
         units: this.contract.units

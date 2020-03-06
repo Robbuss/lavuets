@@ -28,11 +28,18 @@ import axios from "js/axios";
 
 @Component({})
 export default class StepLocation extends Vue {
+  @Prop()
+  domain: string;
+
   private locations: any = [];
   private loading: boolean = true;
 
   async mounted() {
-    this.locations = (await axios.get("/api/book-data/locations")).data;
+    let url = this.domain
+      ? this.domain + "/api/book-data/locations"
+      : "/api/book-data/locations";
+
+    this.locations = (await axios.get(url)).data;
     this.loading = false;
   }
 }

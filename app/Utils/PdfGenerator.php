@@ -45,9 +45,9 @@ class PdfGenerator
         // view variables
         $units = [];
         $units['price'] = $this->model->units->sum('pivot.price');
-        $units['units'] = implode($this->model->units->map(function ($q) {
+        $units['units'] = implode(", ", $this->model->units->map(function ($q) {
             return $q->id;
-        })->toArray(), ", ");
+        })->toArray());
 
         $pdf = PDF::loadView('contract', ['tenant' => $this->model->tenant, 'units' => $units, 'contract' => $this->model])
             ->setOptions(['defaultFont' => 'sans-serif']);

@@ -7,9 +7,13 @@ Route::post('/book-data/units', 'BookingController@stepUnits');
 Route::post('/booking/create', 'BookingController@create');
 Route::get('/settings/layout', 'SettingController@layout');
 
+Route::get('/wordpress', 'WordpressController@index');
+
 Route::post('/customers/create', 'CustomerController@create');
 
 Route::middleware('auth:api')->group(function () {
+    Route::post('/wordpress', 'WordpressController@index');
+    
     Route::post('/logout', 'AuthController@logout');
     Route::get('/user/index', 'UserController@index');
     Route::post('/user/create', 'UserController@create');

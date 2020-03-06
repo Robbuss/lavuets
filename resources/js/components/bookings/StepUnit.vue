@@ -125,6 +125,9 @@ export default class StepUnit extends Vue {
   @Prop()
   location: any;
 
+  @Prop()
+  domain: string;
+
   @Watch("contract.units")
   onChosenUnitsChanged() {
     this.error ? (this.error = !this.error) : false;
@@ -136,7 +139,10 @@ export default class StepUnit extends Vue {
   private loading: boolean = true;
 
   async mounted() {
-    this.units = (await axios.post("/api/book-data/units", {
+    let url = this.domain
+      ? this.domain + "/api/book-data/units"
+      : "/api/book-data/units";
+    this.units = (await axios.post(url, {
       location_id: this.location.id
     })).data;
     this.loading = false;
