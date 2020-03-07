@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Unit;
 use App\Models\Tenant;
+use App\Models\Setting;
 use App\Models\Contract;
 use App\Models\Customer;
-use App\Models\Location;
 use App\Utils\MolliePayment;
 use Illuminate\Http\Request;
 use App\Utils\InvoiceGenerator;
@@ -20,11 +20,12 @@ class BookingController extends Controller
      */
     public function stepLocation()
     {
+        $showCount = Setting::where('key', 'show_locations_booking')->first();
         return Unit::bookableUnits()
             ->with('location')
-            ->get()->groupBy('location_id')->map(function ($q) {
+            ->get()->groupBy('location_id')->map(function ($q) use ($showCount) {
                 return [
-                    'units_count' => $q->count(),
+                    'units_count' => $showCount->value ? $q->count() : false,
                     'facility_name' => $q->first()->location->facility_name,
                     'id' => $q->first()->location->id,
                 ];

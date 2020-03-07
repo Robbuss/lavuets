@@ -10,7 +10,10 @@
         </v-tab>
         <v-tab class="justify-start">
           <v-icon left>store</v-icon>Bedrijfsinformatie
-        </v-tab>        
+        </v-tab>
+        <v-tab class="justify-start">
+          <v-icon left>mdi-mail</v-icon>Boekingsformulier
+        </v-tab>
         <v-tab class="justify-start">
           <v-icon left>group</v-icon>Gebruikers
         </v-tab>
@@ -120,7 +123,10 @@
         </v-tab-item>
         <v-tab-item>
           <Customer />
-        </v-tab-item>        
+        </v-tab-item>
+        <v-tab-item>
+          <Booking :settings="settings" @update="update"/>
+        </v-tab-item>
         <v-tab-item>
           <Users />
         </v-tab-item>
@@ -137,15 +143,17 @@ import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
 import axios from "js/axios";
 import store from "js/store";
-import Users from "./Users";
-import Templates from "./Templates";
-import Customer from "./Customer";
+import Users from "./Users.vue";
+import Templates from "./Templates.vue";
+import Customer from "./Customer.vue";
+import Booking from "./Booking.vue";
 
 @Component({
   components: {
     Users,
     Templates,
-    Customer
+    Customer,
+    Booking
   }
 })
 export default class Settings extends Vue {

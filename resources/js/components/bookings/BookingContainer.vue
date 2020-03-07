@@ -1,8 +1,8 @@
 <template>
   <div>
     <Booking :domain="domain" v-if="!loading" />
-    <v-btn class="btn">Jolo</v-btn>
-    <button class="btn">Bittch</button>
+    <v-btn class="btn">Test</v-btn>
+    <button class="btn">From webcomponent</button>
   </div>
 </template>
 
