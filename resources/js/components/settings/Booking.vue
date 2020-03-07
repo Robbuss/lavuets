@@ -2,11 +2,12 @@
   <v-col cols="12">
     <v-card-text>
       <v-form>
-        <v-switch
-          v-model="settings.find((x) => x.key === 'show_locations_booking').value"
-          outlined
-          label="Laat het aantal beschikbare boxen zien in boekingsformulier"
-        />
+        <span v-if="showCount">Aantal beschikbare boxen wordt getoont in het formulier</span>
+        <span v-else>
+          Aantal beschikbare boxen wordt
+          <b>niet</b> getoont in het formulier
+        </span>
+        <v-switch v-model="showCount" outlined :label="showCount ? 'Aan' : 'Uit'" />
         <v-btn
           @click="$emit('update')"
           color="primary"
@@ -27,5 +28,13 @@ import { Component, Prop, Watch } from "vue-property-decorator";
 export default class Booking extends Vue {
   @Prop()
   settings: any;
+
+  get showCount() {
+    return this.settings.find((x: this["settings"][0]) => x.key === "show_locations_booking").value;
+  }
+
+  set showCount(value: boolean) {
+    this.settings.find((x: this["settings"][0]) => x.key === "show_locations_booking").value = value;
+  }
 }
 </script>
