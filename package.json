@@ -19,6 +19,7 @@
         "@webcomponents/webcomponentsjs": "^2.4.0",
         "blob-util": "^2.0.2",
         "chart.js": "^2.9.3",
+        "cropperjs": "^1.5.6",
         "dotenv": "^8.2.0",
         "file-saver": "^2.0.2",
         "iban": "0.0.12",

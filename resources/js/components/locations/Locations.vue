@@ -19,6 +19,11 @@
               <v-container grid-list-md>
                 <v-row wrap>
                   <v-col cols="12">
+                    <ImageUpload :width="300" :height="300">
+                      <v-btn>ADd</v-btn>
+                    </ImageUpload>
+                  </v-col>
+                  <v-col cols="12">
                     <v-text-field
                       v-model="editedItem.name"
                       persistent-hint
@@ -78,9 +83,14 @@
 import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
 import axios from "js/axios";
+import ImageUpload from "js/components/ImageUpload.vue";
 import store from "js/store";
 
-@Component({})
+@Component({
+  components: {
+    ImageUpload
+  }
+})
 export default class Locations extends Vue {
   private response = "";
   private locations: any = [];
