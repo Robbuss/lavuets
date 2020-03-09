@@ -1,13 +1,25 @@
 <template>
   <v-list nav>
-    <v-list-item @click="$router.push(item.link)" v-for="(item, key) in items" :key="key">
-      <v-list-item-action>
-        <v-icon class="primary--text">{{ item.icon }}</v-icon>
-      </v-list-item-action>
-      <v-list-item-content>
-        <v-list-item-title class="grey--text text--darken-2">{{ item.text }}</v-list-item-title>
-      </v-list-item-content>
-    </v-list-item>
+    <template v-for="(item, key) in items">
+      <v-list-group prepend-icon="account_circle" value="true" :key="key" v-if="item.group">
+        <template v-slot:activator>
+          <v-list-item-title>{{ item.text }}</v-list-item-title>
+        </template>
+        <v-list-item @click="$router.push(i.link)" v-for="(i, key) in item.links" :key="key">
+          <v-list-item-content>
+            <v-list-item-title class="grey--text text--darken-2">{{ i.text }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list-group>
+      <v-list-item @click="$router.push(item.link)" :key="key" v-else>
+        <v-list-item-action>
+          <v-icon class="primary--text">{{ item.icon }}</v-icon>
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title class="grey--text text--darken-2">{{ item.text }}</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+    </template>
   </v-list>
 </template>
     
@@ -26,16 +38,29 @@ export default class NavItems extends Vue {
     return this.itemsLoggedOut;
   }
 
-  private itemsLoggedIn: { [k: string]: string }[] = [
+  private itemsLoggedIn = [
     {
       icon: "store",
       link: "/locations",
       text: "Locaties"
-    },    
+    },
     {
-      icon: "view_quilt",
-      link: "/units",
-      text: "Boxen / producten"
+      group: true,
+      text: "Boxen",
+      links: [
+        {
+          link: "/categories",
+          text: "Categorieën"
+        },
+        {
+          link: "/units",
+          text: "Alle boxen"
+        },
+        {
+          link: "/boek",
+          text: "Boekingsformulier"
+        }
+      ]
     },
     {
       icon: "person",
@@ -56,9 +81,9 @@ export default class NavItems extends Vue {
       icon: "attach_money",
       link: "/payments",
       text: "Betalingen"
-    },
+    }
   ];
-  private itemsLoggedOut: { [k: string]: string }[] = [
+  private itemsLoggedOut = [
     {
       icon: "lock",
       link: "/login",

@@ -7,10 +7,11 @@ use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
+use App\Traits\AssociateMediaTrait;
 
 class Location extends BaseModel implements HasMedia
 {
-    use SoftDeletes, LogsActivity, HasMediaTrait;
+    use SoftDeletes, LogsActivity, HasMediaTrait, AssociateMediaTrait;
     protected $fillable = ['customer_id' ,'name', 'facility_name'];
 
     protected static $logName = 'systeem';

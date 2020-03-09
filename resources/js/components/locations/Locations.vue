@@ -10,7 +10,7 @@
           </v-btn>
         </template>
         <v-card>
-          <v-form ref="form" v-model="valid">
+          <v-form ref="form" v-model="valid" lazy-validation>
             <v-card-title>
               <span class="primary--text headline">Locatie</span>
             </v-card-title>
@@ -19,9 +19,33 @@
               <v-container grid-list-md>
                 <v-row wrap>
                   <v-col cols="12">
-                    <ImageUpload :width="300" :height="300">
-                      <v-btn>ADd</v-btn>
-                    </ImageUpload>
+                    <v-hover v-slot:default="{ hover }">
+                      <ImageUpload :height="200" :width="400" v-model="editedItem.image">
+                        <v-card color="grey lighten-4">
+                          <v-img
+                            class="white--text"
+                            height="200px"
+                            :src="editedItem.image || 'empty-location.svg'"
+                          >
+                            <v-expand-transition>
+                              <v-row
+                                v-if="hover"
+                                align="center"
+                                justify="center"
+                                class="transition-fast-in-fast-out primary darken-2 fill-height white--text fill-height pointer"
+                                style="opacity: 0.7"
+                              >
+                                <v-col cols="12" class="text-center">
+                                  <v-btn dark icon>
+                                    <v-icon>add_a_photo</v-icon>
+                                  </v-btn>nieuwe foto
+                                </v-col>
+                              </v-row>
+                            </v-expand-transition>
+                          </v-img>
+                        </v-card>
+                      </ImageUpload>
+                    </v-hover>
                   </v-col>
                   <v-col cols="12">
                     <v-text-field
@@ -113,11 +137,13 @@ export default class Locations extends Vue {
   private editedIndex: number = -1;
   private editedItem: any = {
     name: "",
-    facility_name: ""
+    facility_name: "",
+    image: ""
   };
   private defaultItem: any = {
     name: "",
-    facility_name: ""
+    facility_name: "",
+    image: ""
   };
 
   async mounted() {

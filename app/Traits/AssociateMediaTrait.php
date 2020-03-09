@@ -10,7 +10,7 @@ trait AssociateMediaTrait
 {
     use HasMediaTrait;
 
-    public function associateMedia($name, $file, $ext = ['png', 'jpg', 'jpeg', 'svg', 'webp'], array $properties = [])
+    public function associateMedia($name, $file, $ext = ['png', 'jpg', 'jpeg', 'svg', 'webp'], array $properties = [], $disk = '')
     {
         if (strlen($file) == 0) {
             return false;
@@ -82,7 +82,7 @@ trait AssociateMediaTrait
             ->usingName($name . '.' . $extension)
             ->withCustomProperties($properties)
             ->usingFileName($name . '.' . $extension)
-            ->toMediaCollection($name);
+            ->toMediaCollection($name, $disk);
     }
 
     public function getLastMedia($key)

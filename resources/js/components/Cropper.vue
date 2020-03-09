@@ -50,6 +50,10 @@ export default class Cropper extends Vue {
   @Prop()
   enforceboundary: any;
 
+  // default aspectRatio is NaN, free ratop. kan be set to a number (1 = equal width and height); also using : 16 / 9 for example
+  @Prop()
+  aspectRatio: number
+
   cropper = null as CropperJs;
 
   get imageElement() {
@@ -60,7 +64,7 @@ export default class Cropper extends Vue {
 
   mounted() {
     this.cropper = new CropperJs(this.imageElement, {
-      aspectRatio: 1,
+      aspectRatio: this.aspectRatio || undefined,
       viewMode: 1,
       ready: function() {
         this.croppable = true;

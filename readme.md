@@ -34,3 +34,6 @@ To run the app run ```npm run dev``` or ```npm run watch```
 
 php artisan passport:install
 php artisan passport:client --personal
+php artisan storage:link
+
+check if the dir public and private both are avaiable

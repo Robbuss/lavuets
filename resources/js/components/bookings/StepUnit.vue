@@ -32,7 +32,7 @@
         <v-window v-model="window" vertical>
           <v-window-item v-for="(n, k) in units" :key="k + '2'">
             <v-row wrap :class="{'pl-3' : $vuetify.breakpoint.mdAndUp}">
-              <v-col v-for="u in n" :key="u.id">
+              <v-col sm="12" md="4" lg="3" v-for="u in n" :key="u.id">
                 <v-card
                   :class="{'lighten-2 primary white--text' : unitChecked(u)}"
                   class="pa-4"

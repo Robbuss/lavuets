@@ -15,7 +15,14 @@ class LocationController extends Controller
      */
     public function index()
     {
-        return Location::all();
+        return Location::with('media')->get()->map(function($q){
+            return [
+                'id' => $q->id,
+                'facility_name' => $q->facility_name,
+                'name' => $q->name,
+                'image' => ($q->media->last()) ? $q->media->last()->getFullUrl() : ''
+            ];
+        });
     }
 
     /**
@@ -40,7 +47,8 @@ class LocationController extends Controller
 
     public function update(Location $location, Request $request)
     {
-        $location->update($request->all());
+        $location->update($request->except('image'));
+        $location->associateMedia('image', $request->image, ['png', 'jpg'], [], 'public');
     }
 
     public function delete(Location $location)
