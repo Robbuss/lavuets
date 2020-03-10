@@ -19,7 +19,8 @@ class ChangeMediaFilesToPrivate extends Migration
             $m->disk = 'private';
             $m->save();
         }
-        rename(storage_path('app\public'), storage_path('app\private'));
+        if(file_exists(storage_path(('app\public'))))
+            rename(storage_path('app\public'), storage_path('app\private'));
     }
 
     /**
