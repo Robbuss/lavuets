@@ -4,6 +4,7 @@ Route::post('/login/{sso}', 'AuthController@singleSignOn');
 
 Route::get('/book-data/locations', 'BookingController@stepLocation');
 Route::post('/book-data/units', 'BookingController@stepUnits');
+Route::get('/book-data/customer', 'BookingController@stepTenant');
 Route::post('/booking/create', 'BookingController@create');
 Route::get('/settings/layout', 'SettingController@layout');
 

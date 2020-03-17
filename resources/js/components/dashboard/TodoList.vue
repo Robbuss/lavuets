@@ -27,10 +27,8 @@ export default class TodoList extends Vue {
   todos: any = [
     "Stop using float for monetary values",
     "Keuze toevoegen bij betalen: Ik wil eerst een offerte",
-    "Keuze voor begane grond of eerste verdieping => Generiek beschrijingsveld toevoegen aan de boxen. Boxen die beneden zijn eerst tonen. 'Deze unit is bereikbaar met de lift / deze unit is bereikbaar via de begane grond'",
+    "Keuze voor begane grond of eerste verdieping => Generiek beschrijvingsveld toevoegen aan de boxen. Boxen die beneden zijn eerst tonen. 'Deze unit is bereikbaar met de lift / deze unit is bereikbaar via de begane grond'",
     "Boxen die binnenkort vrij komen laten zien in het boekingsformulier",
-    "Boxen opdelen in grootte en als losse stap tonen in het boekingsformulier, Foto's per box grootte categorie in het formulier",
-    "Boxen een Lengte x Breedte x Hoogte geven aan de voorkant m2 en m3 automatisch tonen",
     "Keuze prijs per box . huren per week. Maand, 2 maanden enz.  (Even overleg hoe dit het beste te kunnen weergeven) zie plaatje",
     "In de instellingen het contract en de facturen inhoud aanpasbaar maken",
     "Maken dat elke customer een aparte mollie API gebruikt ",

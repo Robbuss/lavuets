@@ -5,14 +5,19 @@
       <v-toolbar-title>{{ formTitle }}</v-toolbar-title>
     </v-toolbar>
     <v-form lazy-validation ref="form">
-      <v-row wrap class= "pa-4" no-gutters>
+      <ImageUpload :height="250" :width="350" v-model="editedItem.thumb">
+        <v-btn dark>
+          <v-icon>add_a_photo</v-icon>Kies een afbeelding
+        </v-btn>
+      </ImageUpload>
+      <v-row wrap class="pa-4" no-gutters>
         <v-col sm="12">
           <v-select
             label="Kies een locatie"
             placeholder="Waar de unit zich bevindt"
             v-model="editedItem.location_id"
             required
-            outlined 
+            outlined
             item-text="facility_name"
             item-value="id"
             :items="locations"
@@ -22,21 +27,37 @@
         <v-col sm="12">
           <v-text-field
             label="Product naam"
-            outlined 
+            outlined
             placeholder="Komt op de factuur"
             v-model="editedItem.name"
             required
             :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
           />
         </v-col>
-        <v-col sm="12">
+        <v-col sm="12" md="6">
           <v-text-field
             type="number"
-            outlined 
+            outlined
+            :class="{'pr-3' : $vuetify.breakpoint.mdAndUp}"
             label="Grootte in m3"
             suffix="m3"
             placeholder="Gebruik alleen getallen"
-            v-model="editedItem.size"
+            v-model="editedItem.size_m3"
+            required
+            :rules="[
+              v => (v.length !== 0) || 'Dit veld mag niet leeg zijn',
+              v => v >= 0 || 'Waarde moet positief zijn'
+            ]"
+          />
+        </v-col>
+        <v-col sm="12" md="6">
+          <v-text-field
+            type="number"
+            outlined
+            label="Grootte in m2"
+            suffix="m2"
+            placeholder="Gebruik alleen getallen"
+            v-model="editedItem.size_m2"
             required
             :rules="[
               v => (v.length !== 0) || 'Dit veld mag niet leeg zijn',
@@ -47,7 +68,7 @@
         <v-col sm="12">
           <v-text-field
             type="number"
-            outlined 
+            outlined
             min="0"
             prefix="€"
             label="Prijs in euro's"
@@ -63,7 +84,7 @@
         <v-col sm="12" md="6">
           <v-text-field
             type="number"
-            outlined 
+            outlined
             label="BTW percentage"
             suffix="%"
             placeholder="Gebruik alleen een getal"
@@ -75,7 +96,7 @@
         </v-col>
         <v-col sm="12" md="6">
           <v-select
-            outlined 
+            outlined
             label="BTW rekenen voor"
             placeholder="Kies wat voor klanten btw betalen"
             v-model="editedItem.should_tax"
@@ -88,7 +109,7 @@
         </v-col>
         <v-col sm="12" md="6">
           <v-select
-            outlined 
+            outlined
             :class="{'pr-3' : $vuetify.breakpoint.mdAndUp}"
             :items="activefilled "
             v-model="editedItem.active"
@@ -97,7 +118,7 @@
         </v-col>
         <v-col sm="12" md="6">
           <v-select
-            outlined 
+            outlined
             :items="activefilled "
             v-model="editedItem.show_frontend"
             label="Product tonen in boekingsformulier"
@@ -108,6 +129,9 @@
             :value="(editedItem.show_frontend && !editedItem.active) || (!editedItem.show_frontend && editedItem.active)"
             type="info"
           >Wanneer het product niet verhuurbaar is óf wanneer product tonen in het boekingsformulier uit staat, zal het niet worden getoond.</v-alert>
+        </v-col>
+        <v-col cols="12">
+          <VueEditor v-model="editedItem.description" />
         </v-col>
       </v-row>
     </v-form>
@@ -130,8 +154,15 @@ import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
 import axios from "js/axios";
 import store from "js/store";
+import ImageUpload from "js/components/ImageUpload.vue";
+import { VueEditor } from "vue2-editor";
 
-@Component({})
+@Component({
+  components: {
+    ImageUpload,
+    VueEditor
+  }
+})
 export default class Editunit extends Vue {
   @Prop()
   unit: any;
@@ -147,7 +178,7 @@ export default class Editunit extends Vue {
     { value: "all", key: "Iedereen" },
     { value: "none", key: "Niemand" }
   ];
-  private activefilled : any = [
+  private activefilled: any = [
     {
       text: "Ja",
       value: true
@@ -160,8 +191,11 @@ export default class Editunit extends Vue {
   private editedItem: any = {
     id: null,
     name: "",
+    image: "",
+    description: "",
     location_id: null,
-    size: "",
+    size_m3: "",
+    size_m2: "",
     active: true,
     price: 0,
     vat_percentage: 0.21,
@@ -170,9 +204,12 @@ export default class Editunit extends Vue {
   };
   private defaultItem: any = {
     id: null,
+    image: "",
     location_id: null,
     name: "",
-    size: "",
+    description: "",
+    size_m3: "",
+    size_m2: "",
     active: null,
     price: 0,
     vat_percentage: 0.21,

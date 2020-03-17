@@ -17,13 +17,15 @@ class UnitController extends Controller
     {
         $occupied = Unit::has('contracts')->get();
 
-        return Unit::with('location')->get()->map(function ($q) use ($occupied) {
+        return Unit::with(['location', 'media'])->get()->map(function ($q) use ($occupied) {
             return [
                 "id" => $q->id,
                 "facility_name" => $q->location->facility_name,
                 "location_id" => $q->location->id,
                 "name" => $q->name,
-                "size" => $q->size,
+                "description" => $q->description,
+                "size_m3" => $q->size_m3,
+                "size_m2" => $q->size_m2,
                 "active" => $q->active,
                 "price" => $q->price,
                 "vat_percentage" => $q->vat_percentage,
@@ -31,13 +33,14 @@ class UnitController extends Controller
                 "should_tax" => $q->should_tax,
                 "vat_percentage" => $q->vat_percentage,
                 "free" => $occupied->contains($q) ? false : true,
+                "image" => $q->thumb
             ];
         });
     }
 
     public function read(Unit $unit)
     {
-        return ["unit" => $unit, "contracts" => $unit->contracts()->with('tenant')->get()];
+        return $unit->load(['contracts.tenant']);
     }
 
     /**
@@ -47,12 +50,14 @@ class UnitController extends Controller
      */
     public function create(Request $request)
     {
-        Unit::create(
+        $unit = Unit::create(
             array_merge(
-                $request->all(),
+                $request->except('image'),
                 ['customer_id' => Customer::current()->id]
             ),
         );
+        $unit->associateMedia('image', $request->image, ['png', 'jpg'], [], 'public');
+
         return ["success" => true];
     }
 
@@ -64,7 +69,9 @@ class UnitController extends Controller
      */
     public function update(Unit $unit, Request $request)
     {
-        $unit->update($request->all());
+        $unit->update($request->except('thumb'));
+        $unit->associateMedia('thumb', $request->thumb, ['png', 'jpg'], [], 'public');
+
         return ["success" => true];
     }
 
@@ -75,6 +82,10 @@ class UnitController extends Controller
      */
     public function delete(Unit $unit)
     {
+        // check if a unit has a contract:
+        if ($unit->activeContract->count() !== 0) {
+            return ["success" => false, "error" => "still_has_contract"];
+        }
         $unit->delete();
         return ["success" => true];
     }

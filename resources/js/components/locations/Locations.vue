@@ -122,12 +122,11 @@ export default class Locations extends Vue {
   private dialog: boolean = false;
   private valid: boolean = false;
   private headers: any = [
+    { text: "Locatie naam", align: "left", value: "facility_name" },
     {
       text: "Interne naam",
-      align: "left",
       value: "name"
     },
-    { text: "Locatie naam", value: "facility_name" },
     { text: "Acties", value: "actions", sortable: false, align: "right" }
   ];
   private options: any = {
@@ -171,15 +170,27 @@ export default class Locations extends Vue {
     this.dialog = true;
   }
 
-  deleteItem(item: any) {
+  async deleteItem(item: any) {
     if (!confirm("Wil je dit item verwijderen? ")) return;
 
+    //backend remove
+    const r = (await axios.post("/api/locations/" + item.id + "/delete")).data;
+    if (r.success === false) {
+      store.commit("snackbar", {
+        type: "error",
+        message:
+          "Locatie kon niet worden verwijderd. Er zijn nog producten actief"
+      });
+      return;
+    }
+
+    // frontend remove
     const index = this.locations.indexOf(item);
     this.locations.splice(index, 1);
-    axios.post("/api/locations/" + item.id + "/delete");
+
     store.commit("snackbar", {
       type: "success",
-      message: "Locatie verwijderd."
+      message: "Locatie verwijderd!"
     });
   }
 

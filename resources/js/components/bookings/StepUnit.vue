@@ -4,10 +4,15 @@
       <v-col md="2" :class="{ 'pr-0' : $vuetify.breakpoint.mdAndUp}">
         <v-toolbar dense flat color="primary" dark>
           <v-toolbar-title>Grootte</v-toolbar-title>
+          <v-spacer />
+          <v-radio-group row hide-details v-model="unitOfMeasurement">
+            <v-radio value="m3" label="m3" />
+            <v-radio value="m2" label="m2" />
+          </v-radio-group>
         </v-toolbar>
         <v-list dense style="border-right: 1px solid #EEEEEE">
           <v-item-group v-model="window" mandatory tag="v-col">
-            <v-item v-for="(n, k) in units" :key="k+'1'">
+            <v-item v-for="(n, k) in units[unitOfMeasurement]" :key="k+'1'">
               <div slot-scope="{ active, toggle }">
                 <v-divider></v-divider>
                 <v-list-item
@@ -16,7 +21,7 @@
                   :class="{ 'primary white--text' : groupContainsUnit(n)}"
                 >
                   <v-list-item-content>
-                    <v-list-item-title>{{ n[0].size }} m3</v-list-item-title>
+                    <v-list-item-title>{{ n[0]['size_' + unitOfMeasurement] }} {{ unitOfMeasurement}}</v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
               </div>
@@ -30,20 +35,13 @@
           <v-toolbar-title>Klik op een box om deze te selecteren</v-toolbar-title>
         </v-toolbar>
         <v-window v-model="window" vertical>
-          <v-window-item v-for="(n, k) in units" :key="k + '2'">
+          <v-window-item v-for="(category, k) in units[unitOfMeasurement]" :key="k + '2'">
             <v-row wrap :class="{'pl-3' : $vuetify.breakpoint.mdAndUp}">
-              <v-col sm="12" md="4" lg="3" v-for="u in n" :key="u.id">
-                <v-card
-                  :class="{'lighten-2 primary white--text' : unitChecked(u)}"
-                  class="pa-4"
-                  outlined
-                  style="cursor:pointer"
-                  @click="pickBox (u)"
-                >
-                  <v-card-title>{{ u.name }}</v-card-title>
-                  <v-card-subtitle>Grootte: {{ u.size }}m3</v-card-subtitle>
-                  <v-card-text>€{{ u.price}}</v-card-text>
-                </v-card>
+              <v-col sm="12" md="6" lg="4" v-for="u in getFirstUnits(category, k)" :key="u.id">
+                <UnitCard :unit="u" @picked="pickBox($event)" :checked="unitChecked(u)" :fill="true"/>
+              </v-col>
+              <v-col sm="12" class="text-center">
+                <v-btn text @click="showAll.push(k)" v-if="!showAll.includes(k) && category.length > 3">Laat meer zien</v-btn>
               </v-col>
             </v-row>
           </v-window-item>
@@ -66,7 +64,7 @@
 
               <v-list-item-content>
                 <v-list-item-title>{{ chosen.name }}</v-list-item-title>
-                <v-list-item-subtitle>{{ chosen.size }}m3 voor €{{ chosen.price }} per maand</v-list-item-subtitle>
+                <v-list-item-subtitle>{{ chosen.size_m3 }}m3 voor €{{ chosen.price }} per maand</v-list-item-subtitle>
               </v-list-item-content>
 
               <v-list-item-action @click="pickBox (chosen)">
@@ -116,8 +114,13 @@
 import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
 import axios from "js/axios";
+import UnitCard from "js/components/units/UnitCard.vue"
 
-@Component({})
+@Component({
+  components:{
+    UnitCard
+  }
+})
 export default class StepUnit extends Vue {
   @Prop()
   contract: any;
@@ -133,6 +136,14 @@ export default class StepUnit extends Vue {
     this.error ? (this.error = !this.error) : false;
   }
 
+  @Watch('unitOfMeasurement')
+  onChanged(){
+    this.window = 0;
+  }
+
+  private unitOfMeasurement: "m3" | "m2" = "m3";
+  private showAll: number[] = [];
+
   private units: any = [];
   private window: number = 0;
   private error: boolean = false;
@@ -142,10 +153,18 @@ export default class StepUnit extends Vue {
     let url = this.domain
       ? this.domain + "/api/book-data/units"
       : "/api/book-data/units";
-    this.units = (await axios.post(url, {
-      location_id: this.location.id
-    })).data;
+    this.units = (
+      await axios.post(url, {
+        location_id: this.location.id
+      })
+    ).data;
     this.loading = false;
+  }
+
+  getFirstUnits(category: any, key: number){
+    if(this.showAll.includes(key))
+      return category;
+    return category.slice(0, 3);
   }
 
   unitChecked(unit: any) {

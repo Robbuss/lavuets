@@ -2,24 +2,30 @@
 
 namespace App\Models;
 
-use App\Scopes\CustomerScope;
+use App\Traits\AssociateMediaTrait;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 
 class Unit extends BaseModel implements HasMedia
 {
-    use SoftDeletes, HasMediaTrait;
-    protected $fillable = ['customer_id', 'location_id', 'name', 'price', 'vat_percentage', 'show_frontend', 'should_tax', 'size', 'active', 'x', 'y'];
-    protected $appends = ['display_name'];
+    use SoftDeletes, HasMediaTrait, AssociateMediaTrait;
+    protected $fillable = ['customer_id', 'location_id', 'name', 'description', 'size_m3', 'size_m2', 'price', 'vat_percentage', 'show_frontend', 'should_tax', 'active'];
+    protected $appends = ['display_name', 'thumb'];
     protected $casts = [
         'active' => 'boolean',
         'show_frontend' => 'boolean'
     ];
+    
 
     public function getDisplayNameAttribute()
     {
-        return $this->name . ' - €' . $this->price . ' - ' . $this->size . 'm3';
+        return $this->name . ' - €' . $this->price . ' - ' . $this->size_m3 . 'm3';
+    }
+
+    public function getThumbAttribute()
+    {
+        return $this->media->last() ? $this->media->last()->getUrl() : "/empty-location.svg";
     }
 
     public function contracts()
@@ -29,7 +35,7 @@ class Unit extends BaseModel implements HasMedia
 
     public function activeContract()
     {
-        return $this->hasOne(Contract::class)->where('active', 1);
+        return $this->belongsToMany(Contract::class)->whereNull('deactivated_at');
     }
 
     public function location()

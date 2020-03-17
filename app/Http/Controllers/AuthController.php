@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use GuzzleHttp\Client;
 use App\Models\Setting;
+use App\Models\Customer;
 use Illuminate\Http\Request;
+use App\Scopes\CustomerScope;
 use GuzzleHttp\Exception\BadResponseException;
 
 class AuthController extends Controller

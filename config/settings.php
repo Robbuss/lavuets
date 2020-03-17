@@ -24,11 +24,6 @@ return [
             'value' => 'Tenants',
         ],
         [
-            'public' => '1',
-            'key' => 'logo',
-            'value' => '/logo.png',
-        ],
-        [
             'public' => '0',
             'key' => 'enable_registration',
             'value' => '0',
@@ -52,6 +47,11 @@ return [
             'public' => '0',
             'key' => 'mollie_webhook_url',
             'value' => 'mollie webhook',
-        ]
+        ],
+        [
+            'public' => '0',
+            'key' => 'show_locations_booking',
+            'value' => '0',
+        ]        
     ]
 ];

@@ -19,7 +19,7 @@ class SettingController extends Controller
 
     public function update(Request $request)
     {
-        foreach ($request->settings as $setting) {
+        foreach ($request->except('logo')->settings as $setting) {
             Setting::where('key', $setting['key'])->update([
                 'value' => $setting['value']
             ]);
@@ -27,6 +27,7 @@ class SettingController extends Controller
         return ["success" => true];
     }
 
+    /* this is a guest route */
     public function layout()
     {
         return Setting::public()->get()->map(function ($q) {

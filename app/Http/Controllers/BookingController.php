@@ -35,17 +35,35 @@ class BookingController extends Controller
                     'units_count' => $showCount->value ? $q->count() : false,
                     'facility_name' => $q->first()->location->facility_name,
                     'id' => $q->first()->location->id,
-                    'image' => ($q->first()->location->media->last()) ? $q->first()->location->media->last()->getFullUrl() : '',
+                    'image' => ($q->first()->location->media->last()) ? $q->first()->location->media->last()->getUrl() : '',
                 ];
             });
     }
 
     public function stepUnits(Request $request)
     {
-        $free = Unit::bookableUnits()->where('location_id', $request->location_id)->get();
-        return $free->mapToGroups(function ($item) {
-            return [$item['size'] => $item];
+        $free = Unit::with('media')->bookableUnits()->where('location_id', $request->location_id)->get();
+        $free->load('media');
+        $m3 = $free->mapToGroups(function ($item) {
+            return [
+                $item['size_m3'] => $item,
+            ];
         });
+        $m2 = $free->mapToGroups(function ($item) {
+            return [
+                $item['size_m2'] => $item,
+            ];
+        });
+        return [
+            'm2' => $m2,
+            'm3' => $m3
+        ];
+    }
+
+    public function stepTenant(Request $request){
+        return [
+            'logo' => Customer::current()->logo
+        ];
     }
 
     /**

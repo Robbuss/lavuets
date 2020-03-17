@@ -4,7 +4,7 @@
       <v-card class= "pa-4">
         <v-row justify="center">
           <v-col class="shrink px-4">
-            <img width="225" src="//images/logo.png" />
+            <img width="225" src="/logo.png" />
           </v-col>
         </v-row>
         <v-form v-model="valid" lazy-validation ref="form">
@@ -40,7 +40,7 @@
               <v-col cols="12">
                 <v-text-field
                   outlined 
-                  :rules="[v => !!v || 'Dit veld mag niet leeg zijn']"
+                  :rules="[v => !!v || 'Dit veld mag niet leeg zijn', !domainTaken || 'Dit adres is bezet']"
                   required
                   v-model="newCustomer.domain"
                   suffix=".10ants.nl"
@@ -119,6 +119,7 @@ import axios from "js/axios";
 export default class NewCustomer extends Vue {
   private valid: boolean = false;
   private working: boolean = false;
+  private domainTaken: boolean = false;
   private newCustomer: any = {
     id: null,
     name: "",
@@ -127,11 +128,23 @@ export default class NewCustomer extends Vue {
     domain: ""
   };
 
+  @Watch('newCustomer.domain')
+  onChange(){
+    if(this.domainTaken)
+      this.domainTaken = false;
+  }
+
   async save() {
     if (!(this.$refs.form as any).validate()) return;
     this.working = true;
     try {
       const r = (await axios.post("/api/customers/create", this.newCustomer)).data;
+      if(r.success === false){
+        this.working = false;
+        this.domainTaken = true;
+        this.valid = false;
+        return;
+      }
       window.location.href = "http://" + this.newCustomer.domain + ".opslag.dev.v-d-berg.com/login/" + r.user_id + "/" + r.sso_token ;
     } catch (e) {}
     this.working = false;

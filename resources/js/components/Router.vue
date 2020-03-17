@@ -34,7 +34,6 @@
             </v-btn>
           </template>
           <v-list>
-            </v-list-item>
             <v-list-item @click="$router.push('/settings')">
               <v-list-item-action>
                 <v-icon>settings</v-icon>
@@ -58,10 +57,7 @@
       </v-toolbar-items>
     </v-app-bar>
     <v-content :class="{ 'background' : registerRoute || authRoutes}" :style="svgbg">
-      <v-container
-        fluid
-        :class="{'fill-height justify-center' : authRoutes || registerRoute }"
-      >
+      <v-container fluid :class="{'fill-height justify-center' : authRoutes || registerRoute }">
         <v-row justify="center" :align-center="authRoutes || registerRoute">
           <router-view></router-view>
         </v-row>
@@ -127,7 +123,7 @@ const router = new Router({
     {
       path: "/reset-password",
       component: ResetPassword
-    },    
+    },
     {
       path: "/login/:user/:sso",
       component: SingleSignOn
@@ -251,7 +247,10 @@ export default class RouterComponent extends Vue {
   }
 
   get authRoutes() {
-    return this.$route.fullPath.startsWith("/login") || this.$route.fullPath.startsWith("/reset-password");
+    return (
+      this.$route.fullPath.startsWith("/login") ||
+      this.$route.fullPath.startsWith("/reset-password")
+    );
   }
 
   get authenticated() {

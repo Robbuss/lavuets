@@ -28,6 +28,9 @@ class CustomerController extends Controller
      */
     public function create(Request $request)
     {
+        if(Customer::where('domain', $request->domain)->first()){
+            return ['success' => false, 'message' => 'domain_taken'];
+        }
         $customer = Customer::create([
             'domain' => $request->domain,
             'email' => $request->email,
@@ -58,7 +61,10 @@ class CustomerController extends Controller
      */
     public function update(Request $request)
     {
-        Customer::current()->update($request->all());
+        $customer = Customer::current();
+        $customer->update($request->except('logo'));
+        $customer->associateMedia('logo', $request->logo, ['png', 'jpg'], [], 'public');
+
         return ['success' => true];
     }
 

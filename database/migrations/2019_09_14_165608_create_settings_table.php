@@ -23,7 +23,6 @@ class CreateSettingsTable extends Migration
 
         $settings = [
             'app_name' => 'App name',
-            'logo' => '/logo.png',
             'enable_registration' => '0',
             'primary_color' => '#6786A1',
             'secondary_color' => '#6786A1',

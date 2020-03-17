@@ -1,38 +1,20 @@
 <template>
   <v-col v-if="!loading" fill-height class="py-0">
     <v-row wrap>
-      <v-col cols="12" md="6">
-        <edit-create-unit :unit="unit" :creating="false"></edit-create-unit>
+      <v-col cols="12" md="6" lg="8">
+        <EditCreateUnit :unit="unit" :creating="false" />
       </v-col>
-      <v-col cols="12" md="6">
-        <v-card>
-          <v-toolbar class="primary" flat dark>
-            <v-toolbar-title>Contracten op dit product</v-toolbar-title>
-          </v-toolbar>
-          <v-list>
-            <v-list-item
-              v-for="(contract, i ) in contracts"
-              :key="i"
-              @click="$router.push('/contracts/' + contract.id)"
-            >
-              <v-list-item-content>
-                <v-list-item-title>Verhuurd aan {{ contract.tenant.name }}</v-list-item-title>
-                <v-list-item-subtitle>Sinds {{formatDate(contract.start_date) }}</v-list-item-subtitle>
-              </v-list-item-content>
-              <v-list-item-action v-if="contract.active">
-                <v-tooltip bottom>
-                  <template v-slot:activator="{ on }">
-                    <v-icon color="success--text" dark v-on="on">check</v-icon>
-                  </template>
-                  <span>Dit contract loopt nog</span>
-                </v-tooltip>
-              </v-list-item-action>
-            </v-list-item>
-            <v-list-item v-if="contracts.length === 0">
-              <v-list-item-content>Nog niet verhuurd.</v-list-item-content>
-            </v-list-item>
-          </v-list>
-        </v-card>
+      <v-col cols="12" md="6" lg="4">
+        <v-row class="v-toolbar__title" style="height: 64px;" align="center">
+          <v-col class="primary--text font-weight-bold">Preview</v-col>
+        </v-row>
+
+        <UnitCard :unit="unit" :key="rerender"/>
+        <v-row>
+          <v-col cols="12">
+            <History :unit="unit" />
+          </v-col>
+        </v-row>
       </v-col>
     </v-row>
   </v-col>
@@ -44,28 +26,30 @@ import { Component, Prop, Watch } from "vue-property-decorator";
 import axios from "js/axios";
 import * as moment from "moment";
 import EditCreateUnit from "./EditCreate.vue";
+import UnitCard from "./UnitCard.vue";
+import History from "./History.vue";
 
 @Component({
   components: {
-    editCreateUnit: EditCreateUnit
+    EditCreateUnit,
+    UnitCard,
+    History
   }
 })
 export default class SingleUnit extends Vue {
   private response = "";
   private dialog: boolean = false;
   private loading: boolean = true;
-  private contracts: any = null;
   private unit: any = {};
+  private rerender: number = 0;
 
-  formatDate(date: any){
-    return moment(date).format('LL');
+  formatDate(date: any) {
+    return moment(date).format("LL");
   }
 
   async mounted() {
     try {
-      const r = (await axios.get("/api/units/" + this.$route.params.id)).data;
-      this.unit = r.unit;
-      this.contracts = r.contracts;
+      this.unit = (await axios.get("/api/units/" + this.$route.params.id)).data;
     } catch (e) {
       this.response = e.message;
     }

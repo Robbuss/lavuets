@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\AssociateMediaTrait;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -10,15 +11,21 @@ use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 
 class Customer extends Model implements HasMedia
 {
-    use SoftDeletes, LogsActivity, HasMediaTrait;
+    use SoftDeletes, LogsActivity, HasMediaTrait, AssociateMediaTrait;
 
     protected $fillable = ['domain', 'company_name', 'name', 'email', 'city','phone', 'street_addr', 'street_number', 'postal_code', 'phone', 'iban', 'btw', 'kvk'];
     protected static $logName = 'systeem';
+    protected $appends = ['logo'];
     protected static $currentcustomer = null;
 
     public function getDescriptionForEvent(string $eventName): string
     {
         return "Klant {$eventName}";
+    }
+
+    public function getLogoAttribute()
+    {
+        return $this->media->last() ? $this->media->last()->getUrl() : "/logo.png";
     }
 
     public function settings()

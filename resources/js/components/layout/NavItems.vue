@@ -1,7 +1,7 @@
 <template>
   <v-list nav>
     <template v-for="(item, key) in items">
-      <v-list-group prepend-icon="account_circle" value="true" :key="key" v-if="item.group">
+      <v-list-group :prepend-icon="item.icon" :value="false" :key="key" v-if="item.group">
         <template v-slot:activator>
           <v-list-item-title>{{ item.text }}</v-list-item-title>
         </template>
@@ -9,6 +9,9 @@
           <v-list-item-content>
             <v-list-item-title class="grey--text text--darken-2">{{ i.text }}</v-list-item-title>
           </v-list-item-content>
+          <v-list-item-icon>
+            <v-icon>{{i.icon}}</v-icon>
+          </v-list-item-icon>
         </v-list-item>
       </v-list-group>
       <v-list-item @click="$router.push(item.link)" :key="key" v-else>
@@ -46,24 +49,23 @@ export default class NavItems extends Vue {
     },
     {
       group: true,
+      icon: "dashboard",
       text: "Boxen",
       links: [
         {
-          link: "/categories",
-          text: "Categorieën"
-        },
-        {
+          icon: "view_comfy",
           link: "/units",
           text: "Alle boxen"
         },
         {
+          icon: "post_add",
           link: "/boek",
           text: "Boekingsformulier"
         }
       ]
     },
     {
-      icon: "person",
+      icon: "account_circle",
       link: "/tenants",
       text: "Huurders"
     },

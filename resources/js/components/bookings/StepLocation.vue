@@ -8,14 +8,14 @@
       v-for="location in locations"
       :key="location.id"
     >
-      <v-card outlined class="grey lighten-3">
+      <v-card @click="$emit('done', location)">
         <v-img
           v-if="location.image"
           class="white--text align-end"
           height="200px"
           :src="location.image"
         />
-        <v-card-text >
+        <v-card-text>
           <h3 class="headline mb-0 primary--text">{{ location.facility_name }}</h3>
           <h5
             class="subtitle-1 grey--text"

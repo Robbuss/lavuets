@@ -41,9 +41,7 @@
         multi-sort
         @click:row="$router.push('/units/' + $event.id)"
       >
-        <template v-slot:item.price="{ item }">
-          €{{ item.price }}
-        </template>
+        <template v-slot:item.price="{ item }">€{{ item.price }}</template>
         <template v-slot:item.status="{ item }">
           <v-chip
             flat
@@ -93,7 +91,8 @@ export default class Units extends Vue {
   private headers: any = [
     { text: "Locatie", value: "facility_name" },
     { text: "Naam", value: "name" },
-    { text: "Grootte (m3)", value: "size" },
+    { text: "Grootte (m3)", value: "size_m3" },
+    { text: "Grootte (m2)", value: "size_m2" },
     { text: "Prijs (p/m)", value: "price" },
     { text: "Status", value: "status" },
     { text: "Acties", value: "actions", align: "right", sortable: false }
@@ -123,21 +122,32 @@ export default class Units extends Vue {
     this.loading = false;
   }
 
-  deleteItem(item: any) {
+  async deleteItem(item: any) {
     if (
       !confirm(
-        "Product verwijderen? Als er contracten actief zijn op dit product gaat het mis!"
+        "Product verwijderen? Je kunt alleen units zonder contract verwijderen"
       )
     )
       return;
 
-    const index = this.units.indexOf(item);
-    this.units.splice(index, 1) &&
-      axios.post("/api/units/" + item.id + "/delete") &&
+    //backend remove
+    const r = (await axios.post("/api/units/" + item.id + "/delete")).data;
+    if (r.success === false) {
       store.commit("snackbar", {
-        type: "success",
-        message: "Product verwijderd!"
+        type: "error",
+        message: "Product kon niet worden verwijderd."
       });
+      return;
+    }
+
+    // frontend remove
+    const index = this.units.indexOf(item);
+    this.units.splice(index, 1);
+
+    store.commit("snackbar", {
+      type: "success",
+      message: "Product verwijderd!"
+    });
   }
 
   createItem() {
